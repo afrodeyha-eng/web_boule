@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Smart City · Boulé — Global Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#0F1E36;
+  --azul-80:#1B2E4E;
+  --celeste:#00A896;
+  --celeste-dim:#0d8577;
+  --naranja:#FF6B35;
+  --fondo:#F4F7FA;
+  --carta:#FFFFFF;
+  --linea:#DDE5EE;
+  --texto:#0F1E36;
+  --texto-suave:#5A6B85;
+  --ok:#00A896;
+  --alerta:#E8A13D;
+  --critico:#FF6B35;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Montserrat','Segoe UI',system-ui,sans-serif;
+  background:var(--fondo);
+  color:var(--texto);
+  line-height:1.55;
+  font-size:15px;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 64px}
+
+/* ---------- Cabecera blueprint ---------- */
+header{
+  background:var(--azul);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,168,150,.10) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(90deg, rgba(0,168,150,.10) 0 1px, transparent 1px 44px);
+  pointer-events:none;
+}
+header .inner{max-width:880px;margin:0 auto;padding:44px 20px 40px;position:relative}
+.eyebrow{
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--celeste);font-weight:700;margin-bottom:14px;
+}
+header h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;line-height:1.15;max-width:640px}
+header h1 em{font-style:normal;color:var(--celeste)}
+header p.sub{margin-top:14px;max-width:560px;color:#B9C6DA;font-size:15px}
+.brand{
+  position:absolute;top:44px;right:20px;text-align:right;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8FA2BF;font-weight:600;
+}
+.brand b{display:block;color:#fff;font-size:14px;letter-spacing:.08em}
+
+/* ---------- Stepper ---------- */
+.stepper{
+  display:flex;gap:6px;margin:26px 0 30px;
+}
+.stepper span{
+  flex:1;height:5px;border-radius:3px;background:var(--linea);
+  position:relative;transition:background .3s;
+}
+.stepper span.done{background:var(--celeste)}
+.stepper span.now{background:var(--naranja)}
+.step-label{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--texto-suave);font-weight:700;margin-top:26px;
+}
+.step-label b{color:var(--naranja)}
+
+/* ---------- Cartas ---------- */
+.card{
+  background:var(--carta);border:1px solid var(--linea);border-radius:14px;
+  padding:28px;margin-top:16px;
+  box-shadow:0 1px 3px rgba(15,30,54,.05);
+}
+.card h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.card h2 .dim-code{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;
+  color:var(--celeste);border:1px solid var(--celeste);border-radius:4px;
+  padding:2px 8px;vertical-align:3px;margin-right:10px;
+}
+.card p.desc{color:var(--texto-suave);font-size:14px;margin-bottom:8px}
+
+/* ---------- Formulario de contacto ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}}
+label.field{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--azul)}
+label.field small{display:block;font-weight:500;color:var(--texto-suave);letter-spacing:0}
+input,select{
+  width:100%;margin-top:6px;padding:11px 12px;font:inherit;font-size:14px;
+  border:1.5px solid var(--linea);border-radius:8px;background:#fff;color:var(--texto);
+}
+input:focus,select:focus{outline:2px solid var(--celeste);outline-offset:1px;border-color:var(--celeste)}
+
+/* ---------- Preguntas ---------- */
+.q{margin-top:24px}
+.q h3{font-size:15.5px;font-weight:700;margin-bottom:12px}
+.q h3 .qn{color:var(--celeste);margin-right:6px}
+.opts{display:grid;gap:8px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;cursor:pointer;
+  border:1.5px solid var(--linea);border-radius:10px;padding:12px 14px;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--celeste)}
+.opt input{width:auto;margin-top:3px;accent-color:var(--celeste);flex:none}
+.opt.sel{border-color:var(--celeste);background:rgba(0,168,150,.06)}
+.opt .lvl{
+  flex:none;font-size:10px;font-weight:800;letter-spacing:.1em;color:#fff;
+  background:var(--azul-80);border-radius:4px;padding:3px 7px;margin-top:2px;
+}
+.opt.sel .lvl{background:var(--celeste)}
+.opt span.txt{font-size:14px}
+
+/* ---------- Botonera ---------- */
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+button{
+  font:inherit;font-weight:700;font-size:14px;border:none;border-radius:9px;
+  padding:13px 26px;cursor:pointer;transition:transform .1s, box-shadow .15s;
+}
+button:focus-visible{outline:3px solid var(--naranja);outline-offset:2px}
+.btn-p{background:var(--naranja);color:#fff;box-shadow:0 3px 10px rgba(255,107,53,.35)}
+.btn-p:hover{transform:translateY(-1px)}
+.btn-s{background:transparent;color:var(--texto-suave);border:1.5px solid var(--linea)}
+.btn-t{background:var(--azul);color:#fff}
+.btn-c{background:var(--celeste);color:#fff}
+.hint{font-size:12.5px;color:var(--critico);margin-top:12px;display:none;font-weight:600}
+
+/* ---------- Resultados ---------- */
+.res-head{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.gauge-box{flex:none;text-align:center}
+.gauge-box .glabel{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--texto-suave);font-weight:700;margin-top:4px}
+.res-sum{flex:1;min-width:240px}
+.res-sum h2{font-size:22px;font-weight:800}
+.res-sum .nivel-chip{
+  display:inline-block;margin:8px 0 10px;font-size:12px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:#fff;border-radius:6px;padding:5px 12px;
+}
+.res-sum p{color:var(--texto-suave);font-size:14px}
+.dim-row{margin-top:18px}
+.dim-row .dr-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.dim-row .dr-name{font-size:13.5px;font-weight:700}
+.dim-row .dr-name i{font-style:normal;color:var(--celeste);font-size:11px;letter-spacing:.12em;margin-right:8px}
+.dim-row .dr-score{font-size:13px;font-weight:800}
+.bar{height:10px;border-radius:6px;background:var(--linea);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;transition:width .8s ease}
+.rec{
+  border-left:4px solid var(--critico);background:#FFF4EF;border-radius:0 10px 10px 0;
+  padding:16px 18px;margin-top:14px;
+}
+.rec.warn{border-left-color:var(--alerta);background:#FDF7EC}
+.rec h4{font-size:13.5px;font-weight:800;margin-bottom:4px}
+.rec p{font-size:13.5px;color:#4A5A72}
+.rec .tag{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--critico)}
+.rec.warn .tag{color:var(--alerta)}
+.exports{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.cta-final{
+  margin-top:18px;background:var(--azul);border-radius:14px;color:#fff;padding:26px 28px;
+  position:relative;overflow:hidden;
+}
+.cta-final::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg, rgba(0,168,150,.10) 0 1px, transparent 1px 44px);
+}
+.cta-final h3{font-size:18px;font-weight:800;position:relative}
+.cta-final p{color:#B9C6DA;font-size:14px;margin:8px 0 16px;position:relative;max-width:520px}
+.cta-final a{
+  position:relative;display:inline-block;background:var(--naranja);color:#fff;text-decoration:none;
+  font-weight:800;font-size:14px;border-radius:9px;padding:13px 26px;
+}
+footer{max-width:880px;margin:40px auto 0;padding:0 20px;font-size:12px;color:var(--texto-suave);text-align:center}
+
+.hidden{display:none}
+@media print{
+  header .inner{padding:20px}
+  .stepper,.actions,.exports,.no-print,footer{display:none!important}
+  body{background:#fff}
+  .card{box-shadow:none;border-color:#ccc}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <div class="brand">Boulé<b>Global Solutions</b></div>
+    <div class="eyebrow">Diagnóstico gratuito · Municipios</div>
+    <h1>¿Qué tan cerca está su municipio de ser una <em>ciudad inteligente</em>?</h1>
+    <p class="sub">15 preguntas, menos de 10 minutos. Al finalizar obtiene su Índice de Madurez Digital (0–100), el estado de las 5 dimensiones críticas de gestión y los próximos pasos recomendados.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="step-label" id="stepLabel"></div>
+  <div class="stepper" id="stepper"></div>
+  <div id="app"></div>
+</div>
+
+<footer>Boulé · Plataforma GovTech de Global Solutions — Los datos ingresados se utilizan únicamente para elaborar el diagnóstico y la propuesta de trabajo.</footer>
+
+<script>
+/* =========================================================
+   ENVÍO AUTOMÁTICO Y SILENCIOSO
+   Servicio: Web3Forms (https://web3forms.com) — no requiere backend propio.
+   Para activarlo: entrar a web3forms.com, escribir el mail de destino
+   (alfonsina.coria@gsolutions.com.ar), y pegar acá la Access Key que llega
+   por correo. Mientras diga 'PASTE_YOUR_ACCESS_KEY_HERE', el sitio usa el
+   respaldo por mailto (abre el cliente de correo del usuario) en su lugar.
+========================================================= */
+const WEB3FORMS_ACCESS_KEY = 'fa48a2bd-a75b-45a6-b7c4-229d056818ff';
+
+/* =========================================================
+   MODELO DE CONTENIDO — 5 dolores × 3 preguntas × 4 niveles
+   Puntaje por pregunta: nivel 1→0 · 2→1 · 3→2 · 4→3
+   Dimensión: (suma/9)×100 · Global: promedio de dimensiones
+========================================================= */
+const DIMS = [
+ {
+  code:"D1", name:"Datos e interoperabilidad",
+  desc:"Cómo circula la información entre las áreas y qué capacidad tiene la conducción de ver la gestión en números.",
+  qs:[
+   {t:"¿Cómo circula hoy la información entre las áreas del municipio?",
+    o:["Cada área guarda su información en papel o archivos propios; se pide por nota o correo.",
+       "Hay sistemas por área, pero no se conectan entre sí; los datos se cruzan a mano.",
+       "Algunas áreas comparten sistemas o bases comunes, con integraciones puntuales.",
+       "Existe una plataforma integrada con información unificada del vecino y del territorio."]},
+   {t:"Si el intendente pide hoy un tablero con los indicadores clave de gestión, ¿qué pasa?",
+    o:["Habría que armarlo a mano y tardaría semanas.",
+       "Cada área arma su reporte por separado, con criterios distintos.",
+       "Hay reportes periódicos consolidados, pero no en tiempo real.",
+       "Hay tableros actualizados (tipo Power BI) que la conducción consulta habitualmente."]},
+   {t:"¿En qué estado están la calidad y el gobierno de los datos (catastro, padrones, registros)?",
+    o:["Registros desactualizados o duplicados; nadie es responsable del dato.",
+       "Se actualizan por campañas puntuales; hay inconsistencias conocidas.",
+       "Hay responsables por registro y procesos de actualización definidos.",
+       "Hay una política de datos con estándares, responsables y auditoría periódica."]}
+  ],
+  rec:{h:"Romper los silos antes de comprar tecnología",
+       p:"Los silos de información son una de las principales causas de fracaso de los proyectos de ciudad inteligente. El primer paso no es incorporar más sistemas, sino inventariar los existentes, unificar la base del vecino y del territorio, y montar un tablero de indicadores que le devuelva a la conducción una foto única de la gestión."}
+ },
+ {
+  code:"D2", name:"Atención ciudadana y trámites",
+  desc:"La experiencia del vecino: trámites, reclamos y consultas frecuentes.",
+  qs:[
+   {t:"¿Cómo inicia hoy un vecino la mayoría de los trámites?",
+    o:["Solo de forma presencial, en papel y en horario de atención.",
+       "Puede descargar formularios o ver requisitos online, pero termina yendo igual.",
+       "Varios trámites clave se inician y se siguen online.",
+       "La mayoría de los trámites son digitales de punta a punta, con seguimiento y notificaciones."]},
+   {t:"Cuando un vecino reclama (bache, luminaria, residuos), ¿qué trazabilidad existe?",
+    o:["El reclamo se anota y depende de quién lo tomó; no hay número de seguimiento.",
+       "Hay un registro central, pero el vecino no sabe en qué estado está.",
+       "Hay un sistema de reclamos con estados y tiempos, de uso interno.",
+       "El vecino sigue su reclamo online y hay métricas de resolución por área."]},
+   {t:"¿Cómo se atienden las consultas repetitivas (requisitos, horarios, vencimientos)?",
+    o:["Todo lo responde el personal, por teléfono o mostrador.",
+       "Hay información publicada en la web o redes, pero desactualizada o difícil de encontrar.",
+       "Hay canales digitales activos (WhatsApp, web) atendidos por personas.",
+       "Hay autogestión y asistentes automatizados que resuelven las consultas frecuentes."]}
+  ],
+  rec:{h:"Empezar por victorias visibles para el vecino",
+       p:"La burocracia en la atención es el dolor que el vecino más percibe. Recomendamos digitalizar de punta a punta los 3 a 5 trámites de mayor volumen e implementar un sistema de reclamos con número de seguimiento y tiempos medibles. Son mejoras de alto impacto y rápida implementación que legitiman el resto del plan de modernización."}
+ },
+ {
+  code:"D3", name:"Gobernanza e innovación",
+  desc:"Estrategia, liderazgo y forma de decidir la adopción de tecnología.",
+  qs:[
+   {t:"¿Existe una estrategia de modernización o ciudad inteligente formalizada?",
+    o:["No hay plan; se hacen acciones aisladas cuando surge la oportunidad.",
+       "Hay ideas y proyectos, pero sin documento ni prioridades aprobadas.",
+       "Hay un plan con objetivos, aunque sin presupuesto o seguimiento sistemático.",
+       "Hay un plan estratégico con metas, presupuesto, responsables e indicadores de avance."]},
+   {t:"¿Quién lidera la agenda de innovación dentro del organigrama?",
+    o:["Nadie en particular; depende del interés de cada funcionario.",
+       "Una persona o área la empuja de hecho, sin mandato formal.",
+       "Hay un área designada (modernización / sistemas), con recursos limitados.",
+       "Hay un área con mandato, presupuesto y llegada directa a la conducción."]},
+   {t:"¿Cómo se decide la compra o adopción de tecnología?",
+    o:["Se compra ante la urgencia o por oferta de proveedores, sin evaluación posterior.",
+       "Cada área decide por su cuenta; conviven sistemas que no dialogan entre sí.",
+       "Hay criterios técnicos y alguien valida las incorporaciones.",
+       "Hay una hoja de ruta tecnológica alineada al plan de gobierno, con evaluación de resultados."]}
+  ],
+  rec:{h:"No hay ciudad inteligente sin gobierno inteligente",
+       p:"La experiencia internacional muestra que las ciudades inteligentes fracasan cuando la tecnología llega antes que la estrategia. El próximo paso es formalizar un plan de modernización con metas, responsables e indicadores —siguiendo la lógica de la planificación estratégica municipal— y designar un liderazgo con mandato real sobre la agenda de innovación."}
+ },
+ {
+  code:"D4", name:"Movilidad y territorio",
+  desc:"Tráfico, planificación territorial y monitoreo de los servicios urbanos.",
+  qs:[
+   {t:"¿Cómo se gestiona hoy el tráfico y el estacionamiento?",
+    o:["Semáforos a tiempos fijos y controles manuales; no hay datos de tránsito.",
+       "Existen algunos datos (conteos, cámaras) pero no se usan para decidir.",
+       "Las decisiones se ajustan con datos periódicos (horarios pico, sensores puntuales).",
+       "Hay monitoreo permanente y gestión dinámica con analítica o inteligencia artificial."]},
+   {t:"¿Con qué información se planifican las obras y los servicios en el territorio?",
+    o:["Con conocimiento informal del territorio y reclamos sueltos.",
+       "Con relevamientos puntuales cuando se necesita.",
+       "Con capas de información georreferenciada (catastro, GIS) parcialmente actualizadas.",
+       "Con un sistema territorial integrado que cruza catastro, servicios, reclamos y obras."]},
+   {t:"¿Cómo se monitorean los servicios urbanos (recolección, alumbrado, espacios verdes)?",
+    o:["Por recorridas y reclamos; se actúa cuando algo falla.",
+       "Con planillas y partes diarios en papel o Excel.",
+       "Con sistemas de seguimiento de flota o tareas en algunas áreas.",
+       "Con sensores o telemetría e indicadores de nivel de servicio por zona."]}
+  ],
+  rec:{h:"Medir el territorio antes de invertir en hardware",
+       p:"En movilidad y servicios urbanos, el error más caro es comprar equipamiento sin datos que respalden la decisión. Recomendamos comenzar por la capa de información: consolidar el catastro y el GIS, medir el tránsito en los corredores críticos y pilotear la gestión dinámica en zonas acotadas antes de escalar la inversión."}
+ },
+ {
+  code:"D5", name:"Seguridad, privacidad e inclusión digital",
+  desc:"Protección de sistemas y datos, privacidad del vecino y brecha digital.",
+  qs:[
+   {t:"¿Qué protección tienen hoy los sistemas y datos del municipio?",
+    o:["No hay política ni responsable; los respaldos son informales o inexistentes.",
+       "Hay antivirus y respaldos, pero sin procedimientos ante incidentes.",
+       "Hay un responsable de seguridad, respaldos verificados y controles de acceso.",
+       "Hay política de seguridad, plan de respuesta a incidentes y capacitación periódica."]},
+   {t:"¿Cómo se maneja la privacidad de los datos de los vecinos?",
+    o:["No hay criterios definidos sobre quién accede a qué datos.",
+       "Los usos y accesos son razonables, pero sin norma escrita.",
+       "Hay normas internas de acceso y confidencialidad.",
+       "Hay cumplimiento formal (Ley 25.326), consentimientos y auditoría de accesos."]},
+   {t:"¿Qué sucede con los vecinos que no manejan canales digitales?",
+    o:["No está contemplado; quien no puede, queda afuera o vuelve al mostrador.",
+       "Se mantiene la atención presencial como única alternativa.",
+       "Hay puntos de asistencia o personal que acompaña el trámite digital.",
+       "Hay una estrategia de inclusión digital: capacitación, puntos asistidos y multicanalidad real."]}
+  ],
+  rec:{h:"Blindar los datos y no dejar a nadie afuera",
+       p:"La digitalización sin ciberseguridad ni política de privacidad expone al municipio a riesgos legales y reputacionales, y sin estrategia de inclusión amplía la brecha digital. Recomendamos un piso mínimo inmediato: respaldos verificados, control de accesos, adecuación a la Ley de Protección de Datos Personales y puntos de atención asistida para los vecinos no digitalizados."}
+ }
+];
+
+const NIVELES = [
+ {min:0,  max:25,  n:"Inicial",       c:"#FF6B35", d:"La gestión depende de procesos manuales y del esfuerzo individual. Hay una gran oportunidad de mejora con acciones de bajo costo y alto impacto."},
+ {min:26, max:50,  n:"Emergente",     c:"#E8A13D", d:"Existen avances aislados, pero sin integración ni estrategia común. Es el momento ideal para ordenar la casa antes de escalar."},
+ {min:51, max:75,  n:"En desarrollo", c:"#3D9BE8", d:"El municipio tiene bases sólidas. El desafío es integrar sistemas, medir resultados y consolidar la gobernanza de la innovación."},
+ {min:76, max:100, n:"Avanzado",      c:"#00A896", d:"El municipio está entre los más maduros de su categoría. El foco pasa a la optimización con analítica avanzada e inteligencia artificial."}
+];
+
+/* ---------- Estado ---------- */
+const state = { step:0, contact:{}, ans:DIMS.map(()=>[null,null,null]) };
+const TOTAL_STEPS = DIMS.length + 2; // form + 5 dims + resultado
+
+/* ---------- Render ---------- */
+const app = document.getElementById('app');
+const stepper = document.getElementById('stepper');
+const stepLabel = document.getElementById('stepLabel');
+
+function renderStepper(){
+  stepper.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const s=document.createElement('span');
+    if(i<state.step) s.className='done';
+    else if(i===state.step) s.className='now';
+    stepper.appendChild(s);
+  }
+  if(state.step===0) stepLabel.innerHTML='<b>Paso 1</b> · Datos del municipio';
+  else if(state.step<=DIMS.length) stepLabel.innerHTML=`<b>Paso ${state.step+1}</b> · Dimensión ${state.step} de ${DIMS.length}`;
+  else stepLabel.innerHTML='<b>Resultado</b> · Índice de Madurez Digital';
+}
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function renderForm(){
+  app.innerHTML = `
+  <div class="card">
+    <h2>Antes de empezar</h2>
+    <p class="desc">Estos datos nos permiten preparar el informe y la propuesta de trabajo a medida de su municipio.</p>
+    <div class="grid2">
+      <label class="field">Municipio *<input id="f-muni" placeholder="Ej.: San Rafael"></label>
+      <label class="field">Provincia<input id="f-prov" placeholder="Ej.: Mendoza"></label>
+      <label class="field">Nombre y apellido *<input id="f-nom" placeholder="Ej.: María Pérez"></label>
+      <label class="field">Cargo *<input id="f-cargo" placeholder="Ej.: Secretaria de Modernización"></label>
+      <label class="field">Área / Secretaría<input id="f-area" placeholder="Ej.: Modernización y Gobierno Digital"></label>
+      <label class="field">Correo electrónico *<input id="f-mail" type="email" placeholder="nombre@municipio.gob.ar"></label>
+      <label class="field">Teléfono de contacto<input id="f-tel" placeholder="Ej.: +54 9 260 ..."></label>
+    </div>
+    <p class="hint" id="hint">Complete los campos marcados con * para continuar.</p>
+    <div class="actions">
+      <span></span>
+      <button class="btn-p" onclick="saveForm()">Comenzar el diagnóstico →</button>
+    </div>
+  </div>`;
+  const c=state.contact;
+  ['muni','prov','nom','cargo','area','mail','tel'].forEach(k=>{
+    if(c[k]) document.getElementById('f-'+k).value=c[k];
+  });
+}
+
+function saveForm(){
+  const g=id=>document.getElementById('f-'+id).value.trim();
+  const c={muni:g('muni'),prov:g('prov'),nom:g('nom'),cargo:g('cargo'),area:g('area'),mail:g('mail'),tel:g('tel')};
+  if(!c.muni||!c.nom||!c.cargo||!c.mail){document.getElementById('hint').style.display='block';return}
+  state.contact=c; state.step=1; render();
+}
+
+function renderDim(i){
+  const d=DIMS[i];
+  let html=`<div class="card">
+    <h2><span class="dim-code">${d.code}</span>${d.name}</h2>
+    <p class="desc">${d.desc}</p>`;
+  d.qs.forEach((q,qi)=>{
+    html+=`<div class="q"><h3><span class="qn">${d.code}.${qi+1}</span>${esc(q.t)}</h3><div class="opts">`;
+    q.o.forEach((o,oi)=>{
+      const sel = state.ans[i][qi]===oi ? 'sel' : '';
+      const ck  = state.ans[i][qi]===oi ? 'checked' : '';
+      html+=`<label class="opt ${sel}">
+        <input type="radio" name="q${i}-${qi}" ${ck} onchange="setAns(${i},${qi},${oi})">
+        <span class="lvl">N${oi+1}</span><span class="txt">${esc(o)}</span>
+      </label>`;
+    });
+    html+=`</div></div>`;
+  });
+  html+=`<p class="hint" id="hint">Responda las tres preguntas para continuar.</p>
+    <div class="actions">
+      <button class="btn-s" onclick="back()">← Volver</button>
+      <button class="btn-p" onclick="nextDim(${i})">${i===DIMS.length-1?'Ver mi resultado →':'Siguiente dimensión →'}</button>
+    </div></div>`;
+  app.innerHTML=html;
+}
+
+function setAns(i,qi,oi){
+  state.ans[i][qi]=oi;
+  document.querySelectorAll(`input[name="q${i}-${qi}"]`).forEach((r,x)=>{
+    r.closest('.opt').classList.toggle('sel',x===oi);
+  });
+}
+function nextDim(i){
+  if(state.ans[i].some(a=>a===null)){document.getElementById('hint').style.display='block';window.scrollTo({top:document.getElementById('hint').offsetTop-200,behavior:'smooth'});return}
+  state.step++; render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function back(){state.step--;render();window.scrollTo({top:0,behavior:'smooth'})}
+
+/* ---------- Cálculo ---------- */
+function scores(){
+  const dims = DIMS.map((d,i)=>{
+    const sum = state.ans[i].reduce((a,b)=>a+(b||0),0); // 0..9
+    return Math.round(sum/9*100);
+  });
+  const global = Math.round(dims.reduce((a,b)=>a+b,0)/dims.length);
+  return {dims,global};
+}
+function nivelDe(p){return NIVELES.find(n=>p>=n.min&&p<=n.max)}
+
+/* ---------- Resultado ---------- */
+function gaugeSVG(p,color){
+  const a=Math.PI*(1-p/100), r=78, cx=95, cy=95;
+  const x=cx+r*Math.cos(a), y=cy-r*Math.sin(a);
+  const large=p>50?1:0;
+  return `<svg width="190" height="120" viewBox="0 0 190 120" role="img" aria-label="Índice ${p} de 100">
+    <path d="M17 95 A78 78 0 0 1 173 95" fill="none" stroke="#E4EAF2" stroke-width="14" stroke-linecap="round"/>
+    <path d="M17 95 A78 78 0 ${large} 1 ${x.toFixed(1)} ${y.toFixed(1)}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round"/>
+    <text x="95" y="88" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="34" font-weight="800" fill="#0F1E36">${p}</text>
+    <text x="95" y="108" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="11" font-weight="600" fill="#5A6B85">/ 100</text>
+  </svg>`;
+}
+
+function renderResult(){
+  const {dims,global}=scores();
+  const nv=nivelDe(global);
+  const c=state.contact;
+  const fecha=new Date().toLocaleDateString('es-AR');
+
+  let dimRows='';
+  DIMS.forEach((d,i)=>{
+    const p=dims[i], n=nivelDe(p);
+    dimRows+=`<div class="dim-row">
+      <div class="dr-top">
+        <span class="dr-name"><i>${d.code}</i>${d.name}</span>
+        <span class="dr-score" style="color:${n.c}">${p} · ${n.n}</span>
+      </div>
+      <div class="bar"><i style="width:${p}%;background:${n.c}"></i></div>
+    </div>`;
+  });
+
+  let recs='';
+  DIMS.forEach((d,i)=>{
+    const p=dims[i];
+    if(p<50){
+      recs+=`<div class="rec"><span class="tag">Prioridad alta · ${d.code} — ${p}/100</span>
+        <h4>${d.rec.h}</h4><p>${d.rec.p}</p></div>`;
+    } else if(p<75){
+      recs+=`<div class="rec warn"><span class="tag">A consolidar · ${d.code} — ${p}/100</span>
+        <h4>${d.name}</h4><p>Hay una base construida: el próximo paso es sistematizar lo existente, definir indicadores de seguimiento e integrarlo al resto de la gestión para que el avance no dependa de esfuerzos individuales.</p></div>`;
+    }
+  });
+  if(!recs) recs=`<div class="rec warn"><span class="tag">Optimización</span><h4>Madurez avanzada en todas las dimensiones</h4><p>El foco recomendado pasa a la analítica avanzada, la automatización inteligente y la medición continua de resultados para sostener el nivel alcanzado.</p></div>`;
+
+  const respuestasDetalle = DIMS.map((d,i)=>{
+    const qs = d.qs.map((q,qi)=>`  ${d.code}.${qi+1} ${q.t}\n  → ${q.o[state.ans[i][qi]]}`).join('\n\n');
+    return `${d.code} — ${d.name} (${dims[i]}/100)\n${qs}`;
+  }).join('\n\n');
+
+  const rawBody =
+`Diagnóstico Smart City completado — envío automático.
+
+DATOS DEL MUNICIPIO
+Municipio: ${c.muni}${c.prov?' ('+c.prov+')':''}
+Funcionario/a: ${c.nom} — ${c.cargo}
+Área: ${c.area||'-'}
+Email: ${c.mail}
+Teléfono: ${c.tel||'-'}
+Fecha: ${fecha}
+
+RESULTADO
+Índice global: ${global}/100 (${nv.n})
+
+RESPUESTAS COMPLETAS
+${respuestasDetalle}`;
+
+  const mailSubject = 'Diagnóstico Smart City — '+c.muni;
+  const mailtoLink = `mailto:alfonsina.coria@gsolutions.com.ar?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(rawBody)}`;
+
+  app.innerHTML=`
+  <div class="card">
+    <div class="res-head">
+      <div class="gauge-box">${gaugeSVG(global,nv.c)}<div class="glabel">Índice de madurez</div></div>
+      <div class="res-sum">
+        <h2>${esc(c.muni)}${c.prov?', '+esc(c.prov):''}</h2>
+        <span class="nivel-chip" style="background:${nv.c}">Nivel ${nv.n}</span>
+        <p>${nv.d}</p>
+        <p style="margin-top:8px;font-size:12.5px">Diagnóstico completado por ${esc(c.nom)} (${esc(c.cargo)}) · ${fecha}</p>
+      </div>
+    </div>
+    ${dimRows}
+  </div>
+
+  <div class="card">
+    <h2>Próximos pasos recomendados</h2>
+    <p class="desc">Generados automáticamente según el resultado de cada dimensión.</p>
+    ${recs}
+    <div class="exports no-print">
+      <button class="btn-t" onclick="dlCSV()">Descargar CSV (Power BI)</button>
+      <button class="btn-t" onclick="dlJSON()">Descargar JSON</button>
+      <button class="btn-s" onclick="window.print()">Imprimir / Guardar PDF</button>
+      <button class="btn-s" onclick="reiniciar()">Nuevo diagnóstico</button>
+    </div>
+  </div>
+
+  <div class="cta-final no-print">
+    <h3>Convirtamos este diagnóstico en un plan de trabajo</h3>
+    <p id="sendStatus">Enviando tus respuestas a nuestro equipo…</p>
+    <a href="${mailtoLink}" id="resendLink">Reenviar respuestas por correo →</a>
+  </div>`;
+
+  sendResult(rawBody, mailSubject, mailtoLink, c);
+}
+
+/* Envío silencioso vía Web3Forms; si falla o no está configurada la Access Key,
+   cae de respaldo al mailto (abre el cliente de correo del usuario). */
+async function sendResult(rawBody, mailSubject, mailtoLink, c){
+  const statusEl = document.getElementById('sendStatus');
+  const fallbackToMailto = () => {
+    const a = document.createElement('a');
+    a.href = mailtoLink;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if(statusEl) statusEl.textContent = 'Se abrió tu correo con las respuestas cargadas — solo falta que le des Enviar.';
+  };
+
+  if(WEB3FORMS_ACCESS_KEY === 'PASTE_YOUR_ACCESS_KEY_HERE'){
+    fallbackToMailto();
+    return;
+  }
+
+  try{
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: mailSubject,
+        from_name: `${c.nom} (${c.muni})`,
+        replyto: c.mail,
+        message: rawBody
+      })
+    });
+    const data = await res.json();
+    if(res.ok && data.success){
+      if(statusEl) statusEl.textContent = 'Tus respuestas se enviaron automáticamente a nuestro equipo.';
+    } else {
+      fallbackToMailto();
+    }
+  } catch(err){
+    fallbackToMailto();
+  }
+}
+
+/* ---------- Exportaciones ---------- */
+function flatRows(){
+  const {dims,global}=scores(); const c=state.contact;
+  const fecha=new Date().toISOString().slice(0,10);
+  const rows=[];
+  DIMS.forEach((d,i)=>{
+    d.qs.forEach((q,qi)=>{
+      const nivel=state.ans[i][qi]+1;
+      rows.push({
+        fecha, municipio:c.muni, provincia:c.prov, funcionario:c.nom, cargo:c.cargo,
+        area:c.area, email:c.mail, telefono:c.tel,
+        dimension_codigo:d.code, dimension_nombre:d.name,
+        pregunta_orden:qi+1, pregunta:q.t,
+        nivel_respuesta:nivel, puntaje_pregunta:state.ans[i][qi],
+        puntaje_dimension:dims[i], puntaje_global:global
+      });
+    });
+  });
+  return rows;
+}
+function dl(name,content,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name; a.click(); URL.revokeObjectURL(a.href);
+}
+function dlCSV(){
+  const rows=flatRows();
+  const head=Object.keys(rows[0]);
+  const csv='﻿'+head.join(';')+'\n'+rows.map(r=>head.map(h=>`"${String(r[h]??'').replace(/"/g,'""')}"`).join(';')).join('\n');
+  dl(`diagnostico_${state.contact.muni.replace(/\s+/g,'_')}.csv`,csv,'text/csv;charset=utf-8');
+}
+function dlJSON(){
+  const {dims,global}=scores();
+  dl(`diagnostico_${state.contact.muni.replace(/\s+/g,'_')}.json`,
+     JSON.stringify({contacto:state.contact,fecha:new Date().toISOString(),indice_global:global,
+       dimensiones:DIMS.map((d,i)=>({codigo:d.code,nombre:d.name,puntaje:dims[i],
+         respuestas:state.ans[i].map(a=>a+1)})),detalle:flatRows()},null,2),
+     'application/json');
+}
+function reiniciar(){
+  state.step=0; state.ans=DIMS.map(()=>[null,null,null]); render(); window.scrollTo({top:0});
+}
+
+/* ---------- Router ---------- */
+function render(){
+  renderStepper();
+  if(state.step===0) renderForm();
+  else if(state.step<=DIMS.length) renderDim(state.step-1);
+  else renderResult();
+}
+render();
+</script>
+</body>
+</html>
