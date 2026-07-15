@@ -10,6 +10,7 @@
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
     contactEmail: 'nestor.moscardo@gsolutions.com.ar',
+    iconSrc: 'assets/bot-icon.svg',
   };
 
   // Palabras inapropiadas: si el usuario las usa, el bot responde con calma
@@ -154,15 +155,14 @@ Te responderemos a la brevedad.`
       }
 
       #boule-bot-btn {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        background: #ffffff;
         border: none;
-        color: white;
-        font-size: 28px;
+        padding: 6px;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+        box-shadow: 0 4px 12px rgba(18, 169, 196, 0.4);
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -171,11 +171,32 @@ Te responderemos a la brevedad.`
 
       #boule-bot-btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(124, 58, 237, 0.6);
+        box-shadow: 0 6px 16px rgba(18, 169, 196, 0.6);
       }
 
       #boule-bot-btn.is-hidden {
         display: none;
+      }
+
+      #boule-bot-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .bot-header-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        padding: 4px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+
+      .bot-header-text {
+        display: flex;
+        flex-direction: column;
       }
 
       #boule-bot-chat {
@@ -209,7 +230,7 @@ Te responderemos a la brevedad.`
       }
 
       .bot-header {
-        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        background: linear-gradient(135deg, #1BA697, #12A9C4);
         color: white;
         padding: 16px;
         display: flex;
@@ -271,6 +292,16 @@ Te responderemos a la brevedad.`
         flex-direction: row-reverse;
       }
 
+      .bot-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eafaf8;
+        flex-shrink: 0;
+        object-fit: contain;
+        padding: 2px;
+      }
+
       .message-bubble {
         max-width: 70%;
         padding: 10px 14px;
@@ -282,7 +313,7 @@ Te responderemos a la brevedad.`
       }
 
       .message-bubble.bot a {
-        color: #7c3aed;
+        color: #0B5F79;
         font-weight: 600;
       }
 
@@ -292,7 +323,7 @@ Te responderemos a la brevedad.`
       }
 
       .message-bubble.user {
-        background: #7c3aed;
+        background: #0B5F79;
         color: white;
       }
 
@@ -328,11 +359,11 @@ Te responderemos a la brevedad.`
       }
 
       .bot-input:focus {
-        border-color: #7c3aed;
+        border-color: #0B5F79;
       }
 
       .bot-send-btn {
-        background: #7c3aed;
+        background: #0B5F79;
         color: white;
         border: none;
         border-radius: 6px;
@@ -343,7 +374,7 @@ Te responderemos a la brevedad.`
       }
 
       .bot-send-btn:hover {
-        background: #6d28d9;
+        background: #0a4f66;
       }
 
       .bot-send-btn:disabled {
@@ -402,13 +433,16 @@ Te responderemos a la brevedad.`
 
     container.innerHTML = `
       <button id="${BOT_CONFIG.buttonId}" aria-label="Abrir bot de Boulé" title="Bot de Boulé">
-        💬
+        <img src="${BOT_CONFIG.iconSrc}" alt="" width="64" height="64">
       </button>
       <div id="${BOT_CONFIG.chatWindowId}" class="bot-chat-window">
         <div class="bot-header">
-          <div>
-            <div class="bot-header-title">Boulé Bot</div>
-            <div class="bot-header-subtitle">¿Cómo podemos ayudarte?</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="${BOT_CONFIG.iconSrc}" alt="" class="bot-header-icon" width="40" height="40">
+            <div class="bot-header-text">
+              <div class="bot-header-title">Boulé Bot</div>
+              <div class="bot-header-subtitle">¿Cómo podemos ayudarte?</div>
+            </div>
           </div>
           <button class="bot-close-btn" aria-label="Cerrar chat">✕</button>
         </div>
@@ -448,6 +482,14 @@ Te responderemos a la brevedad.`
     const messageEl = document.createElement('div');
     messageEl.className = `bot-message ${isUser ? 'user' : 'bot'}`;
 
+    if (!isUser) {
+      const avatar = document.createElement('img');
+      avatar.src = BOT_CONFIG.iconSrc;
+      avatar.alt = '';
+      avatar.className = 'bot-avatar';
+      messageEl.appendChild(avatar);
+    }
+
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${isUser ? 'user' : 'bot'}`;
 
@@ -474,10 +516,16 @@ Te responderemos a la brevedad.`
     messageEl.className = 'bot-message bot';
     messageEl.id = 'typingIndicator';
 
+    const avatar = document.createElement('img');
+    avatar.src = BOT_CONFIG.iconSrc;
+    avatar.alt = '';
+    avatar.className = 'bot-avatar';
+
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble bot';
     bubble.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
 
+    messageEl.appendChild(avatar);
     messageEl.appendChild(bubble);
     messagesContainer.appendChild(messageEl);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
