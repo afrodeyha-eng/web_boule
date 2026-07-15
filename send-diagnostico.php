@@ -17,6 +17,12 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Configurar correo destino
 $MAIL_DESTINO = 'afrodeyha@gmail.com'; // Cambiar por tu correo
+$CARPETA_DATOS = __DIR__ . '/diagnosticos/datos/';
+
+// Crear carpeta si no existe
+if(!is_dir($CARPETA_DATOS)) {
+  mkdir($CARPETA_DATOS, 0755, true);
+}
 
 // Obtener datos del POST
 $input = json_decode(file_get_contents('php://input'), true);
@@ -37,13 +43,40 @@ $email = $input['email'] ?? '';
 $telefono = $input['telefono'] ?? '';
 $indice_global = $input['indice_global'] ?? 0;
 $respuestas_detalle = $input['respuestas_detalle'] ?? '';
-$fecha = date('d/m/Y');
+$fecha = date('Y-m-d');
+$fecha_formato = date('d/m/Y');
 
 // Validar datos mínimos
 if(empty($municipio) || empty($email) || empty($funcionario)) {
   http_response_code(400);
   echo json_encode(['success' => false, 'message' => 'Faltan datos requeridos']);
   exit();
+}
+
+// Guardar datos en JSON
+$datos_diagnostico = [
+  'fecha' => $fecha,
+  'timestamp' => time(),
+  'municipio' => $municipio,
+  'provincia' => $provincia,
+  'funcionario' => $funcionario,
+  'cargo' => $cargo,
+  'area' => $area,
+  'email' => $email,
+  'telefono' => $telefono,
+  'indice_global' => $indice_global,
+  'respuestas_detalle' => $respuestas_detalle
+];
+
+// Nombre de archivo con fecha y municipio
+$nombre_archivo = 'diagnostico_' . $fecha . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '_', $municipio) . '.json';
+$ruta_archivo = $CARPETA_DATOS . $nombre_archivo;
+
+// Guardar JSON
+$json_guardado = file_put_contents($ruta_archivo, json_encode($datos_diagnostico, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+if(!$json_guardado) {
+  error_log("Error guardando diagnóstico en: $ruta_archivo");
 }
 
 // Construir correo
@@ -58,7 +91,7 @@ Funcionario/a: $funcionario — $cargo
 Área: " . (!empty($area) ? $area : '-') . "
 Email: $email
 Teléfono: " . (!empty($telefono) ? $telefono : '-') . "
-Fecha: $fecha
+Fecha: $fecha_formato
 
 RESULTADO
 Índice global: $indice_global/100
@@ -72,14 +105,15 @@ $headers = "From: noreply@" . $_SERVER['HTTP_HOST'] . "\r\n";
 $headers .= "Reply-To: $email\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-// Enviar correo
-$success = mail($MAIL_DESTINO, $asunto, $mensaje, $headers);
+// Intentar enviar correo
+$success = @mail($MAIL_DESTINO, $asunto, $mensaje, $headers);
 
-if($success) {
-  http_response_code(200);
-  echo json_encode(['success' => true, 'message' => 'Diagnóstico enviado correctamente']);
-} else {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Error al enviar el correo']);
-}
+// Responder al cliente
+http_response_code(200);
+echo json_encode([
+  'success' => true,
+  'message' => 'Diagnóstico guardado correctamente',
+  'archivo' => $nombre_archivo,
+  'email_enviado' => $success
+]);
 ?>
