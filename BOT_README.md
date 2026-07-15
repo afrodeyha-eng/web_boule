@@ -22,14 +22,25 @@ Coloca esta línea al final de tu documento HTML, antes de cerrar el `</body>`.
 
 ## 💬 Capacidades del Bot
 
-El bot puede responder preguntas sobre:
+El bot **solo responde sobre la información publicada en la página**:
 
 1. **Servicios** - Información sobre las 6 soluciones principales
 2. **Contacto** - Email, teléfono y website
 3. **Ubicación** - Dónde estamos ubicados
 4. **Diferenciales** - Ventajas competitivas
-5. **Saludos** - Responde de forma amigable
-6. **Ayuda** - Explica qué puede hacer
+5. **Resultados / KPIs** - FCR, TMO, SLA, NPS
+6. **Diagnóstico** - Cómo acceder a la evaluación
+7. **Quiénes somos** - Presentación de la empresa
+8. **Reuniones** - Cómo agendar una reunión
+9. **Saludos y ayuda** - Responde de forma amigable
+
+## 🛡️ Reglas de comportamiento
+
+- **Nunca responde de forma agresiva**, aunque el usuario use lenguaje ofensivo.
+- **Filtro de lenguaje inapropiado**: si detecta groserías o insultos, responde con calma y respeto, sin repetir esas palabras, y ofrece continuar la consulta por mail.
+- **Sin respuesta = derivación**: si no tiene la respuesta, lo dice claramente y deriva la consulta a **nestor.moscardo@gsolutions.com.ar**.
+- **No inventa información**: no responde nada que no esté en la página.
+- El texto del usuario se muestra escapado (sin HTML), lo que también previene inyección de código en el chat.
 
 ### Ejemplos de preguntas que entiende:
 

@@ -9,7 +9,37 @@
     buttonId: 'boule-bot-btn',
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
+    contactEmail: 'nestor.moscardo@gsolutions.com.ar',
   };
+
+  // Palabras inapropiadas: si el usuario las usa, el bot responde con calma
+  // y respeto, sin repetirlas ni contestar de forma agresiva.
+  const RUDE_WORDS = [
+    'puta', 'puto', 'putas', 'putos', 'puteada', 'mierda', 'carajo',
+    'pelotudo', 'pelotuda', 'boludo', 'boluda', 'forro', 'forra',
+    'idiota', 'imbecil', 'estupido', 'estupida', 'tarado', 'tarada',
+    'gil', 'giles', 'sorete', 'concha', 'pija', 'verga', 'mogolico',
+    'mogolica', 'hdp', 'ladron', 'ladrones', 'chorro', 'chorros',
+    'basura', 'inutil', 'inutiles', 'mediocre', 'mediocres'
+  ];
+
+  const RUDE_REGEX = new RegExp('\\b(' + RUDE_WORDS.join('|') + ')\\b', 'i');
+
+  function normalizeText(text) {
+    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function containsRudeWords(text) {
+    return RUDE_REGEX.test(normalizeText(text));
+  }
+
+  const POLITE_RESPONSE = `Lamento si algo te generó malestar. Estoy para ayudarte con respeto y buena predisposición. 🙏
+
+Si preferís continuar la consulta con una persona de nuestro equipo, escribinos a **${BOT_CONFIG.contactEmail}** y te responderemos a la brevedad.`;
+
+  const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).
+
+Para continuar tu consulta, escribinos a **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
 
   const INTENTS = {
     services: {
@@ -68,13 +98,47 @@ Puedo ayudarte con información sobre:
     help: {
       keywords: ['ayuda', 'help', 'qué puedes', 'qué haces', 'cómo funciona'],
       response: `🤖 **¿Cómo funciono?**
-Soy un asistente automático que puede:
-✓ Responder preguntas sobre servicios
-✓ Proporcionar información de contacto
-✓ Explicar nuestros diferenciales
-✓ Conectarte con el equipo de ventas
+Soy un asistente automático que responde solo sobre la información de esta página:
+✓ Servicios que ofrecemos
+✓ Información de contacto
+✓ Nuestros diferenciales y resultados
+✓ Ubicación e infraestructura
 
-Escribe tus preguntas en lenguaje natural. Si no puedo ayudarte, te conectaré con un humano.`
+Escribe tus preguntas en lenguaje natural. Si no tengo la respuesta, te derivaré a nuestro mail de contacto para continuar la consulta.`
+    },
+    kpis: {
+      keywords: ['kpi', 'métrica', 'metrica', 'resultado', 'fcr', 'tmo', 'sla', 'nps', 'medición', 'medicion', 'satisfacción', 'satisfaccion'],
+      response: `📊 **Métricas que reportamos:**
+- **FCR** - Resolución en el Primer Contacto: casos resueltos en la primera interacción
+- **TMO** - Tiempo Medio de Operación: duración promedio de cada interacción
+- **SLA** - Nivel de Servicio: llamadas atendidas dentro del tiempo objetivo
+- **NPS** - Satisfacción del Ciudadano: experiencia percibida por quienes usan el servicio
+
+¿Quieres saber más sobre alguna de estas métricas?`
+    },
+    diagnostico: {
+      keywords: ['diagnóstico', 'diagnostico', 'diagnosticate', 'evaluación', 'evaluacion'],
+      response: `📝 Podés hacer el diagnóstico de tu organismo desde la página "Diagnosticate" (botón en el menú superior).
+
+Es una evaluación rápida que nos permite conocer tu situación actual y proponerte mejoras concretas.`
+    },
+    about: {
+      keywords: ['quiénes son', 'quienes son', 'boulé', 'boule', 'empresa', 'global solutions', 'quién es', 'quien es'],
+      response: `Somos **Boulé GovTech**, by Global Solutions: una plataforma gubernamental integral y modular que conecta al Estado con los ciudadanos, empresas y organizaciones.
+
+Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.
+
+Respaldados por operaciones críticas para Movistar, Banco Galicia, Despegar, Municipalidad de San Rafael y Municipalidad de Gral. Alvear.`
+    },
+    meeting: {
+      keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
+      response: `📅 Para agendar una reunión o pedir una propuesta, contactá directamente a:
+
+**Néstor Moscardo**
+Email: nestor.moscardo@gsolutions.com.ar
+Teléfono: +54 2604 576822
+
+Te responderemos a la brevedad.`
     }
   };
 
@@ -214,6 +278,12 @@ Escribe tus preguntas en lenguaje natural. Si no puedo ayudarte, te conectaré c
         font-size: 14px;
         line-height: 1.4;
         word-wrap: break-word;
+        white-space: pre-line;
+      }
+
+      .message-bubble.bot a {
+        color: #7c3aed;
+        font-weight: 600;
       }
 
       .message-bubble.bot {
@@ -367,6 +437,12 @@ Escribe tus preguntas en lenguaje natural. Si no puedo ayudarte, te conectaré c
     return null;
   }
 
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
   function addMessage(text, isUser = false) {
     const messagesContainer = document.getElementById('botMessages');
     const messageEl = document.createElement('div');
@@ -374,7 +450,17 @@ Escribe tus preguntas en lenguaje natural. Si no puedo ayudarte, te conectaré c
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${isUser ? 'user' : 'bot'}`;
-    bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    let html = escapeHTML(text);
+    if (!isUser) {
+      html = html
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(
+          BOT_CONFIG.contactEmail,
+          `<a href="mailto:${BOT_CONFIG.contactEmail}">${BOT_CONFIG.contactEmail}</a>`
+        );
+    }
+    bubble.innerHTML = html;
 
     messageEl.appendChild(bubble);
     messagesContainer.appendChild(messageEl);
@@ -420,14 +506,19 @@ Escribe tus preguntas en lenguaje natural. Si no puedo ayudarte, te conectaré c
     setTimeout(() => {
       removeTyping();
 
-      const response = matchIntent(text);
-      if (response) {
-        addMessage(response, false);
+      // Si el mensaje contiene lenguaje inapropiado, responder siempre
+      // con calma y respeto, sin importar el contenido.
+      if (containsRudeWords(text)) {
+        addMessage(POLITE_RESPONSE, false);
       } else {
-        addMessage(
-          `No estoy seguro de tu pregunta. Puedo ayudarte con:\n- Servicios\n- Contacto\n- Ubicación\n- Nuestros diferenciales\n\n¿Podrías reformular tu pregunta?`,
-          false
-        );
+        const response = matchIntent(text);
+        if (response) {
+          addMessage(response, false);
+        } else {
+          // Sin respuesta: solo sabemos lo que está en la página.
+          // Derivar al mail de contacto para continuar la consulta.
+          addMessage(NO_ANSWER_RESPONSE, false);
+        }
       }
 
       sendBtn.disabled = false;

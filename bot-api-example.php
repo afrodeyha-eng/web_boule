@@ -45,6 +45,31 @@ if (!isset($input['message'])) {
 
 $userMessage = strtolower(trim($input['message']));
 
+$contactEmail = 'nestor.moscardo@gsolutions.com.ar';
+
+// Filtro de lenguaje inapropiado: el bot nunca responde de forma agresiva,
+// no repite groserías y deriva la consulta al mail de contacto.
+$rudeWords = [
+  'puta', 'puto', 'putas', 'putos', 'puteada', 'mierda', 'carajo',
+  'pelotudo', 'pelotuda', 'boludo', 'boluda', 'forro', 'forra',
+  'idiota', 'imbecil', 'imbécil', 'estupido', 'estúpido', 'estupida', 'estúpida',
+  'tarado', 'tarada', 'gil', 'giles', 'sorete', 'concha', 'pija', 'verga',
+  'mogolico', 'mogólico', 'hdp', 'ladron', 'ladrón', 'chorro', 'basura',
+  'inutil', 'inútil', 'mediocre'
+];
+
+foreach ($rudeWords as $rude) {
+  if (preg_match('/\b' . preg_quote($rude, '/') . '\b/ui', $userMessage)) {
+    http_response_code(200);
+    echo json_encode([
+      'response' => "Lamento si algo te generó malestar. Estoy para ayudarte con respeto y buena predisposición. 🙏\n\nSi preferís continuar la consulta con una persona de nuestro equipo, escribinos a **{$contactEmail}** y te responderemos a la brevedad.",
+      'intent' => 'polite_redirect',
+      'confidence' => 1
+    ]);
+    exit;
+  }
+}
+
 // Definir intents y respuestas (idéntico a bot-loader.js)
 $intents = [
   'services' => [
@@ -95,10 +120,11 @@ if ($matchedIntent) {
     'confidence' => $confidence
   ]);
 } else {
-  // Si no encuentra coincidencia, respuesta por defecto
+  // Sin respuesta: el bot solo responde sobre la información de la página.
+  // Derivar al mail de contacto para continuar la consulta.
   http_response_code(200);
   echo json_encode([
-    'response' => "No estoy seguro de tu pregunta. Puedo ayudarte con:\n- Servicios\n- Contacto\n- Ubicación\n- Nuestros diferenciales\n\n¿Podrías reformular tu pregunta?",
+    'response' => "Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).\n\nPara continuar tu consulta, escribinos a **{$contactEmail}** y nuestro equipo te responderá a la brevedad. 📧",
     'intent' => 'unknown',
     'confidence' => 0
   ]);
