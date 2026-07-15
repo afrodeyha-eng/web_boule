@@ -23,7 +23,7 @@ a {
 }
 
 a:hover {
-  color: #d6c000;
+  color: #148577;
 }
 
 img {
@@ -41,7 +41,7 @@ button {
   letter-spacing: 1px;
   color: #1a1a1a;
   font-weight: 700;
-  background: #f5e63d;
+  background: #1BA697;
   display: inline-block;
   padding: 6px 16px;
   border-radius: 20px;
@@ -60,7 +60,7 @@ button {
 }
 
 .eyebrow--yellow {
-  color: #f5e63d;
+  color: #1BA697;
 }
 
 .section-title {
@@ -112,7 +112,7 @@ button {
 
 .btn-primary {
   padding: 12px 28px;
-  background: #f5e63d;
+  background: #1BA697;
   color: #1a1a1a;
   font-size: 13px;
   border-radius: 30px;
@@ -120,17 +120,17 @@ button {
 
 .btn-primary:hover {
   color: #1a1a1a;
-  background: #e8d92e;
+  background: #148577;
 }
 
 .btn-accent {
-  background: #f5e63d;
+  background: #1BA697;
   color: #1a1a1a;
 }
 
 .btn-accent:hover {
   color: #1a1a1a;
-  background: #e8d92e;
+  background: #148577;
 }
 
 .btn-outline {
@@ -269,7 +269,7 @@ button {
   top: -60px;
   width: 260px;
   height: 260px;
-  background: #f5e63d;
+  background: #1BA697;
   border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
 }
 
@@ -317,7 +317,7 @@ button {
 .hero-rule {
   width: 90px;
   height: 5px;
-  background: #f5e63d;
+  background: #1BA697;
   margin-bottom: 26px;
 }
 
@@ -332,7 +332,7 @@ button {
 
 .hero-badge {
   display: inline-block;
-  background: #f5e63d;
+  background: #1BA697;
   padding: 8px 18px;
   border-radius: 20px;
   font-size: 15px;
@@ -380,7 +380,7 @@ button {
   right: 20px;
   width: 60px;
   height: 60px;
-  border: 3px solid #f5e63d;
+  border: 3px solid #1BA697;
   border-radius: 50%;
 }
 
@@ -496,7 +496,7 @@ button {
 .diff-badge {
   width: 46px;
   height: 46px;
-  background: #f5e63d;
+  background: #1BA697;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -547,7 +547,7 @@ button {
 .evolution-label {
   font-size: 12px;
   font-weight: 700;
-  color: #d6c000;
+  color: #1BA697;
   letter-spacing: 1px;
   margin-bottom: 12px;
 }
@@ -572,7 +572,7 @@ button {
   bottom: -100px;
   width: 280px;
   height: 280px;
-  background: #f5e63d;
+  background: #1BA697;
   opacity: 0.5;
   border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
 }
@@ -657,16 +657,16 @@ button {
 .kpi-card::before {
   top: 10px;
   left: 10px;
-  border-top: 2px solid #f5e63d;
-  border-left: 2px solid #f5e63d;
+  border-top: 2px solid #1BA697;
+  border-left: 2px solid #1BA697;
   transform: translate(-5px, -5px);
 }
 
 .kpi-card::after {
   bottom: 10px;
   right: 10px;
-  border-bottom: 2px solid #f5e63d;
-  border-right: 2px solid #f5e63d;
+  border-bottom: 2px solid #1BA697;
+  border-right: 2px solid #1BA697;
   transform: translate(5px, 5px);
 }
 
@@ -674,7 +674,7 @@ button {
 .kpi-card.is-open {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.08);
-  border-color: rgba(245, 230, 61, 0.7);
+  border-color: rgba(27, 166, 151, 0.7);
 }
 
 .kpi-card:hover::before,
@@ -695,13 +695,13 @@ button {
 
 .kpi-card:hover .kpi-value,
 .kpi-card.is-open .kpi-value {
-  color: #d6c000;
+  color: #1BA697;
 }
 
 .kpi-bar {
   width: 34px;
   height: 3px;
-  background: #f5e63d;
+  background: #1BA697;
   border-radius: 2px;
   margin: 12px auto 0;
   transform: scaleX(0);
@@ -764,7 +764,7 @@ button {
 
 .dashboard-live {
   font-size: 12px;
-  color: #f5e63d;
+  color: #1BA697;
   font-weight: 700;
   animation: pulse 1.6s ease infinite;
 }
@@ -800,7 +800,7 @@ button {
 .dashboard-bar {
   width: 100%;
   border-radius: 6px 6px 0 0;
-  background: linear-gradient(#f5e63d, #d6c000);
+  background: linear-gradient(#1BA697, #1BA697);
   height: var(--h, 0%);
   transform-origin: center bottom;
   animation: barGrow 0.8s ease;
@@ -845,7 +845,7 @@ button {
 
 .dashboard-stat-fill {
   height: 100%;
-  background: #f5e63d;
+  background: #1BA697;
   border-radius: 3px;
 }
 
@@ -918,7 +918,7 @@ button {
 /* ===== CTA + Contacto ===== */
 .cta {
   padding: 90px 60px;
-  background: #f5e63d;
+  background: #1BA697;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 50px;
