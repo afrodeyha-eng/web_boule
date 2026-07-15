@@ -458,17 +458,133 @@ Te responderemos a la brevedad.`
   }
 
   function matchIntent(userText) {
-    const text = userText.toLowerCase();
+    // Normalizamos acentos para que "donde"/"dónde", "ubicacion"/"ubicación",
+    // etc. coincidan igual, sin importar cómo escriba el usuario.
+    const text = normalizeText(userText);
 
     for (const [, intent] of Object.entries(INTENTS)) {
       for (const keyword of intent.keywords) {
-        if (text.includes(keyword)) {
+        if (text.includes(normalizeText(keyword))) {
           return intent.response;
         }
       }
     }
 
     return null;
+  }
+
+  // --- Búsqueda de respaldo dentro del contenido de la página ---
+  // Si ninguna respuesta fija coincide, buscamos en el texto real de la
+  // página (títulos, párrafos) para intentar encontrar una respuesta antes
+  // de derivar al mail de contacto.
+
+  const STOPWORDS = new Set([
+    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
+    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
+    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
+    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
+    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
+    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
+    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
+    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
+    'cuanto', 'cuanta', 'cuantos', 'cuantas'
+  ]);
+
+  // Stemming simple: reduce plurales/variantes básicas para que "bancos"
+  // encuentre "banco", "servicios" encuentre "servicio", etc.
+  function stem(token) {
+    if (token.length > 4 && token.endsWith('s')) return token.slice(0, -1);
+    return token;
+  }
+
+  function tokenize(text) {
+    return normalizeText(text)
+      .split(/[^a-z0-9]+/)
+      .filter((t) => t.length > 2 && !STOPWORDS.has(t))
+      .map(stem);
+  }
+
+  let PAGE_INDEX = null;
+
+  function buildPageIndex() {
+    const botContainer = document.getElementById(BOT_CONFIG.containerId);
+    const elements = Array.from(document.querySelectorAll('h1, h2, h3, p'))
+      .filter((el) => !botContainer || !botContainer.contains(el));
+
+    const blocks = [];
+    const seen = new Set();
+    let currentHeading = '';
+
+    elements.forEach((el) => {
+      const tag = el.tagName.toLowerCase();
+      const text = el.textContent.replace(/\s+/g, ' ').trim();
+      if (!text) return;
+
+      if (tag === 'h1' || tag === 'h2' || tag === 'h3') {
+        currentHeading = text;
+        return;
+      }
+
+      if (text.length < 15 || seen.has(text)) return;
+      seen.add(text);
+
+      blocks.push({ heading: currentHeading, text, tokens: tokenize(text) });
+    });
+
+    // Frecuencia de cada palabra en el contenido: sirve para darle más peso
+    // a términos específicos/poco comunes que a palabras genéricas.
+    const df = new Map();
+    blocks.forEach((block) => {
+      new Set(block.tokens).forEach((t) => df.set(t, (df.get(t) || 0) + 1));
+    });
+
+    return { blocks, df };
+  }
+
+  function matchPageContent(userText) {
+    if (!PAGE_INDEX) PAGE_INDEX = buildPageIndex();
+    const { blocks, df } = PAGE_INDEX;
+
+    const queryTokens = Array.from(new Set(tokenize(userText)));
+    // Solo consideramos palabras que efectivamente aparecen en algún lugar
+    // de la página; el resto no aporta información para buscar.
+    const validTokens = queryTokens.filter((t) => df.has(t));
+    if (validTokens.length === 0) return null;
+
+    let best = null;
+    let bestWeight = 0;
+    let bestMatched = 0;
+
+    blocks.forEach((block) => {
+      if (block.tokens.length === 0) return;
+      const blockSet = new Set(block.tokens);
+      let matched = 0;
+      let weighted = 0;
+
+      validTokens.forEach((t) => {
+        if (blockSet.has(t)) {
+          matched++;
+          weighted += 1 / df.get(t);
+        }
+      });
+
+      if (matched > 0 && weighted > bestWeight) {
+        bestWeight = weighted;
+        bestMatched = matched;
+        best = block;
+      }
+    });
+
+    if (!best) return null;
+
+    // Exigimos que al menos la mitad de las palabras relevantes de la
+    // consulta coincidan con el bloque encontrado, para evitar respuestas
+    // forzadas cuando la relación es débil o casual.
+    const coverage = bestMatched / validTokens.length;
+    if (coverage < 0.5) return null;
+
+    return best.heading ? `**${best.heading}**\n\n${best.text}` : best.text;
   }
 
   function escapeHTML(str) {
@@ -559,12 +675,14 @@ Te responderemos a la brevedad.`
       if (containsRudeWords(text)) {
         addMessage(POLITE_RESPONSE, false);
       } else {
-        const response = matchIntent(text);
+        // 1) Respuestas fijas ya redactadas para los temas más comunes.
+        // 2) Si no hay coincidencia, buscar en el texto real de la página
+        //    aunque la pregunta no use las palabras clave exactas.
+        // 3) Si tampoco se encuentra nada, derivar al mail de contacto.
+        const response = matchIntent(text) || matchPageContent(text);
         if (response) {
           addMessage(response, false);
         } else {
-          // Sin respuesta: solo sabemos lo que está en la página.
-          // Derivar al mail de contacto para continuar la consulta.
           addMessage(NO_ANSWER_RESPONSE, false);
         }
       }
