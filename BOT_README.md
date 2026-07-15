@@ -38,9 +38,21 @@ El bot **solo responde sobre la información publicada en la página**:
 
 - **Nunca responde de forma agresiva**, aunque el usuario use lenguaje ofensivo.
 - **Filtro de lenguaje inapropiado**: si detecta groserías o insultos, responde con calma y respeto, sin repetir esas palabras, y ofrece continuar la consulta por mail.
-- **Sin respuesta = derivación**: si no tiene la respuesta, lo dice claramente y deriva la consulta a **nestor.moscardo@gsolutions.com.ar**.
+- **Búsqueda en el contenido real de la página**: si la pregunta no coincide con ninguna respuesta fija, el bot busca en los títulos y párrafos del sitio (aunque la pregunta no use exactamente las mismas palabras) y devuelve el fragmento más relevante.
+- **Sin respuesta = derivación**: si tampoco encuentra nada relacionado en la página, lo dice claramente y deriva la consulta a **nestor.moscardo@gsolutions.com.ar**.
 - **No inventa información**: no responde nada que no esté en la página.
 - El texto del usuario se muestra escapado (sin HTML), lo que también previene inyección de código en el chat.
+
+### 🔎 Cómo funciona la búsqueda en la página
+
+Cuando ninguna respuesta fija coincide, el bot:
+1. Indexa los títulos (`h1`, `h2`, `h3`) y párrafos (`p`) visibles de la página al cargar.
+2. Convierte la pregunta del usuario y cada fragmento de texto en palabras clave (ignorando tildes, mayúsculas y palabras vacías como "de", "el", "que", etc.), aplicando además una reducción simple de plurales.
+3. Le da más peso a las palabras específicas/poco comunes que a las genéricas, para encontrar el párrafo más relacionado.
+4. Si al menos la mitad de las palabras relevantes de la pregunta coinciden con un fragmento de la página, responde con ese contenido.
+5. Si no encuentra nada suficientemente relacionado, responde con el mensaje de derivación al mail de contacto.
+
+Esto permite que preguntas como "¿trabajan con bancos?" encuentren la mención a "Banco Galicia" en la página, aunque esa frase exacta no esté registrada como respuesta fija.
 
 ### Ejemplos de preguntas que entiende:
 

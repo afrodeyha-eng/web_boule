@@ -10,6 +10,7 @@
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
     contactEmail: 'nestor.moscardo@gsolutions.com.ar',
+    iconSrc: 'assets/bot-icon.svg',
   };
 
   // Palabras inapropiadas: si el usuario las usa, el bot responde con calma
@@ -154,15 +155,14 @@ Te responderemos a la brevedad.`
       }
 
       #boule-bot-btn {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        background: #ffffff;
         border: none;
-        color: white;
-        font-size: 28px;
+        padding: 6px;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+        box-shadow: 0 4px 12px rgba(18, 169, 196, 0.4);
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -171,11 +171,32 @@ Te responderemos a la brevedad.`
 
       #boule-bot-btn:hover {
         transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(124, 58, 237, 0.6);
+        box-shadow: 0 6px 16px rgba(18, 169, 196, 0.6);
       }
 
       #boule-bot-btn.is-hidden {
         display: none;
+      }
+
+      #boule-bot-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .bot-header-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        padding: 4px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+
+      .bot-header-text {
+        display: flex;
+        flex-direction: column;
       }
 
       #boule-bot-chat {
@@ -209,7 +230,7 @@ Te responderemos a la brevedad.`
       }
 
       .bot-header {
-        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        background: linear-gradient(135deg, #1BA697, #12A9C4);
         color: white;
         padding: 16px;
         display: flex;
@@ -271,6 +292,16 @@ Te responderemos a la brevedad.`
         flex-direction: row-reverse;
       }
 
+      .bot-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eafaf8;
+        flex-shrink: 0;
+        object-fit: contain;
+        padding: 2px;
+      }
+
       .message-bubble {
         max-width: 70%;
         padding: 10px 14px;
@@ -282,7 +313,7 @@ Te responderemos a la brevedad.`
       }
 
       .message-bubble.bot a {
-        color: #7c3aed;
+        color: #0B5F79;
         font-weight: 600;
       }
 
@@ -292,7 +323,7 @@ Te responderemos a la brevedad.`
       }
 
       .message-bubble.user {
-        background: #7c3aed;
+        background: #0B5F79;
         color: white;
       }
 
@@ -328,11 +359,11 @@ Te responderemos a la brevedad.`
       }
 
       .bot-input:focus {
-        border-color: #7c3aed;
+        border-color: #0B5F79;
       }
 
       .bot-send-btn {
-        background: #7c3aed;
+        background: #0B5F79;
         color: white;
         border: none;
         border-radius: 6px;
@@ -343,7 +374,7 @@ Te responderemos a la brevedad.`
       }
 
       .bot-send-btn:hover {
-        background: #6d28d9;
+        background: #0a4f66;
       }
 
       .bot-send-btn:disabled {
@@ -402,13 +433,16 @@ Te responderemos a la brevedad.`
 
     container.innerHTML = `
       <button id="${BOT_CONFIG.buttonId}" aria-label="Abrir bot de Boulé" title="Bot de Boulé">
-        💬
+        <img src="${BOT_CONFIG.iconSrc}" alt="" width="64" height="64">
       </button>
       <div id="${BOT_CONFIG.chatWindowId}" class="bot-chat-window">
         <div class="bot-header">
-          <div>
-            <div class="bot-header-title">Boulé Bot</div>
-            <div class="bot-header-subtitle">¿Cómo podemos ayudarte?</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="${BOT_CONFIG.iconSrc}" alt="" class="bot-header-icon" width="40" height="40">
+            <div class="bot-header-text">
+              <div class="bot-header-title">Boulé Bot</div>
+              <div class="bot-header-subtitle">¿Cómo podemos ayudarte?</div>
+            </div>
           </div>
           <button class="bot-close-btn" aria-label="Cerrar chat">✕</button>
         </div>
@@ -424,17 +458,133 @@ Te responderemos a la brevedad.`
   }
 
   function matchIntent(userText) {
-    const text = userText.toLowerCase();
+    // Normalizamos acentos para que "donde"/"dónde", "ubicacion"/"ubicación",
+    // etc. coincidan igual, sin importar cómo escriba el usuario.
+    const text = normalizeText(userText);
 
     for (const [, intent] of Object.entries(INTENTS)) {
       for (const keyword of intent.keywords) {
-        if (text.includes(keyword)) {
+        if (text.includes(normalizeText(keyword))) {
           return intent.response;
         }
       }
     }
 
     return null;
+  }
+
+  // --- Búsqueda de respaldo dentro del contenido de la página ---
+  // Si ninguna respuesta fija coincide, buscamos en el texto real de la
+  // página (títulos, párrafos) para intentar encontrar una respuesta antes
+  // de derivar al mail de contacto.
+
+  const STOPWORDS = new Set([
+    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
+    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
+    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
+    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
+    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
+    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
+    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
+    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
+    'cuanto', 'cuanta', 'cuantos', 'cuantas'
+  ]);
+
+  // Stemming simple: reduce plurales/variantes básicas para que "bancos"
+  // encuentre "banco", "servicios" encuentre "servicio", etc.
+  function stem(token) {
+    if (token.length > 4 && token.endsWith('s')) return token.slice(0, -1);
+    return token;
+  }
+
+  function tokenize(text) {
+    return normalizeText(text)
+      .split(/[^a-z0-9]+/)
+      .filter((t) => t.length > 2 && !STOPWORDS.has(t))
+      .map(stem);
+  }
+
+  let PAGE_INDEX = null;
+
+  function buildPageIndex() {
+    const botContainer = document.getElementById(BOT_CONFIG.containerId);
+    const elements = Array.from(document.querySelectorAll('h1, h2, h3, p'))
+      .filter((el) => !botContainer || !botContainer.contains(el));
+
+    const blocks = [];
+    const seen = new Set();
+    let currentHeading = '';
+
+    elements.forEach((el) => {
+      const tag = el.tagName.toLowerCase();
+      const text = el.textContent.replace(/\s+/g, ' ').trim();
+      if (!text) return;
+
+      if (tag === 'h1' || tag === 'h2' || tag === 'h3') {
+        currentHeading = text;
+        return;
+      }
+
+      if (text.length < 15 || seen.has(text)) return;
+      seen.add(text);
+
+      blocks.push({ heading: currentHeading, text, tokens: tokenize(text) });
+    });
+
+    // Frecuencia de cada palabra en el contenido: sirve para darle más peso
+    // a términos específicos/poco comunes que a palabras genéricas.
+    const df = new Map();
+    blocks.forEach((block) => {
+      new Set(block.tokens).forEach((t) => df.set(t, (df.get(t) || 0) + 1));
+    });
+
+    return { blocks, df };
+  }
+
+  function matchPageContent(userText) {
+    if (!PAGE_INDEX) PAGE_INDEX = buildPageIndex();
+    const { blocks, df } = PAGE_INDEX;
+
+    const queryTokens = Array.from(new Set(tokenize(userText)));
+    // Solo consideramos palabras que efectivamente aparecen en algún lugar
+    // de la página; el resto no aporta información para buscar.
+    const validTokens = queryTokens.filter((t) => df.has(t));
+    if (validTokens.length === 0) return null;
+
+    let best = null;
+    let bestWeight = 0;
+    let bestMatched = 0;
+
+    blocks.forEach((block) => {
+      if (block.tokens.length === 0) return;
+      const blockSet = new Set(block.tokens);
+      let matched = 0;
+      let weighted = 0;
+
+      validTokens.forEach((t) => {
+        if (blockSet.has(t)) {
+          matched++;
+          weighted += 1 / df.get(t);
+        }
+      });
+
+      if (matched > 0 && weighted > bestWeight) {
+        bestWeight = weighted;
+        bestMatched = matched;
+        best = block;
+      }
+    });
+
+    if (!best) return null;
+
+    // Exigimos que al menos la mitad de las palabras relevantes de la
+    // consulta coincidan con el bloque encontrado, para evitar respuestas
+    // forzadas cuando la relación es débil o casual.
+    const coverage = bestMatched / validTokens.length;
+    if (coverage < 0.5) return null;
+
+    return best.heading ? `**${best.heading}**\n\n${best.text}` : best.text;
   }
 
   function escapeHTML(str) {
@@ -447,6 +597,14 @@ Te responderemos a la brevedad.`
     const messagesContainer = document.getElementById('botMessages');
     const messageEl = document.createElement('div');
     messageEl.className = `bot-message ${isUser ? 'user' : 'bot'}`;
+
+    if (!isUser) {
+      const avatar = document.createElement('img');
+      avatar.src = BOT_CONFIG.iconSrc;
+      avatar.alt = '';
+      avatar.className = 'bot-avatar';
+      messageEl.appendChild(avatar);
+    }
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${isUser ? 'user' : 'bot'}`;
@@ -474,10 +632,16 @@ Te responderemos a la brevedad.`
     messageEl.className = 'bot-message bot';
     messageEl.id = 'typingIndicator';
 
+    const avatar = document.createElement('img');
+    avatar.src = BOT_CONFIG.iconSrc;
+    avatar.alt = '';
+    avatar.className = 'bot-avatar';
+
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble bot';
     bubble.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
 
+    messageEl.appendChild(avatar);
     messageEl.appendChild(bubble);
     messagesContainer.appendChild(messageEl);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -511,12 +675,14 @@ Te responderemos a la brevedad.`
       if (containsRudeWords(text)) {
         addMessage(POLITE_RESPONSE, false);
       } else {
-        const response = matchIntent(text);
+        // 1) Respuestas fijas ya redactadas para los temas más comunes.
+        // 2) Si no hay coincidencia, buscar en el texto real de la página
+        //    aunque la pregunta no use las palabras clave exactas.
+        // 3) Si tampoco se encuentra nada, derivar al mail de contacto.
+        const response = matchIntent(text) || matchPageContent(text);
         if (response) {
           addMessage(response, false);
         } else {
-          // Sin respuesta: solo sabemos lo que está en la página.
-          // Derivar al mail de contacto para continuar la consulta.
           addMessage(NO_ANSWER_RESPONSE, false);
         }
       }
