@@ -509,6 +509,68 @@ button {
   padding-top: 18px;
 }
 
+/* ===== Casos de exito ===== */
+.cases {
+  padding: 90px 60px;
+  background: white;
+}
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.case-card {
+  background: #f4f3ef;
+  border-radius: 20px;
+  padding: 34px 30px;
+}
+
+.case-title {
+  font-size: 17px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.case-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.case-list li {
+  font-size: 14px;
+  color: #4a4a4a;
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+
+.case-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1BA697;
+}
+
+.cases-note {
+  font-size: 12.5px;
+  color: #8a8a8a;
+  text-align: center;
+  margin-top: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ===== Diferenciales ===== */
 .differentiators {
   padding: 90px 60px;
@@ -1487,6 +1549,7 @@ button {
   }
 
   .about,
+  .cases,
   .differentiators,
   .evolution,
   .infrastructure,
@@ -1502,7 +1565,8 @@ button {
   .infrastructure-grid,
   .kpis-grid,
   .services-grid,
-  .evolution-grid {
+  .evolution-grid,
+  .cases-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1564,6 +1628,7 @@ button {
   }
 
   .about,
+  .cases,
   .differentiators,
   .evolution,
   .infrastructure,
