@@ -189,7 +189,7 @@ Es una evaluación rápida que nos permite conocer tu situación actual y propon
 
 Actualmente acompañamos a la **Municipalidad de San Rafael** y a la **Municipalidad de General Alvear** con proyectos de atención ciudadana, gestión legislativa y administración de recursos humanos.
 
-Boulé cuenta con el respaldo de la experiencia corporativa y operativa de **Global Solutions**, que ha prestado servicios para organizaciones como Movistar, Banco Galicia, Despegar y Prisma — estos son antecedentes corporativos de Global Solutions, no clientes ni casos de éxito de Boulé.
+Boulé cuenta con el respaldo de la experiencia corporativa y operativa de **Global Solutions**, que ha prestado servicios para organizaciones como Movistar, Banco Galicia, Despegar y Prisma (antecedentes corporativos de Global Solutions).
 
 Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.`
     },
@@ -197,7 +197,7 @@ Funcionamos como una capa central que se integra con los sistemas públicos exis
       keywords: ['clientes', 'con quien trabajan', 'con quienes trabajan', 'trabajan con', 'municipios que atienden', 'organismos'],
       response: `**Clientes actuales de Boulé:** Municipalidad de San Rafael y Municipalidad de General Alvear.
 
-**Antecedentes corporativos de Global Solutions** (no son clientes de Boulé): Movistar, Banco Galicia, Despegar y Prisma.
+**Antecedentes corporativos de Global Solutions:** Movistar, Banco Galicia, Despegar y Prisma.
 
 Por privacidad, solo compartimos esta referencia general — no detalles específicos de cada operación. Para consultas puntuales, escribinos a nuestro contacto. 🤝`
     },
