@@ -217,7 +217,6 @@ footer{max-width:880px;margin:40px auto 0;padding:0 20px;font-size:12px;color:va
    respaldo por mailto (abre el cliente de correo del usuario) en su lugar.
 ========================================================= */
 const WEB3FORMS_ACCESS_KEY = 'fa48a2bd-a75b-45a6-b7c4-229d056818ff';
-const MAIL_DESTINO = 'afrodeyha@gmail.com'; // Cambiar al correo donde quieres recibir los diagnósticos
 
 /* =========================================================
    MODELO DE CONTENIDO — 5 dolores × 3 preguntas × 4 niveles
@@ -521,7 +520,7 @@ RESPUESTAS COMPLETAS
 ${respuestasDetalle}`;
 
   const mailSubject = 'Diagnóstico Smart City — '+c.muni;
-  const mailtoLink = `mailto:${MAIL_DESTINO}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(rawBody)}`;
+  const mailtoLink = `mailto:alfonsina.coria@gsolutions.com.ar?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(rawBody)}`;
 
   app.innerHTML=`
   <div class="card">
@@ -558,7 +557,8 @@ ${respuestasDetalle}`;
   sendResult(rawBody, mailSubject, mailtoLink, c);
 }
 
-/* Envío vía endpoint PHP local; si falla, cae a respaldo con mailto */
+/* Envío silencioso vía Web3Forms; si falla o no está configurada la Access Key,
+   cae de respaldo al mailto (abre el cliente de correo del usuario). */
 async function sendResult(rawBody, mailSubject, mailtoLink, c){
   const statusEl = document.getElementById('sendStatus');
   const fallbackToMailto = () => {
@@ -571,20 +571,21 @@ async function sendResult(rawBody, mailSubject, mailtoLink, c){
     if(statusEl) statusEl.textContent = 'Se abrió tu correo con las respuestas cargadas — solo falta que le des Enviar.';
   };
 
+  if(WEB3FORMS_ACCESS_KEY === 'PASTE_YOUR_ACCESS_KEY_HERE'){
+    fallbackToMailto();
+    return;
+  }
+
   try{
-    const res = await fetch('send-diagnostico.php', {
+    const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        municipio: c.muni,
-        provincia: c.prov,
-        funcionario: c.nom,
-        cargo: c.cargo,
-        area: c.area,
-        email: c.mail,
-        telefono: c.tel,
-        indice_global: scores().global,
-        respuestas_detalle: getRespuestasDetalle()
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: mailSubject,
+        from_name: `${c.nom} (${c.muni})`,
+        replyto: c.mail,
+        message: rawBody
       })
     });
     const data = await res.json();
@@ -596,14 +597,6 @@ async function sendResult(rawBody, mailSubject, mailtoLink, c){
   } catch(err){
     fallbackToMailto();
   }
-}
-
-function getRespuestasDetalle(){
-  const {dims} = scores();
-  return DIMS.map((d,i)=>{
-    const qs = d.qs.map((q,qi)=>`  ${d.code}.${qi+1} ${q.t}\n  → ${q.o[state.ans[i][qi]]}`).join('\n\n');
-    return `${d.code} — ${d.name} (${dims[i]}/100)\n${qs}`;
-  }).join('\n\n');
 }
 
 /* ---------- Exportaciones ---------- */
