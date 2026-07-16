@@ -95,16 +95,23 @@ Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privac
 
   const INTENTS = {
     services: {
-      keywords: ['servicio', 'servicios', 'qué ofrece', 'qué hace', 'soluciones', 'propuesta', 'gs+', 'smart chatbot', 'municipios inteligentes', 'speech analytics', 'impulsa'],
-      response: `Ofrecemos una suite modular de soluciones GS+:
-1. **Smart Chatbot GS+** - Bot 24/7 multicanal con resolución automática de consultas
-2. **Contact Center** - Atención omnicanal con equipo especializado en resolución
-3. **Dashboard GS+** - Visualización de datos y métricas en tiempo real
-4. **Gestión de Cobranzas** - Recuperación de activos con estrategias omnicanal e IA predictiva
-5. **Impulsa GS+** - Formación modular en habilidades blandas y comerciales
-6. **Plataforma Legislativa** - Módulos de tramitación y trazabilidad para Concejos
-7. **Speech Analytics** - Análisis de grabaciones con IA entrenada
-8. **Municipios Inteligentes** - Solución integral de CRM + atención + datos + capacitación
+      keywords: ['servicio', 'servicios', 'qué ofrece', 'qué hace', 'soluciones', 'propuesta'],
+      response: `Nuestra plataforma es modular. El alcance de cada servicio se define según lo que contrate cada organismo:
+
+**En operación (Municipalidad de San Rafael):**
+- Centro de Contacto — atención ciudadana
+- Plataforma Legislativa — HCD de San Rafael
+
+**En operación (Municipalidad de General Alvear):**
+- Plataforma de gestión de recursos humanos
+
+**Disponibles para implementación:**
+- Visualización de Datos
+- Formación
+- Gestión y Recuperación de Activos
+
+**En desarrollo:**
+- IA y analítica de interacciones
 
 ¿Deseas más detalles sobre alguno de estos servicios?`
     },
@@ -129,10 +136,10 @@ Contamos con sites propios operativos y flexibilidad para modelo híbrido en loc
     capabilities: {
       keywords: ['capacidad', 'qué pueden', 'cuáles son', 'diferencial', 'ventaja', 'problema'],
       response: `💪 **Nuestros diferenciales:**
-- **Descentralización**: Evitamos embotellamiento con personal especializado
-- **Filtro de consultas**: 70% de consultas simples resueltas por bot
-- **Resolución en primer contacto**: Nuestros operadores acceden directamente a sistemas
-- **Omnicanalidad real**: Apps, llamadas, WhatsApp, Accesible (LSA) + bot 24/7
+- **Descentralización**: personal especializado evita el embotellamiento de consultas
+- **Filtro de consultas**: hasta un 70% de las consultas simples se resuelven por nuestros canales
+- **Resolución en primer contacto**: la plataforma está preparada para integrarse con los sistemas de cada organismo, mediante las autorizaciones y desarrollos correspondientes
+- **Omnicanalidad modular**: telefonía, WhatsApp, chatbot, redes sociales y otros canales digitales, según el alcance de cada implementación
 
 ¿Quieres saber más sobre alguno de estos aspectos?`
     },
@@ -180,27 +187,40 @@ Es una evaluación rápida que nos permite conocer tu situación actual y propon
       keywords: ['quiénes son', 'quienes son', 'boulé', 'boule', 'empresa', 'global solutions', 'quién es', 'quien es', 'vision', 'visión', 'mision', 'misión', 'valores'],
       response: `Somos **Boulé GovTech**, by Global Solutions: una plataforma gubernamental integral y modular que conecta al Estado con los ciudadanos, empresas y organizaciones.
 
-Nuestro propósito: estrategia comercial 360° impulsada con tecnología. "Transformamos vínculos en valor".
+Actualmente acompañamos a la **Municipalidad de San Rafael** y a la **Municipalidad de General Alvear** con proyectos de atención ciudadana, gestión legislativa y administración de recursos humanos.
 
-Nuestros valores: **Equipo** (la gente es lo más importante), **Dinamismo** (adaptación constante), **Innovación** (mejores formas de hacer las cosas) y **Transparencia** (mostrar acciones y logros).
+Boulé cuenta con el respaldo de la experiencia corporativa y operativa de **Global Solutions**, que ha prestado servicios para organizaciones como Movistar, Banco Galicia, Despegar y Prisma — estos son antecedentes corporativos de Global Solutions, no clientes ni casos de éxito de Boulé.
 
-Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.
-
-Trabajamos con Movistar, Banco Galicia, Despegar, Neotel, Gobierno de Mendoza, Municipalidad de San Rafael y Municipalidad de Gral. Alvear como referencia general de nuestra operación.`
+Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.`
     },
     clients: {
       keywords: ['clientes', 'con quien trabajan', 'con quienes trabajan', 'trabajan con', 'municipios que atienden', 'organismos'],
-      response: `Trabajamos con organizaciones como **Movistar**, **Banco Galicia**, **Despegar**, **Neotel**, el **Gobierno de Mendoza**, la **Municipalidad de San Rafael** y la **Municipalidad de General Alvear**.
+      response: `**Clientes actuales de Boulé:** Municipalidad de San Rafael y Municipalidad de General Alvear.
+
+**Antecedentes corporativos de Global Solutions** (no son clientes de Boulé): Movistar, Banco Galicia, Despegar y Prisma.
 
 Por privacidad, solo compartimos esta referencia general — no detalles específicos de cada operación. Para consultas puntuales, escribinos a nuestro contacto. 🤝`
     },
-    novedades: {
-      keywords: ['rafaella', 'novedad', 'novedades', 'agente digital', 'academia de ventas', 'lanzamiento'],
-      response: `📰 **Novedades recientes:**
-- **Rafaella - Agente Digital**: desarrollado junto a la Municipalidad de San Rafael, en línea desde diciembre de 2025.
-- **Academia de Ventas 2026**: formación especializada con incentivo económico, iniciada en enero de 2026.
+    integrations: {
+      keywords: [
+        'atm', 'registro civil', 'sistema de salud', 'sistemas de salud',
+        'integracion con salud', 'integrado con salud', 'se integra con atm',
+        'integracion con atm', 'integrado con atm', 'integracion con registro civil',
+        'integrado con registro civil', 'sistemas provinciales', 'sistemas tributarios',
+        'sistemas sanitarios', 'sistemas registrales'
+      ],
+      response: `Boulé no está integrado actualmente con sistemas como ATM, Registro Civil o Salud. Nuestra plataforma es modular y está preparada para integrarse con los sistemas de cada organismo cuando exista la autorización y el desarrollo correspondiente.
 
-¿Querés más información sobre alguna de estas novedades?`
+Cada solución se adapta al alcance específico contratado por el organismo. Para evaluar una integración puntual, escribinos a **${BOT_CONFIG.contactEmail}**.`
+    },
+    volumen: {
+      keywords: [
+        '89000', '89.000', 'llamadas actuales', 'atienden actualmente',
+        'cuantas llamadas atienden', 'volumen actual', 'llamadas mensuales actuales'
+      ],
+      response: `La cifra de 89.000 interacciones mensuales corresponde a una capacidad proyectada de diseño, no al volumen que Boulé atiende actualmente. El volumen real depende del alcance contratado por cada organismo.
+
+Actualmente acompañamos a la Municipalidad de San Rafael y a la Municipalidad de General Alvear. Para conocer el alcance de una implementación puntual, contactanos.`
     },
     meeting: {
       keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
