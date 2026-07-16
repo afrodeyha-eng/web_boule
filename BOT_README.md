@@ -24,15 +24,17 @@ Coloca esta línea al final de tu documento HTML, antes de cerrar el `</body>`.
 
 El bot **solo responde sobre la información publicada en la página**:
 
-1. **Servicios** - Información sobre las 6 soluciones principales
+1. **Servicios** - Suite GS+: Smart Chatbot, Contact Center, Dashboard, Cobranzas, Impulsa, Plataforma Legislativa, Speech Analytics, Municipios Inteligentes
 2. **Contacto** - Email, teléfono y website
-3. **Ubicación** - Dónde estamos ubicados
+3. **Ubicación** - Dónde estamos ubicados (de forma genérica, sin dirección exacta)
 4. **Diferenciales** - Ventajas competitivas
 5. **Resultados / KPIs** - FCR, TMO, SLA, NPS
 6. **Diagnóstico** - Cómo acceder a la evaluación
-7. **Quiénes somos** - Presentación de la empresa
-8. **Reuniones** - Cómo agendar una reunión
-9. **Saludos y ayuda** - Responde de forma amigable
+7. **Quiénes somos** - Empresa, propósito, valores
+8. **Clientes** - Referencia general de con quién trabajamos (sin detalles específicos)
+9. **Novedades** - Rafaella (Agente Digital) y Academia de Ventas 2026
+10. **Reuniones** - Cómo agendar una reunión
+11. **Saludos y ayuda** - Responde de forma amigable
 
 ## 🛡️ Reglas de comportamiento
 
@@ -42,6 +44,16 @@ El bot **solo responde sobre la información publicada en la página**:
 - **Sin respuesta = derivación**: si tampoco encuentra nada relacionado en la página, lo dice claramente y deriva la consulta a **nestor.moscardo@gsolutions.com.ar**.
 - **No inventa información**: no responde nada que no esté en la página.
 - El texto del usuario se muestra escapado (sin HTML), lo que también previene inyección de código en el chat.
+
+## 🔒 Protección de información confidencial
+
+El bot nunca comparte datos específicos de clientes, municipios u organismos: facturación, contratos, volúmenes operativos, datos personales, credenciales, rutas de archivos o accesos a sistemas. Ante cualquiera de estas consultas (aunque las mencione junto al nombre de un cliente), responde:
+
+> "Esa información es confidencial. No puedo compartir detalles específicos sobre clientes, municipios u organismos públicos. Solo puedo hablar sobre servicios y metodologías públicas.
+>
+> Para consultas comerciales o específicas, contactate con: **experiencia@gsolutions.com.ar**"
+
+Este chequeo tiene prioridad sobre cualquier otra respuesta (incluida la búsqueda dinámica en la página). Los clientes solo se mencionan de forma genérica ("trabajamos con...") vía la respuesta fija de la intención "Clientes", nunca con detalles de la operación.
 
 ### 🔎 Cómo funciona la búsqueda en la página
 

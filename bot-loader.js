@@ -10,6 +10,7 @@
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
     contactEmail: 'nestor.moscardo@gsolutions.com.ar',
+    privacyContactEmail: 'experiencia@gsolutions.com.ar',
     iconSrc: 'assets/bot-icon.svg',
   };
 
@@ -42,16 +43,68 @@ Si preferís continuar la consulta con una persona de nuestro equipo, escribinos
 
 Para continuar tu consulta, escribinos a **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
 
+  // --- Protección de información confidencial ---
+  // El bot solo comparte generalidades públicas sobre servicios y
+  // metodología. Nunca comparte datos específicos de clientes, municipios
+  // u organismos (volúmenes, contratos, facturación, datos personales,
+  // credenciales, rutas de archivos, accesos a sistemas, etc.).
+
+  const SENSITIVE_TERMS = [
+    'factura', 'facturacion', 'cuanto factura', 'cuanto cobra', 'cuanto paga',
+    'cuanto gana', 'contrato', 'acuerdo comercial', 'presupuesto interno',
+    'credencial', 'contrasena', 'password', 'token de acceso',
+    'ruta de archivo', 'carpeta de drive', 'estructura de carpetas',
+    'pdf del contrato', 'pdfs de los contratos', 'donde trabaja',
+    'datos personales', 'informacion interna', 'datos internos',
+    'datos sensibles', 'detalles operativos', 'volumen operativo',
+    'informacion operativa', 'acceso a los sistemas', 'informacion confidencial',
+    'datos especificos', 'detalles especificos', 'informacion de drive',
+    'que informacion tiene en drive'
+  ];
+
+  // Nombres de clientes/organismos: solo se puede responder de forma
+  // genérica ("trabajamos con..."), nunca con detalles específicos.
+  const CLIENT_NAMES = [
+    'movistar', 'banco galicia', 'galicia', 'despegar', 'neotel',
+    'municipio de san rafael', 'municipalidad de san rafael',
+    'municipio de general alvear', 'municipalidad de general alvear',
+    'municipio de gral. alvear', 'gobierno de mendoza'
+  ];
+
+  const SPECIFICS_WORDS = [
+    'cuanto', 'cuantos', 'cuantas', 'detalle', 'detalles', 'dato', 'datos',
+    'informacion', 'contrato', 'factura', 'facturacion', 'especifico',
+    'especificos', 'confidencial'
+  ];
+
+  function isSensitiveQuery(text) {
+    const norm = normalizeText(text);
+
+    const hasSensitiveTerm = SENSITIVE_TERMS.some((t) => norm.includes(normalizeText(t)));
+    if (hasSensitiveTerm) return true;
+
+    const hasClientName = CLIENT_NAMES.some((c) => norm.includes(normalizeText(c)));
+    const hasSpecificsWord = SPECIFICS_WORDS.some((w) => norm.includes(normalizeText(w)));
+
+    return hasClientName && hasSpecificsWord;
+  }
+
+  const PRIVACY_RESPONSE = `Esa información es confidencial. No puedo compartir detalles específicos sobre clientes, municipios u organismos públicos. Solo puedo hablar sobre servicios y metodologías públicas.
+
+Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privacyContactEmail}**`;
+
   const INTENTS = {
     services: {
-      keywords: ['servicio', 'servicios', 'qué ofrece', 'qué hace', 'soluciones', 'propuesta'],
-      response: `Ofrecemos 6 soluciones principales:
-1. **Centro de Contacto** - Atención omnicanal 24/7
-2. **Plataforma Legislativa** - Democratizar procesos legislativos
-3. **Visualización de Datos** - Dashboards en tiempo real
-4. **Formación** - Capacitación continua de equipos
-5. **Recuperación de Activos** - BPO especializado en cobranza
-6. **IA & Analítica de Voz** - NLP para análisis automático
+      keywords: ['servicio', 'servicios', 'qué ofrece', 'qué hace', 'soluciones', 'propuesta', 'gs+', 'smart chatbot', 'municipios inteligentes', 'speech analytics', 'impulsa'],
+      response: `Ofrecemos una suite modular de soluciones GS+:
+1. **Smart Chatbot GS+** - Bot 24/7 multicanal con resolución automática de consultas
+2. **Contact Center** - Atención omnicanal con equipo especializado en resolución
+3. **Dashboard GS+** - Visualización de datos y métricas en tiempo real
+4. **Gestión de Cobranzas** - Recuperación de activos con estrategias omnicanal e IA predictiva
+5. **Impulsa GS+** - Formación modular en habilidades blandas y comerciales
+6. **Plataforma Legislativa** - Módulos de tramitación y trazabilidad para Concejos
+7. **Speech Analytics** - Análisis de grabaciones con IA entrenada
+8. **Municipios Inteligentes** - Solución integral de CRM + atención + datos + capacitación
 
 ¿Deseas más detalles sobre alguno de estos servicios?`
     },
@@ -124,12 +177,30 @@ Escribe tus preguntas en lenguaje natural. Si no tengo la respuesta, te derivar�
 Es una evaluación rápida que nos permite conocer tu situación actual y proponerte mejoras concretas.`
     },
     about: {
-      keywords: ['quiénes son', 'quienes son', 'boulé', 'boule', 'empresa', 'global solutions', 'quién es', 'quien es'],
+      keywords: ['quiénes son', 'quienes son', 'boulé', 'boule', 'empresa', 'global solutions', 'quién es', 'quien es', 'vision', 'visión', 'mision', 'misión', 'valores'],
       response: `Somos **Boulé GovTech**, by Global Solutions: una plataforma gubernamental integral y modular que conecta al Estado con los ciudadanos, empresas y organizaciones.
+
+Nuestro propósito: estrategia comercial 360° impulsada con tecnología. "Transformamos vínculos en valor".
+
+Nuestros valores: **Equipo** (la gente es lo más importante), **Dinamismo** (adaptación constante), **Innovación** (mejores formas de hacer las cosas) y **Transparencia** (mostrar acciones y logros).
 
 Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.
 
-Respaldados por operaciones críticas para Movistar, Banco Galicia, Despegar, Municipalidad de San Rafael y Municipalidad de Gral. Alvear.`
+Trabajamos con Movistar, Banco Galicia, Despegar, Neotel, Gobierno de Mendoza, Municipalidad de San Rafael y Municipalidad de Gral. Alvear como referencia general de nuestra operación.`
+    },
+    clients: {
+      keywords: ['clientes', 'con quien trabajan', 'con quienes trabajan', 'trabajan con', 'municipios que atienden', 'organismos'],
+      response: `Trabajamos con organizaciones como **Movistar**, **Banco Galicia**, **Despegar**, **Neotel**, el **Gobierno de Mendoza**, la **Municipalidad de San Rafael** y la **Municipalidad de General Alvear**.
+
+Por privacidad, solo compartimos esta referencia general — no detalles específicos de cada operación. Para consultas puntuales, escribinos a nuestro contacto. 🤝`
+    },
+    novedades: {
+      keywords: ['rafaella', 'novedad', 'novedades', 'agente digital', 'academia de ventas', 'lanzamiento'],
+      response: `📰 **Novedades recientes:**
+- **Rafaella - Agente Digital**: desarrollado junto a la Municipalidad de San Rafael, en línea desde diciembre de 2025.
+- **Academia de Ventas 2026**: formación especializada con incentivo económico, iniciada en enero de 2026.
+
+¿Querés más información sobre alguna de estas novedades?`
     },
     meeting: {
       keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
@@ -616,6 +687,10 @@ Te responderemos a la brevedad.`
         .replace(
           BOT_CONFIG.contactEmail,
           `<a href="mailto:${BOT_CONFIG.contactEmail}">${BOT_CONFIG.contactEmail}</a>`
+        )
+        .replace(
+          BOT_CONFIG.privacyContactEmail,
+          `<a href="mailto:${BOT_CONFIG.privacyContactEmail}">${BOT_CONFIG.privacyContactEmail}</a>`
         );
     }
     bubble.innerHTML = html;
@@ -674,6 +749,11 @@ Te responderemos a la brevedad.`
       // con calma y respeto, sin importar el contenido.
       if (containsRudeWords(text)) {
         addMessage(POLITE_RESPONSE, false);
+      } else if (isSensitiveQuery(text)) {
+        // Consultas sobre datos específicos de clientes/municipios,
+        // información financiera, operativa, personal o de acceso a
+        // sistemas: nunca se responden, siempre se deriva por privacidad.
+        addMessage(PRIVACY_RESPONSE, false);
       } else {
         // 1) Respuestas fijas ya redactadas para los temas más comunes.
         // 2) Si no hay coincidencia, buscar en el texto real de la página
