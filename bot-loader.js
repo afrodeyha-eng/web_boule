@@ -119,9 +119,9 @@ Web: www.gsolutions.ar
 ¿Necesitas agendar una reunión? Puedo conectarte con nuestro equipo.`
     },
     location: {
-      keywords: ['dónde', 'ubicación', 'localidad', 'san rafael', 'mendoza', 'oficina'],
+      keywords: ['dónde', 'ubicación', 'localidad', 'san rafael', 'mendoza', 'oficina', 'direccion', 'dirección'],
       response: `📍 **Ubicación:**
-Estamos ubicados en el microcentro de San Rafael, Mendoza.
+Estamos en **San Lorenzo 50, San Rafael, Mendoza**, en pleno microcentro.
 Contamos con sites propios operativos y flexibilidad para modelo híbrido en locaciones del Estado.
 
 ¿Te gustaría conocer más sobre nuestras instalaciones?`
