@@ -10,6 +10,7 @@
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
     contactEmail: 'nestor.moscardo@gsolutions.com.ar',
+    secondaryContactEmail: 'alfonsina.coria@gsolutions.com.ar',
     privacyContactEmail: 'experiencia@gsolutions.com.ar',
     iconSrc: 'assets/bot-icon.svg',
   };
@@ -35,13 +36,20 @@
     return RUDE_REGEX.test(normalizeText(text));
   }
 
-  const POLITE_RESPONSE = `Lamento si algo te generó malestar. Estoy para ayudarte con respeto y buena predisposición. 🙏
+  // Ante lenguaje inapropiado, groserías o insultos: solo una disculpa
+  // breve, sin derivar al mail de contacto (a diferencia del resto de
+  // las respuestas del bot).
+  const POLITE_RESPONSE = `Lo siento, no puedo responder a ese tipo de mensajes. 🙏`;
 
-Si preferís continuar la consulta con una persona de nuestro equipo, escribinos a **${BOT_CONFIG.contactEmail}** y te responderemos a la brevedad.`;
+  const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).`;
 
-  const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).
+  // Derivación al mail: solo se muestra como último recurso, cuando ya
+  // se agotaron las otras instancias (respuestas fijas, búsqueda en la
+  // página, sugerencias por palabra similar y menú de temas) más de una
+  // vez seguida — no en el primer "no entiendo".
+  const NO_ANSWER_RESPONSE_FINAL = `${NO_ANSWER_RESPONSE}
 
-Para continuar tu consulta, escribinos a **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
+Para continuar tu consulta, escribinos a **${BOT_CONFIG.secondaryContactEmail}** o **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
 
   // --- Protección de información confidencial ---
   // El bot solo comparte generalidades públicas sobre servicios y
@@ -107,19 +115,114 @@ Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privac
 
 **Disponibles para implementación:**
 - Visualización de Datos
-- Formación
-- Gestión y Recuperación de Activos
+- Formación (Impulsa GS+)
+- Gestión y Recuperación de Activos (Cobranzas)
+- Módulo Obras Privadas
+- Smart Chatbot para atención ciudadana
+- Atención integrada (ej. Licencias de Conducir)
 
 **En desarrollo:**
-- IA y analítica de interacciones
+- IA y analítica de interacciones (Speech Analytics)
 
 ¿Deseas más detalles sobre alguno de estos servicios?`
     },
+    impulsa: {
+      keywords: ['impulsa', 'habilidades blandas', 'habilidades comerciales', 'coaching ejecutivo'],
+      response: `🎯 **Impulsa GS+** — Formación y Desarrollo
+
+Desafiamos e impulsamos la mejor versión de las personas y su mundo: desbloqueamos el potencial de tu equipo para elevar tu organización al siguiente nivel.
+
+**Líneas de trabajo:** Habilidades Blandas y Habilidades Comerciales.
+
+**Nuestro proceso:** evaluación de necesidades, diseño de la capacitación, dictado, seguimiento post-capacitación, acompañamiento en la implementación (OJT) y acompañamiento personalizado.
+
+**Beneficios clave:** auditorías internas de calidad, enfoque modular y flexible, sesiones de coaching ejecutivo y medición de resultados y satisfacción.
+
+¿Querés más detalles sobre alguna etapa del proceso?`
+    },
+    speechAnalytics: {
+      keywords: ['speech analytics', 'transcripcion automatica', 'analisis semantico', 'scoring automatizado', 'analitica de voz', 'analisis de grabaciones'],
+      response: `🎙️ **Speech Analytics** — Tecnología con propósito, innovación con impacto
+
+Transformamos conversaciones en conocimiento real: un módulo de calidad con escucha activa basada en IA que analiza interacciones entre asesores y clientes.
+
+**Funcionalidades:**
+- Transcripción automática (reconoce acentos, modismos y lenguaje coloquial)
+- Análisis semántico y tonal (estado emocional, satisfacción, silencios prolongados)
+- Detección de palabras clave configurable por campaña
+- Scoring automatizado según criterios definidos
+
+**Beneficios:** detección temprana de incumplimientos, escalabilidad (permite analizar el 100% de las interacciones) y mayor objetividad al eliminar sesgos humanos.
+
+¿Te interesa alguna aplicación específica (ventas, postventa, cumplimiento)?`
+    },
+    obrasPrivadas: {
+      keywords: ['obras privadas', 'permiso de obra', 'plano digital', 'inspeccion de obra', 'habitabilidad'],
+      response: `🏗️ **Módulo Obras Privadas**
+
+Damos trazabilidad al proceso de obras privadas, digitalizando tareas diarias y conectando las áreas involucradas.
+
+**Perfiles:** Profesional de obra, Visador (aprueba o desaprueba planos digitales) e Inspector (registra visitas y estado de obra).
+
+**Módulos:** Inicio de obra, Habitabilidades, Comercio e Inspección Ocular.
+
+**Beneficios:** gestión 100% web sin software adicional, interfaz responsive, métricas en tiempo real, y soporte técnico y capacitación incluidos.
+
+¿Querés conocer el detalle de algún módulo en particular?`
+    },
+    cobranzasDetalle: {
+      keywords: ['cobranzas', 'recuperacion de activos', 'deudores', 'gestion de cobranza', 'mora'],
+      response: `💰 **Gestión de Cobranzas**
+
+Maximizamos la recuperación de activos financieros con estrategias disruptivas centradas en la experiencia del cliente.
+
+**Metodología:** inteligencia de datos (machine learning para priorizar cartera), gestión omnicanal (teléfono, email, WhatsApp), adaptabilidad a los objetivos financieros de cada cliente y seguimiento analítico con KPIs.
+
+**Resultados de referencia:** +35% de recuperación de activos, reducción de costos operativos por automatización, e implementación en aproximadamente 2 meses.
+
+¿Querés más detalles sobre el proceso de gestión?`
+    },
+    smartChatbotDetalle: {
+      keywords: ['smart chatbot', 'chatbot municipal', 'boleto digital', 'chatbot 24'],
+      response: `🤖 **Smart Chatbot GS+** — Atención Ciudadana
+
+Atención automatizada y personalizada para municipios, con funcionalidades como boleto digital, cursos y capacitaciones, información en tiempo real, reclamos y denuncias, turnos, multas de tránsito, consulta y pago de deudas, y agenda cultural.
+
+Se integra mediante automatizaciones con bases de datos y servicios externos, y ofrece trazabilidad: monitoreo en tiempo real, identificación de zonas con más reclamos y registro para auditoría.
+
+**Beneficios:** atención más rápida y ordenada, menor carga operativa y mayor cercanía con la comunidad.
+
+El alcance de esta funcionalidad depende de lo que contrate cada organismo. ¿Querés saber más sobre alguna funcionalidad puntual?`
+    },
+    contactCenterDetalle: {
+      keywords: ['contact center', 'centro de contacto detalle', 'equipo de asesores'],
+      response: `📞 **Contact Center** — Atención al cliente omnicanal
+
+A nivel corporativo, Global Solutions cuenta con un equipo de más de 480 asesores especializados en atención, ventas y cobranzas, capacitados para resolución ágil.
+
+**Gestión omnicanal:** teléfono, email y WhatsApp, con metodología basada en inteligencia de datos, seguimiento analítico y adaptabilidad a cada perfil de cliente.
+
+**Beneficios de referencia:** mejora en la recuperación de activos, reducción de costos operativos, implementación ágil e informes en tiempo real.
+
+El alcance y la dotación de cada implementación se define según lo que contrate el organismo. ¿Te interesa conocer el proceso completo de atención?`
+    },
+    licenciasConducir: {
+      keywords: ['licencia de conducir', 'licencias de conducir', 'carnet de conducir', 'registro de conducir'],
+      response: `🪪 **Atención Integrada — Licencias de Conducir**
+
+Un modelo de "un solo contacto, toda la solución": el ciudadano resuelve consultas y gestiona su turno en la misma interacción, por teléfono, WhatsApp, chat, web o correo electrónico.
+
+**Incluye:** información sobre requisitos, documentación, costos y formas de pago, vigencia y renovación, y otorgamiento de turno en el mismo contacto.
+
+**Beneficios:** trámites más simples y claros, menos traslados, menor carga de consultas presenciales y una gestión de turnos más eficiente para el organismo.
+
+¿Querés conocer cómo se implementaría este modelo en tu organismo?`
+    },
     contact: {
-      keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email', 'información'],
+      keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email'],
       response: `📧 **Contacto directo:**
-Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
+Email: nestor.moscardo@gsolutions.com.ar
 Web: www.gsolutions.ar
 
 ¿Necesitas agendar una reunión? Puedo conectarte con nuestro equipo.`
@@ -156,7 +259,7 @@ Puedo ayudarte con información sobre:
 ¿En qué puedo ayudarte hoy?`
     },
     help: {
-      keywords: ['ayuda', 'help', 'qué puedes', 'qué haces', 'cómo funciona'],
+      keywords: ['ayuda', 'help', 'qué puedes', 'qué haces', 'cómo funcionás', 'cómo funcionas', 'cómo funciona el bot', 'cómo funciona este chat'],
       response: `🤖 **¿Cómo funciono?**
 Soy un asistente automático que responde solo sobre la información de esta página:
 ✓ Servicios que ofrecemos
@@ -225,12 +328,198 @@ Actualmente acompañamos a la Municipalidad de San Rafael y a la Municipalidad d
       keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
       response: `📅 Para agendar una reunión o pedir una propuesta, contactá directamente a:
 
-Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
+Email: nestor.moscardo@gsolutions.com.ar
 
 Te responderemos a la brevedad.`
     }
   };
+
+  // Menú de temas: se muestra como botones cuando el bot no entiende la
+  // consulta, para que la persona elija qué quiere ver en vez de quedar
+  // en un callejón sin salida.
+  const TOPIC_MENU = [
+    { label: 'Servicios', query: 'qué servicios ofrecen' },
+    { label: 'Impulsa GS+', query: 'qué es impulsa gs+' },
+    { label: 'Speech Analytics', query: 'cómo funciona el speech analytics' },
+    { label: 'Obras Privadas', query: 'módulo de obras privadas' },
+    { label: 'Cobranzas', query: 'proceso de gestión de cobranzas' },
+    { label: 'Smart Chatbot', query: 'qué hace el smart chatbot' },
+    { label: 'Contact Center', query: 'contact center' },
+    { label: 'Licencias de Conducir', query: 'atención integrada licencias de conducir' },
+    { label: 'Diferenciales', query: 'cuáles son sus diferenciales' },
+    { label: 'Métricas (KPIs)', query: 'qué kpis reportan' },
+    { label: 'Ubicación', query: 'dónde están ubicados' },
+    { label: 'Clientes', query: 'con quiénes trabajan' },
+    { label: 'Quiénes somos', query: 'quiénes son' },
+    { label: 'Contacto', query: 'cómo los contacto' }
+  ];
+
+  // Nombres de tema legibles para cada intención, usados como etiqueta en
+  // las sugerencias por palabra similar (en vez de mostrar la keyword
+  // interna tal cual, que a veces es una frase poco natural).
+  const INTENT_LABELS = {
+    services: 'Servicios',
+    impulsa: 'Impulsa GS+',
+    speechAnalytics: 'Speech Analytics',
+    obrasPrivadas: 'Obras Privadas',
+    cobranzasDetalle: 'Cobranzas',
+    smartChatbotDetalle: 'Smart Chatbot',
+    contactCenterDetalle: 'Contact Center',
+    licenciasConducir: 'Licencias de Conducir',
+    capabilities: 'Diferenciales',
+    kpis: 'Métricas (KPIs)',
+    diagnostico: 'Diagnóstico',
+    about: 'Quiénes somos',
+    clients: 'Clientes',
+    integrations: 'Integraciones',
+    volumen: 'Volumen de llamadas',
+    location: 'Ubicación',
+    contact: 'Contacto',
+    meeting: 'Reunión'
+  };
+
+  // --- Búsqueda de palabras similares ("quisiste decir...") ---
+  // Antes de rendirse, comparamos la consulta contra todas las palabras
+  // clave conocidas usando distancia de edición, para tolerar errores de
+  // tipeo o variantes cercanas.
+
+  const STOPWORDS = new Set([
+    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
+    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
+    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
+    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
+    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
+    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
+    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
+    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
+    'cuanto', 'cuanta', 'cuantos', 'cuantas'
+  ]);
+
+  function levenshtein(a, b) {
+    const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+    for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+    for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        dp[i][j] = a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp[a.length][b.length];
+  }
+
+  // Diccionario plano de palabras distintivas (dentro de las keywords de
+  // cada intención) contra el que se compara cada palabra de la consulta.
+  // Se excluyen palabras genéricas/comunes (STOPWORDS), muy cortas, y las
+  // intenciones conversacionales/meta ("greeting", "help") cuyas palabras
+  // (saludos, verbos genéricos como "funciona") no identifican un tema
+  // real y solo generarían sugerencias falsas.
+  const FUZZY_EXCLUDED_INTENTS = new Set(['greeting', 'help']);
+
+  const KEYWORD_DICTIONARY = [];
+  const seenDictWords = new Set();
+  Object.entries(INTENTS).forEach(([intentKey, intent]) => {
+    if (FUZZY_EXCLUDED_INTENTS.has(intentKey)) return;
+    const label = INTENT_LABELS[intentKey] || intent.keywords[0];
+    intent.keywords.forEach((keyword) => {
+      normalizeText(keyword).split(/\s+/).forEach((word) => {
+        if (word.length >= 4 && !STOPWORDS.has(word) && !seenDictWords.has(word)) {
+          seenDictWords.add(word);
+          KEYWORD_DICTIONARY.push({ word, label, response: intent.response });
+        }
+      });
+    });
+  });
+
+  // Segundo diccionario, construido a partir del contenido real de la
+  // página (mismo índice que usa la búsqueda de contenido), para que las
+  // sugerencias por palabra similar también reconozcan términos que solo
+  // existen en el texto de la página y no en las keywords del bot.
+  let PAGE_FUZZY_DICTIONARY = null;
+
+  function buildPageFuzzyDictionary() {
+    if (!PAGE_INDEX) PAGE_INDEX = buildPageIndex();
+    const dict = [];
+    const seen = new Set();
+
+    PAGE_INDEX.blocks.forEach((block) => {
+      const label = block.heading
+        || (block.text.length > 44 ? `${block.text.slice(0, 44)}…` : block.text);
+      const response = block.heading ? `**${block.heading}**\n\n${block.text}` : block.text;
+
+      block.tokens.forEach((word) => {
+        if (word.length >= 4 && !seen.has(word)) {
+          seen.add(word);
+          dict.push({ word, label, response });
+        }
+      });
+    });
+
+    return dict;
+  }
+
+  function fuzzyThreshold(wordLength) {
+    if (wordLength <= 8) return 1;
+    return 2;
+  }
+
+  // "Autocompletar": si una palabra es el comienzo de la otra (mínimo 4
+  // letras en común), la tratamos como una coincidencia muy fuerte, aunque
+  // la diferencia de longitud sea grande (ej. "cobra" -> "cobranzas").
+  function isPrefixMatch(a, b) {
+    if (a === b) return false;
+    if (a.length < 4 || b.length < 4) return false;
+    return a.startsWith(b) || b.startsWith(a);
+  }
+
+  // Devuelve hasta `maxResults` sugerencias distintas, ordenadas de más a
+  // menos parecida, combinando las keywords del bot y el contenido real
+  // de la página — así el bot puede ofrecer varios ejemplos de lo que
+  // encontró parecido para que la persona elija.
+  function findFuzzySuggestions(userText, maxResults) {
+    if (!PAGE_FUZZY_DICTIONARY) PAGE_FUZZY_DICTIONARY = buildPageFuzzyDictionary();
+    const dictionary = KEYWORD_DICTIONARY.concat(PAGE_FUZZY_DICTIONARY);
+
+    const queryWords = normalizeText(userText)
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length >= 4 && !STOPWORDS.has(w));
+
+    const candidates = [];
+    queryWords.forEach((word) => {
+      dictionary.forEach((entry) => {
+        if (isPrefixMatch(word, entry.word)) {
+          // Coincidencia por autocompletar: más fuerte que un typo de 1
+          // letra, pero no tanto como una palabra idéntica.
+          candidates.push({ entry, distance: 0.5 });
+          return;
+        }
+        if (Math.abs(entry.word.length - word.length) > 2) return;
+        const distance = levenshtein(word, entry.word);
+        const threshold = fuzzyThreshold(Math.min(word.length, entry.word.length));
+        if (distance > 0 && distance <= threshold) {
+          candidates.push({ entry, distance });
+        }
+      });
+    });
+
+    // Ante empate en distancia, preferimos la palabra más larga (más
+    // específica/menos propensa a coincidencias casuales).
+    candidates.sort((a, b) => a.distance - b.distance || b.entry.word.length - a.entry.word.length);
+
+    const results = [];
+    const seenResponses = new Set();
+    for (const { entry } of candidates) {
+      if (results.length >= maxResults) break;
+      if (seenResponses.has(entry.response)) continue;
+      seenResponses.add(entry.response);
+      results.push(entry);
+    }
+
+    return results;
+  }
 
   function loadStyles() {
     const style = document.createElement('style');
@@ -512,6 +801,36 @@ Te responderemos a la brevedad.`
           max-height: 500px;
         }
       }
+
+      .bot-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .bot-chip {
+        appearance: none;
+        border: 1px solid #12A9C4;
+        background: #ffffff;
+        color: #0B5F79;
+        font-size: 12.5px;
+        font-family: 'Open Sans', sans-serif;
+        padding: 5px 11px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .bot-chip:hover {
+        background: #0B5F79;
+        color: #ffffff;
+      }
+
+      .bot-chip:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -551,34 +870,30 @@ Te responderemos a la brevedad.`
     // etc. coincidan igual, sin importar cómo escriba el usuario.
     const text = normalizeText(userText);
 
+    // Nos quedamos con la palabra clave más larga (más específica) que
+    // coincida, en vez de la primera que aparece en el objeto. Así, una
+    // pregunta como "qué hace el smart chatbot" cae en la respuesta de
+    // Smart Chatbot y no en la genérica de "qué hace".
+    let bestResponse = null;
+    let bestKeywordLength = 0;
+
     for (const [, intent] of Object.entries(INTENTS)) {
       for (const keyword of intent.keywords) {
-        if (text.includes(normalizeText(keyword))) {
-          return intent.response;
+        const normKeyword = normalizeText(keyword);
+        if (text.includes(normKeyword) && normKeyword.length > bestKeywordLength) {
+          bestKeywordLength = normKeyword.length;
+          bestResponse = intent.response;
         }
       }
     }
 
-    return null;
+    return bestResponse;
   }
 
   // --- Búsqueda de respaldo dentro del contenido de la página ---
   // Si ninguna respuesta fija coincide, buscamos en el texto real de la
   // página (títulos, párrafos) para intentar encontrar una respuesta antes
   // de derivar al mail de contacto.
-
-  const STOPWORDS = new Set([
-    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
-    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
-    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
-    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
-    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
-    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
-    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
-    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
-    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
-    'cuanto', 'cuanta', 'cuantos', 'cuantas'
-  ]);
 
   // Stemming simple: reduce plurales/variantes básicas para que "bancos"
   // encuentre "banco", "servicios" encuentre "servicio", etc.
@@ -673,6 +988,12 @@ Te responderemos a la brevedad.`
     const coverage = bestMatched / validTokens.length;
     if (coverage < 0.5) return null;
 
+    // Exigimos al menos dos palabras válidas: con una sola palabra, la
+    // coincidencia es demasiado débil (una palabra suelta puede aparecer
+    // una única vez en la página por casualidad) y le quita lugar a una
+    // sugerencia por palabra similar que podría ser más acertada.
+    if (validTokens.length < 2) return null;
+
     return best.heading ? `**${best.heading}**\n\n${best.text}` : best.text;
   }
 
@@ -682,7 +1003,7 @@ Te responderemos a la brevedad.`
     }[c]));
   }
 
-  function addMessage(text, isUser = false) {
+  function addMessage(text, isUser = false, chips = null) {
     const messagesContainer = document.getElementById('botMessages');
     const messageEl = document.createElement('div');
     messageEl.className = `bot-message ${isUser ? 'user' : 'bot'}`;
@@ -694,6 +1015,8 @@ Te responderemos a la brevedad.`
       avatar.className = 'bot-avatar';
       messageEl.appendChild(avatar);
     }
+
+    const bubbleWrap = document.createElement('div');
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${isUser ? 'user' : 'bot'}`;
@@ -707,13 +1030,49 @@ Te responderemos a la brevedad.`
           `<a href="mailto:${BOT_CONFIG.contactEmail}">${BOT_CONFIG.contactEmail}</a>`
         )
         .replace(
+          BOT_CONFIG.secondaryContactEmail,
+          `<a href="mailto:${BOT_CONFIG.secondaryContactEmail}">${BOT_CONFIG.secondaryContactEmail}</a>`
+        )
+        .replace(
           BOT_CONFIG.privacyContactEmail,
           `<a href="mailto:${BOT_CONFIG.privacyContactEmail}">${BOT_CONFIG.privacyContactEmail}</a>`
         );
     }
     bubble.innerHTML = html;
+    bubbleWrap.appendChild(bubble);
 
-    messageEl.appendChild(bubble);
+    if (!isUser && chips && chips.length > 0) {
+      const chipRow = document.createElement('div');
+      chipRow.className = 'bot-chip-row';
+      chips.forEach((chip) => {
+        const chipBtn = document.createElement('button');
+        chipBtn.type = 'button';
+        chipBtn.className = 'bot-chip';
+        chipBtn.textContent = chip.label;
+        chipBtn.addEventListener('click', () => {
+          Array.from(chipRow.children).forEach((c) => { c.disabled = true; });
+          if (chip.response) {
+            // Sugerencia por palabra similar / ejemplo de la página: se
+            // muestra directamente, sin volver a pasar por el buscador.
+            // Al confirmar una sugerencia, la persona sí encontró algo
+            // útil, así que reiniciamos el conteo de fallos seguidos.
+            consecutiveNoAnswers = 0;
+            addMessage(chip.label, true);
+            showTyping();
+            setTimeout(() => {
+              removeTyping();
+              addMessage(chip.response, false);
+            }, 500 + Math.random() * 300);
+          } else {
+            submitQuery(chip.query);
+          }
+        });
+        chipRow.appendChild(chipBtn);
+      });
+      bubbleWrap.appendChild(chipRow);
+    }
+
+    messageEl.appendChild(bubbleWrap);
     messagesContainer.appendChild(messageEl);
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -745,14 +1104,19 @@ Te responderemos a la brevedad.`
     if (typingEl) typingEl.remove();
   }
 
-  function handleUserMessage() {
+  // Cuenta cuántas veces seguidas el bot no encontró absolutamente nada
+  // (ni respuesta fija, ni contenido de página, ni sugerencia parecida).
+  // Solo cuando se agotaron todas esas instancias más de una vez seguida
+  // se ofrece la derivación por mail, como último recurso.
+  let consecutiveNoAnswers = 0;
+
+  function submitQuery(text) {
     const input = document.getElementById('botInput');
     const sendBtn = document.getElementById('botSend');
-    const text = input.value.trim();
 
+    text = text.trim();
     if (!text) return;
 
-    input.value = '';
     addMessage(text, true);
 
     sendBtn.disabled = true;
@@ -776,12 +1140,39 @@ Te responderemos a la brevedad.`
         // 1) Respuestas fijas ya redactadas para los temas más comunes.
         // 2) Si no hay coincidencia, buscar en el texto real de la página
         //    aunque la pregunta no use las palabras clave exactas.
-        // 3) Si tampoco se encuentra nada, derivar al mail de contacto.
+        // 3) Si tampoco hay nada parecido, buscar palabras similares —
+        //    tanto en las keywords del bot como en el contenido real de
+        //    la página— y ofrecer esos ejemplos para elegir, en vez de
+        //    rendirnos directamente.
+        // 4) Si ni así encontramos algo, ofrecer un menú de temas para
+        //    que la persona elija qué quiere ver. Solo si esto también
+        //    falla más de una vez seguida, se agrega la derivación por
+        //    mail como último recurso.
         const response = matchIntent(text) || matchPageContent(text);
         if (response) {
+          consecutiveNoAnswers = 0;
           addMessage(response, false);
         } else {
-          addMessage(NO_ANSWER_RESPONSE, false);
+          const suggestions = findFuzzySuggestions(text, 4);
+          if (suggestions.length === 1) {
+            consecutiveNoAnswers = 0;
+            addMessage(
+              `No estoy seguro de haber entendido bien. ¿Quisiste decir **"${suggestions[0].label}"**?`,
+              false,
+              [{ label: `Sí, sobre "${suggestions[0].label}"`, response: suggestions[0].response }]
+            );
+          } else if (suggestions.length > 1) {
+            consecutiveNoAnswers = 0;
+            addMessage(
+              `No estoy seguro de haber entendido bien. Esto es lo más parecido que encontré en la página, ¿te sirve alguno?`,
+              false,
+              suggestions.map((s) => ({ label: s.label, response: s.response }))
+            );
+          } else {
+            consecutiveNoAnswers++;
+            const finalResort = consecutiveNoAnswers >= 2;
+            addMessage(finalResort ? NO_ANSWER_RESPONSE_FINAL : NO_ANSWER_RESPONSE, false, TOPIC_MENU);
+          }
         }
       }
 
@@ -789,6 +1180,14 @@ Te responderemos a la brevedad.`
       input.disabled = false;
       input.focus();
     }, 800 + Math.random() * 400);
+  }
+
+  function handleUserMessage() {
+    const input = document.getElementById('botInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    submitQuery(text);
   }
 
   function initBot() {
@@ -806,7 +1205,7 @@ Te responderemos a la brevedad.`
       if (chatWindow.classList.contains('is-open')) {
         input.focus();
         if (document.getElementById('botMessages').children.length === 0) {
-          addMessage(INTENTS.greeting.response, false);
+          addMessage(INTENTS.greeting.response, false, TOPIC_MENU);
         }
       }
     });
