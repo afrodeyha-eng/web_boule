@@ -14,6 +14,12 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
+      - name: Diagnóstico de secrets (temporal)
+        run: |
+          if [ -z "${{ secrets.FTP_SERVER }}" ]; then echo "FTP_SERVER: VACÍO o no existe"; else echo "FTP_SERVER: presente"; fi
+          if [ -z "${{ secrets.FTP_USERNAME }}" ]; then echo "FTP_USERNAME: VACÍO o no existe"; else echo "FTP_USERNAME: presente"; fi
+          if [ -z "${{ secrets.FTP_PASSWORD }}" ]; then echo "FTP_PASSWORD: VACÍO o no existe"; else echo "FTP_PASSWORD: presente"; fi
+
       - name: Deploy por FTP a Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
