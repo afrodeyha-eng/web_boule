@@ -118,7 +118,6 @@ Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privac
     contact: {
       keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email', 'información'],
       response: `📧 **Contacto directo:**
-**Néstor Moscardo**
 Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
 Web: www.gsolutions.ar
@@ -226,7 +225,6 @@ Actualmente acompañamos a la Municipalidad de San Rafael y a la Municipalidad d
       keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
       response: `📅 Para agendar una reunión o pedir una propuesta, contactá directamente a:
 
-**Néstor Moscardo**
 Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
 
