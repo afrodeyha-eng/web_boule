@@ -107,13 +107,108 @@ Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privac
 
 **Disponibles para implementación:**
 - Visualización de Datos
-- Formación
-- Gestión y Recuperación de Activos
+- Formación (Impulsa GS+)
+- Gestión y Recuperación de Activos (Cobranzas)
+- Módulo Obras Privadas
+- Smart Chatbot para atención ciudadana
+- Atención integrada (ej. Licencias de Conducir)
 
 **En desarrollo:**
-- IA y analítica de interacciones
+- IA y analítica de interacciones (Speech Analytics)
 
 ¿Deseas más detalles sobre alguno de estos servicios?`
+    },
+    impulsa: {
+      keywords: ['impulsa', 'habilidades blandas', 'habilidades comerciales', 'coaching ejecutivo'],
+      response: `🎯 **Impulsa GS+** — Formación y Desarrollo
+
+Desafiamos e impulsamos la mejor versión de las personas y su mundo: desbloqueamos el potencial de tu equipo para elevar tu organización al siguiente nivel.
+
+**Líneas de trabajo:** Habilidades Blandas y Habilidades Comerciales.
+
+**Nuestro proceso:** evaluación de necesidades, diseño de la capacitación, dictado, seguimiento post-capacitación, acompañamiento en la implementación (OJT) y acompañamiento personalizado.
+
+**Beneficios clave:** auditorías internas de calidad, enfoque modular y flexible, sesiones de coaching ejecutivo y medición de resultados y satisfacción.
+
+¿Querés más detalles sobre alguna etapa del proceso?`
+    },
+    speechAnalytics: {
+      keywords: ['speech analytics', 'transcripcion automatica', 'analisis semantico', 'scoring automatizado', 'analitica de voz', 'analisis de grabaciones'],
+      response: `🎙️ **Speech Analytics** — Tecnología con propósito, innovación con impacto
+
+Transformamos conversaciones en conocimiento real: un módulo de calidad con escucha activa basada en IA que analiza interacciones entre asesores y clientes.
+
+**Funcionalidades:**
+- Transcripción automática (reconoce acentos, modismos y lenguaje coloquial)
+- Análisis semántico y tonal (estado emocional, satisfacción, silencios prolongados)
+- Detección de palabras clave configurable por campaña
+- Scoring automatizado según criterios definidos
+
+**Beneficios:** detección temprana de incumplimientos, escalabilidad (permite analizar el 100% de las interacciones) y mayor objetividad al eliminar sesgos humanos.
+
+¿Te interesa alguna aplicación específica (ventas, postventa, cumplimiento)?`
+    },
+    obrasPrivadas: {
+      keywords: ['obras privadas', 'permiso de obra', 'plano digital', 'inspeccion de obra', 'habitabilidad'],
+      response: `🏗️ **Módulo Obras Privadas**
+
+Damos trazabilidad al proceso de obras privadas, digitalizando tareas diarias y conectando las áreas involucradas.
+
+**Perfiles:** Profesional de obra, Visador (aprueba o desaprueba planos digitales) e Inspector (registra visitas y estado de obra).
+
+**Módulos:** Inicio de obra, Habitabilidades, Comercio e Inspección Ocular.
+
+**Beneficios:** gestión 100% web sin software adicional, interfaz responsive, métricas en tiempo real, y soporte técnico y capacitación incluidos.
+
+¿Querés conocer el detalle de algún módulo en particular?`
+    },
+    cobranzasDetalle: {
+      keywords: ['cobranzas', 'recuperacion de activos', 'deudores', 'gestion de cobranza', 'mora'],
+      response: `💰 **Gestión de Cobranzas**
+
+Maximizamos la recuperación de activos financieros con estrategias disruptivas centradas en la experiencia del cliente.
+
+**Metodología:** inteligencia de datos (machine learning para priorizar cartera), gestión omnicanal (teléfono, email, WhatsApp), adaptabilidad a los objetivos financieros de cada cliente y seguimiento analítico con KPIs.
+
+**Resultados de referencia:** +35% de recuperación de activos, reducción de costos operativos por automatización, e implementación en aproximadamente 2 meses.
+
+¿Querés más detalles sobre el proceso de gestión?`
+    },
+    smartChatbotDetalle: {
+      keywords: ['smart chatbot', 'chatbot municipal', 'boleto digital', 'chatbot 24'],
+      response: `🤖 **Smart Chatbot GS+** — Atención Ciudadana
+
+Atención automatizada y personalizada para municipios, con funcionalidades como boleto digital, cursos y capacitaciones, información en tiempo real, reclamos y denuncias, turnos, multas de tránsito, consulta y pago de deudas, y agenda cultural.
+
+Se integra mediante automatizaciones con bases de datos y servicios externos, y ofrece trazabilidad: monitoreo en tiempo real, identificación de zonas con más reclamos y registro para auditoría.
+
+**Beneficios:** atención más rápida y ordenada, menor carga operativa y mayor cercanía con la comunidad.
+
+El alcance de esta funcionalidad depende de lo que contrate cada organismo. ¿Querés saber más sobre alguna funcionalidad puntual?`
+    },
+    contactCenterDetalle: {
+      keywords: ['contact center', 'centro de contacto detalle', 'equipo de asesores'],
+      response: `📞 **Contact Center** — Atención al cliente omnicanal
+
+A nivel corporativo, Global Solutions cuenta con un equipo de más de 480 asesores especializados en atención, ventas y cobranzas, capacitados para resolución ágil.
+
+**Gestión omnicanal:** teléfono, email y WhatsApp, con metodología basada en inteligencia de datos, seguimiento analítico y adaptabilidad a cada perfil de cliente.
+
+**Beneficios de referencia:** mejora en la recuperación de activos, reducción de costos operativos, implementación ágil e informes en tiempo real.
+
+El alcance y la dotación de cada implementación se define según lo que contrate el organismo. ¿Te interesa conocer el proceso completo de atención?`
+    },
+    licenciasConducir: {
+      keywords: ['licencia de conducir', 'licencias de conducir', 'carnet de conducir', 'registro de conducir'],
+      response: `🪪 **Atención Integrada — Licencias de Conducir**
+
+Un modelo de "un solo contacto, toda la solución": el ciudadano resuelve consultas y gestiona su turno en la misma interacción, por teléfono, WhatsApp, chat, web o correo electrónico.
+
+**Incluye:** información sobre requisitos, documentación, costos y formas de pago, vigencia y renovación, y otorgamiento de turno en el mismo contacto.
+
+**Beneficios:** trámites más simples y claros, menos traslados, menor carga de consultas presenciales y una gestión de turnos más eficiente para el organismo.
+
+¿Querés conocer cómo se implementaría este modelo en tu organismo?`
     },
     contact: {
       keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email', 'información'],
@@ -551,15 +646,24 @@ Te responderemos a la brevedad.`
     // etc. coincidan igual, sin importar cómo escriba el usuario.
     const text = normalizeText(userText);
 
+    // Nos quedamos con la palabra clave más larga (más específica) que
+    // coincida, en vez de la primera que aparece en el objeto. Así, una
+    // pregunta como "qué hace el smart chatbot" cae en la respuesta de
+    // Smart Chatbot y no en la genérica de "qué hace".
+    let bestResponse = null;
+    let bestKeywordLength = 0;
+
     for (const [, intent] of Object.entries(INTENTS)) {
       for (const keyword of intent.keywords) {
-        if (text.includes(normalizeText(keyword))) {
-          return intent.response;
+        const normKeyword = normalizeText(keyword);
+        if (text.includes(normKeyword) && normKeyword.length > bestKeywordLength) {
+          bestKeywordLength = normKeyword.length;
+          bestResponse = intent.response;
         }
       }
     }
 
-    return null;
+    return bestResponse;
   }
 
   // --- Búsqueda de respaldo dentro del contenido de la página ---
