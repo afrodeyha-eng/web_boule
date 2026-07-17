@@ -10,6 +10,7 @@
     chatWindowId: 'boule-bot-chat',
     apiEndpoint: './bot-api.php',
     contactEmail: 'nestor.moscardo@gsolutions.com.ar',
+    secondaryContactEmail: 'alfonsina.coria@gsolutions.com.ar',
     privacyContactEmail: 'experiencia@gsolutions.com.ar',
     iconSrc: 'assets/bot-icon.svg',
   };
@@ -214,8 +215,8 @@ Un modelo de "un solo contacto, toda la solución": el ciudadano resuelve consul
     contact: {
       keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email'],
       response: `📧 **Contacto directo:**
-Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
+Email: nestor.moscardo@gsolutions.com.ar
 Web: www.gsolutions.ar
 
 ¿Necesitas agendar una reunión? Puedo conectarte con nuestro equipo.`
@@ -321,8 +322,8 @@ Actualmente acompañamos a la Municipalidad de San Rafael y a la Municipalidad d
       keywords: ['reunión', 'reunion', 'agendar', 'cita', 'demo', 'presupuesto', 'cotización', 'cotizacion'],
       response: `📅 Para agendar una reunión o pedir una propuesta, contactá directamente a:
 
-Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
+Email: nestor.moscardo@gsolutions.com.ar
 
 Te responderemos a la brevedad.`
     }
@@ -347,6 +348,30 @@ Te responderemos a la brevedad.`
     { label: 'Quiénes somos', query: 'quiénes son' },
     { label: 'Contacto', query: 'cómo los contacto' }
   ];
+
+  // Nombres de tema legibles para cada intención, usados como etiqueta en
+  // las sugerencias por palabra similar (en vez de mostrar la keyword
+  // interna tal cual, que a veces es una frase poco natural).
+  const INTENT_LABELS = {
+    services: 'Servicios',
+    impulsa: 'Impulsa GS+',
+    speechAnalytics: 'Speech Analytics',
+    obrasPrivadas: 'Obras Privadas',
+    cobranzasDetalle: 'Cobranzas',
+    smartChatbotDetalle: 'Smart Chatbot',
+    contactCenterDetalle: 'Contact Center',
+    licenciasConducir: 'Licencias de Conducir',
+    capabilities: 'Diferenciales',
+    kpis: 'Métricas (KPIs)',
+    diagnostico: 'Diagnóstico',
+    about: 'Quiénes somos',
+    clients: 'Clientes',
+    integrations: 'Integraciones',
+    volumen: 'Volumen de llamadas',
+    location: 'Ubicación',
+    contact: 'Contacto',
+    meeting: 'Reunión'
+  };
 
   // --- Búsqueda de palabras similares ("quisiste decir...") ---
   // Antes de rendirse, comparamos la consulta contra todas las palabras
@@ -392,46 +417,87 @@ Te responderemos a la brevedad.`
   const seenDictWords = new Set();
   Object.entries(INTENTS).forEach(([intentKey, intent]) => {
     if (FUZZY_EXCLUDED_INTENTS.has(intentKey)) return;
+    const label = INTENT_LABELS[intentKey] || intent.keywords[0];
     intent.keywords.forEach((keyword) => {
       normalizeText(keyword).split(/\s+/).forEach((word) => {
         if (word.length >= 6 && !STOPWORDS.has(word) && !seenDictWords.has(word)) {
           seenDictWords.add(word);
-          KEYWORD_DICTIONARY.push({ word, keyword, response: intent.response });
+          KEYWORD_DICTIONARY.push({ word, label, response: intent.response });
         }
       });
     });
   });
+
+  // Segundo diccionario, construido a partir del contenido real de la
+  // página (mismo índice que usa la búsqueda de contenido), para que las
+  // sugerencias por palabra similar también reconozcan términos que solo
+  // existen en el texto de la página y no en las keywords del bot.
+  let PAGE_FUZZY_DICTIONARY = null;
+
+  function buildPageFuzzyDictionary() {
+    if (!PAGE_INDEX) PAGE_INDEX = buildPageIndex();
+    const dict = [];
+    const seen = new Set();
+
+    PAGE_INDEX.blocks.forEach((block) => {
+      const label = block.heading
+        || (block.text.length > 44 ? `${block.text.slice(0, 44)}…` : block.text);
+      const response = block.heading ? `**${block.heading}**\n\n${block.text}` : block.text;
+
+      block.tokens.forEach((word) => {
+        if (word.length >= 6 && !seen.has(word)) {
+          seen.add(word);
+          dict.push({ word, label, response });
+        }
+      });
+    });
+
+    return dict;
+  }
 
   function fuzzyThreshold(wordLength) {
     if (wordLength <= 8) return 1;
     return 2;
   }
 
-  function findFuzzySuggestion(userText) {
+  // Devuelve hasta `maxResults` sugerencias distintas, ordenadas de más a
+  // menos parecida, combinando las keywords del bot y el contenido real
+  // de la página — así el bot puede ofrecer varios ejemplos de lo que
+  // encontró parecido para que la persona elija.
+  function findFuzzySuggestions(userText, maxResults) {
+    if (!PAGE_FUZZY_DICTIONARY) PAGE_FUZZY_DICTIONARY = buildPageFuzzyDictionary();
+    const dictionary = KEYWORD_DICTIONARY.concat(PAGE_FUZZY_DICTIONARY);
+
     const queryWords = normalizeText(userText)
       .split(/[^a-z0-9]+/)
       .filter((w) => w.length >= 6 && !STOPWORDS.has(w));
 
-    let best = null;
-    let bestDistance = Infinity;
-
+    const candidates = [];
     queryWords.forEach((word) => {
-      KEYWORD_DICTIONARY.forEach((entry) => {
+      dictionary.forEach((entry) => {
         if (Math.abs(entry.word.length - word.length) > 2) return;
         const distance = levenshtein(word, entry.word);
         const threshold = fuzzyThreshold(Math.min(word.length, entry.word.length));
-        // Ante un empate en distancia, preferimos la palabra más larga
-        // (más específica/menos propensa a coincidencias casuales).
-        const isBetter = distance < bestDistance
-          || (distance === bestDistance && best && entry.word.length > best.word.length);
-        if (distance > 0 && distance <= threshold && isBetter) {
-          bestDistance = distance;
-          best = entry;
+        if (distance > 0 && distance <= threshold) {
+          candidates.push({ entry, distance });
         }
       });
     });
 
-    return best;
+    // Ante empate en distancia, preferimos la palabra más larga (más
+    // específica/menos propensa a coincidencias casuales).
+    candidates.sort((a, b) => a.distance - b.distance || b.entry.word.length - a.entry.word.length);
+
+    const results = [];
+    const seenResponses = new Set();
+    for (const { entry } of candidates) {
+      if (results.length >= maxResults) break;
+      if (seenResponses.has(entry.response)) continue;
+      seenResponses.add(entry.response);
+      results.push(entry);
+    }
+
+    return results;
   }
 
   function loadStyles() {
@@ -943,6 +1009,10 @@ Te responderemos a la brevedad.`
           `<a href="mailto:${BOT_CONFIG.contactEmail}">${BOT_CONFIG.contactEmail}</a>`
         )
         .replace(
+          BOT_CONFIG.secondaryContactEmail,
+          `<a href="mailto:${BOT_CONFIG.secondaryContactEmail}">${BOT_CONFIG.secondaryContactEmail}</a>`
+        )
+        .replace(
           BOT_CONFIG.privacyContactEmail,
           `<a href="mailto:${BOT_CONFIG.privacyContactEmail}">${BOT_CONFIG.privacyContactEmail}</a>`
         );
@@ -960,7 +1030,18 @@ Te responderemos a la brevedad.`
         chipBtn.textContent = chip.label;
         chipBtn.addEventListener('click', () => {
           Array.from(chipRow.children).forEach((c) => { c.disabled = true; });
-          submitQuery(chip.query);
+          if (chip.response) {
+            // Sugerencia por palabra similar / ejemplo de la página: se
+            // muestra directamente, sin volver a pasar por el buscador.
+            addMessage(chip.label, true);
+            showTyping();
+            setTimeout(() => {
+              removeTyping();
+              addMessage(chip.response, false);
+            }, 500 + Math.random() * 300);
+          } else {
+            submitQuery(chip.query);
+          }
         });
         chipRow.appendChild(chipBtn);
       });
@@ -1029,8 +1110,10 @@ Te responderemos a la brevedad.`
         // 1) Respuestas fijas ya redactadas para los temas más comunes.
         // 2) Si no hay coincidencia, buscar en el texto real de la página
         //    aunque la pregunta no use las palabras clave exactas.
-        // 3) Si tampoco hay nada parecido, buscar una palabra similar y
-        //    preguntar "¿quisiste decir...?" antes de rendirnos.
+        // 3) Si tampoco hay nada parecido, buscar palabras similares —
+        //    tanto en las keywords del bot como en el contenido real de
+        //    la página— y ofrecer esos ejemplos para elegir, en vez de
+        //    rendirnos directamente.
         // 4) Si ni así encontramos algo, ofrecer un menú de temas para
         //    que la persona elija qué quiere ver, en vez de un callejón
         //    sin salida.
@@ -1038,12 +1121,18 @@ Te responderemos a la brevedad.`
         if (response) {
           addMessage(response, false);
         } else {
-          const suggestion = findFuzzySuggestion(text);
-          if (suggestion) {
+          const suggestions = findFuzzySuggestions(text, 4);
+          if (suggestions.length === 1) {
             addMessage(
-              `No estoy seguro de haber entendido bien. ¿Quisiste decir **"${suggestion.keyword}"**?`,
+              `No estoy seguro de haber entendido bien. ¿Quisiste decir **"${suggestions[0].label}"**?`,
               false,
-              [{ label: `Sí, sobre "${suggestion.keyword}"`, query: suggestion.keyword }]
+              [{ label: `Sí, sobre "${suggestions[0].label}"`, response: suggestions[0].response }]
+            );
+          } else if (suggestions.length > 1) {
+            addMessage(
+              `No estoy seguro de haber entendido bien. Esto es lo más parecido que encontré en la página, ¿te sirve alguno?`,
+              false,
+              suggestions.map((s) => ({ label: s.label, response: s.response }))
             );
           } else {
             addMessage(NO_ANSWER_RESPONSE, false, TOPIC_MENU);
