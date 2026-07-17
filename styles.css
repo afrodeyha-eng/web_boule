@@ -465,10 +465,17 @@ button {
   font-weight: 600;
 }
 
+.about-photo-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 10px;
+}
+
 .about-photo-frame {
   width: 100%;
-  height: 220px;
-  margin-top: 30px;
+  height: 300px;
   border-radius: 20px;
   overflow: hidden;
 }
@@ -1566,7 +1573,8 @@ button {
   .kpis-grid,
   .services-grid,
   .evolution-grid,
-  .cases-grid {
+  .cases-grid,
+  .about-photo-grid {
     grid-template-columns: 1fr;
   }
 

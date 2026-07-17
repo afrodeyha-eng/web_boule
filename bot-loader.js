@@ -120,7 +120,7 @@ Para consultas comerciales o específicas, contactate con: **${BOT_CONFIG.privac
       response: `📧 **Contacto directo:**
 **Néstor Moscardo**
 Email: nestor.moscardo@gsolutions.com.ar
-Teléfono: +54 2604 576822
+Email: alfonsina.coria@gsolutions.com.ar
 Web: www.gsolutions.ar
 
 ¿Necesitas agendar una reunión? Puedo conectarte con nuestro equipo.`
@@ -228,7 +228,7 @@ Actualmente acompañamos a la Municipalidad de San Rafael y a la Municipalidad d
 
 **Néstor Moscardo**
 Email: nestor.moscardo@gsolutions.com.ar
-Teléfono: +54 2604 576822
+Email: alfonsina.coria@gsolutions.com.ar
 
 Te responderemos a la brevedad.`
     }
