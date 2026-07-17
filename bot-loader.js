@@ -35,9 +35,10 @@
     return RUDE_REGEX.test(normalizeText(text));
   }
 
-  const POLITE_RESPONSE = `Lamento si algo te generó malestar. Estoy para ayudarte con respeto y buena predisposición. 🙏
-
-Si preferís continuar la consulta con una persona de nuestro equipo, escribinos a **${BOT_CONFIG.contactEmail}** y te responderemos a la brevedad.`;
+  // Ante lenguaje inapropiado, groserías o insultos: solo una disculpa
+  // breve, sin derivar al mail de contacto (a diferencia del resto de
+  // las respuestas del bot).
+  const POLITE_RESPONSE = `Lo siento, no puedo responder a ese tipo de mensajes. 🙏`;
 
   const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).
 
@@ -211,7 +212,7 @@ Un modelo de "un solo contacto, toda la solución": el ciudadano resuelve consul
 ¿Querés conocer cómo se implementaría este modelo en tu organismo?`
     },
     contact: {
-      keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email', 'información'],
+      keywords: ['contacto', 'contactar', 'comunicarse', 'teléfono', 'email'],
       response: `📧 **Contacto directo:**
 Email: nestor.moscardo@gsolutions.com.ar
 Email: alfonsina.coria@gsolutions.com.ar
@@ -251,7 +252,7 @@ Puedo ayudarte con información sobre:
 ¿En qué puedo ayudarte hoy?`
     },
     help: {
-      keywords: ['ayuda', 'help', 'qué puedes', 'qué haces', 'cómo funciona'],
+      keywords: ['ayuda', 'help', 'qué puedes', 'qué haces', 'cómo funcionás', 'cómo funcionas', 'cómo funciona el bot', 'cómo funciona este chat'],
       response: `🤖 **¿Cómo funciono?**
 Soy un asistente automático que responde solo sobre la información de esta página:
 ✓ Servicios que ofrecemos
@@ -326,6 +327,112 @@ Email: alfonsina.coria@gsolutions.com.ar
 Te responderemos a la brevedad.`
     }
   };
+
+  // Menú de temas: se muestra como botones cuando el bot no entiende la
+  // consulta, para que la persona elija qué quiere ver en vez de quedar
+  // en un callejón sin salida.
+  const TOPIC_MENU = [
+    { label: 'Servicios', query: 'qué servicios ofrecen' },
+    { label: 'Impulsa GS+', query: 'qué es impulsa gs+' },
+    { label: 'Speech Analytics', query: 'cómo funciona el speech analytics' },
+    { label: 'Obras Privadas', query: 'módulo de obras privadas' },
+    { label: 'Cobranzas', query: 'proceso de gestión de cobranzas' },
+    { label: 'Smart Chatbot', query: 'qué hace el smart chatbot' },
+    { label: 'Contact Center', query: 'contact center' },
+    { label: 'Licencias de Conducir', query: 'atención integrada licencias de conducir' },
+    { label: 'Diferenciales', query: 'cuáles son sus diferenciales' },
+    { label: 'Métricas (KPIs)', query: 'qué kpis reportan' },
+    { label: 'Ubicación', query: 'dónde están ubicados' },
+    { label: 'Clientes', query: 'con quiénes trabajan' },
+    { label: 'Quiénes somos', query: 'quiénes son' },
+    { label: 'Contacto', query: 'cómo los contacto' }
+  ];
+
+  // --- Búsqueda de palabras similares ("quisiste decir...") ---
+  // Antes de rendirse, comparamos la consulta contra todas las palabras
+  // clave conocidas usando distancia de edición, para tolerar errores de
+  // tipeo o variantes cercanas.
+
+  const STOPWORDS = new Set([
+    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
+    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
+    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
+    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
+    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
+    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
+    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
+    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
+    'cuanto', 'cuanta', 'cuantos', 'cuantas'
+  ]);
+
+  function levenshtein(a, b) {
+    const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+    for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+    for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        dp[i][j] = a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp[a.length][b.length];
+  }
+
+  // Diccionario plano de palabras distintivas (dentro de las keywords de
+  // cada intención) contra el que se compara cada palabra de la consulta.
+  // Se excluyen palabras genéricas/comunes (STOPWORDS), muy cortas, y las
+  // intenciones conversacionales/meta ("greeting", "help") cuyas palabras
+  // (saludos, verbos genéricos como "funciona") no identifican un tema
+  // real y solo generarían sugerencias falsas.
+  const FUZZY_EXCLUDED_INTENTS = new Set(['greeting', 'help']);
+
+  const KEYWORD_DICTIONARY = [];
+  const seenDictWords = new Set();
+  Object.entries(INTENTS).forEach(([intentKey, intent]) => {
+    if (FUZZY_EXCLUDED_INTENTS.has(intentKey)) return;
+    intent.keywords.forEach((keyword) => {
+      normalizeText(keyword).split(/\s+/).forEach((word) => {
+        if (word.length >= 6 && !STOPWORDS.has(word) && !seenDictWords.has(word)) {
+          seenDictWords.add(word);
+          KEYWORD_DICTIONARY.push({ word, keyword, response: intent.response });
+        }
+      });
+    });
+  });
+
+  function fuzzyThreshold(wordLength) {
+    if (wordLength <= 8) return 1;
+    return 2;
+  }
+
+  function findFuzzySuggestion(userText) {
+    const queryWords = normalizeText(userText)
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length >= 6 && !STOPWORDS.has(w));
+
+    let best = null;
+    let bestDistance = Infinity;
+
+    queryWords.forEach((word) => {
+      KEYWORD_DICTIONARY.forEach((entry) => {
+        if (Math.abs(entry.word.length - word.length) > 2) return;
+        const distance = levenshtein(word, entry.word);
+        const threshold = fuzzyThreshold(Math.min(word.length, entry.word.length));
+        // Ante un empate en distancia, preferimos la palabra más larga
+        // (más específica/menos propensa a coincidencias casuales).
+        const isBetter = distance < bestDistance
+          || (distance === bestDistance && best && entry.word.length > best.word.length);
+        if (distance > 0 && distance <= threshold && isBetter) {
+          bestDistance = distance;
+          best = entry;
+        }
+      });
+    });
+
+    return best;
+  }
 
   function loadStyles() {
     const style = document.createElement('style');
@@ -607,6 +714,36 @@ Te responderemos a la brevedad.`
           max-height: 500px;
         }
       }
+
+      .bot-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .bot-chip {
+        appearance: none;
+        border: 1px solid #12A9C4;
+        background: #ffffff;
+        color: #0B5F79;
+        font-size: 12.5px;
+        font-family: 'Open Sans', sans-serif;
+        padding: 5px 11px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+
+      .bot-chip:hover {
+        background: #0B5F79;
+        color: #ffffff;
+      }
+
+      .bot-chip:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -670,19 +807,6 @@ Te responderemos a la brevedad.`
   // Si ninguna respuesta fija coincide, buscamos en el texto real de la
   // página (títulos, párrafos) para intentar encontrar una respuesta antes
   // de derivar al mail de contacto.
-
-  const STOPWORDS = new Set([
-    'de', 'la', 'el', 'en', 'y', 'a', 'los', 'las', 'un', 'una', 'unos', 'unas',
-    'que', 'es', 'por', 'para', 'con', 'su', 'sus', 'se', 'lo', 'como', 'mas',
-    'o', 'pero', 'al', 'del', 'les', 'este', 'esta', 'estos', 'estas', 'ese',
-    'esa', 'esos', 'esas', 'ya', 'muy', 'sin', 'sobre', 'entre', 'hay', 'donde',
-    'cuando', 'cual', 'cuales', 'quien', 'quienes', 'tiene', 'tienen', 'son',
-    'ser', 'estar', 'hace', 'hacer', 'fue', 'ha', 'han', 'sido', 'me', 'te',
-    'nos', 'mi', 'tu', 'yo', 'el', 'ella', 'ellos', 'ellas', 'nosotros',
-    'ustedes', 'usted', 'sera', 'seria', 'puede', 'pueden', 'podria',
-    'podrian', 'quiero', 'quisiera', 'necesito', 'saber', 'decime', 'dime',
-    'cuanto', 'cuanta', 'cuantos', 'cuantas'
-  ]);
 
   // Stemming simple: reduce plurales/variantes básicas para que "bancos"
   // encuentre "banco", "servicios" encuentre "servicio", etc.
@@ -777,6 +901,12 @@ Te responderemos a la brevedad.`
     const coverage = bestMatched / validTokens.length;
     if (coverage < 0.5) return null;
 
+    // Exigimos al menos dos palabras válidas: con una sola palabra, la
+    // coincidencia es demasiado débil (una palabra suelta puede aparecer
+    // una única vez en la página por casualidad) y le quita lugar a una
+    // sugerencia por palabra similar que podría ser más acertada.
+    if (validTokens.length < 2) return null;
+
     return best.heading ? `**${best.heading}**\n\n${best.text}` : best.text;
   }
 
@@ -786,7 +916,7 @@ Te responderemos a la brevedad.`
     }[c]));
   }
 
-  function addMessage(text, isUser = false) {
+  function addMessage(text, isUser = false, chips = null) {
     const messagesContainer = document.getElementById('botMessages');
     const messageEl = document.createElement('div');
     messageEl.className = `bot-message ${isUser ? 'user' : 'bot'}`;
@@ -798,6 +928,8 @@ Te responderemos a la brevedad.`
       avatar.className = 'bot-avatar';
       messageEl.appendChild(avatar);
     }
+
+    const bubbleWrap = document.createElement('div');
 
     const bubble = document.createElement('div');
     bubble.className = `message-bubble ${isUser ? 'user' : 'bot'}`;
@@ -816,8 +948,26 @@ Te responderemos a la brevedad.`
         );
     }
     bubble.innerHTML = html;
+    bubbleWrap.appendChild(bubble);
 
-    messageEl.appendChild(bubble);
+    if (!isUser && chips && chips.length > 0) {
+      const chipRow = document.createElement('div');
+      chipRow.className = 'bot-chip-row';
+      chips.forEach((chip) => {
+        const chipBtn = document.createElement('button');
+        chipBtn.type = 'button';
+        chipBtn.className = 'bot-chip';
+        chipBtn.textContent = chip.label;
+        chipBtn.addEventListener('click', () => {
+          Array.from(chipRow.children).forEach((c) => { c.disabled = true; });
+          submitQuery(chip.query);
+        });
+        chipRow.appendChild(chipBtn);
+      });
+      bubbleWrap.appendChild(chipRow);
+    }
+
+    messageEl.appendChild(bubbleWrap);
     messagesContainer.appendChild(messageEl);
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -849,14 +999,13 @@ Te responderemos a la brevedad.`
     if (typingEl) typingEl.remove();
   }
 
-  function handleUserMessage() {
+  function submitQuery(text) {
     const input = document.getElementById('botInput');
     const sendBtn = document.getElementById('botSend');
-    const text = input.value.trim();
 
+    text = text.trim();
     if (!text) return;
 
-    input.value = '';
     addMessage(text, true);
 
     sendBtn.disabled = true;
@@ -880,12 +1029,25 @@ Te responderemos a la brevedad.`
         // 1) Respuestas fijas ya redactadas para los temas más comunes.
         // 2) Si no hay coincidencia, buscar en el texto real de la página
         //    aunque la pregunta no use las palabras clave exactas.
-        // 3) Si tampoco se encuentra nada, derivar al mail de contacto.
+        // 3) Si tampoco hay nada parecido, buscar una palabra similar y
+        //    preguntar "¿quisiste decir...?" antes de rendirnos.
+        // 4) Si ni así encontramos algo, ofrecer un menú de temas para
+        //    que la persona elija qué quiere ver, en vez de un callejón
+        //    sin salida.
         const response = matchIntent(text) || matchPageContent(text);
         if (response) {
           addMessage(response, false);
         } else {
-          addMessage(NO_ANSWER_RESPONSE, false);
+          const suggestion = findFuzzySuggestion(text);
+          if (suggestion) {
+            addMessage(
+              `No estoy seguro de haber entendido bien. ¿Quisiste decir **"${suggestion.keyword}"**?`,
+              false,
+              [{ label: `Sí, sobre "${suggestion.keyword}"`, query: suggestion.keyword }]
+            );
+          } else {
+            addMessage(NO_ANSWER_RESPONSE, false, TOPIC_MENU);
+          }
         }
       }
 
@@ -893,6 +1055,14 @@ Te responderemos a la brevedad.`
       input.disabled = false;
       input.focus();
     }, 800 + Math.random() * 400);
+  }
+
+  function handleUserMessage() {
+    const input = document.getElementById('botInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    submitQuery(text);
   }
 
   function initBot() {
@@ -910,7 +1080,7 @@ Te responderemos a la brevedad.`
       if (chatWindow.classList.contains('is-open')) {
         input.focus();
         if (document.getElementById('botMessages').children.length === 0) {
-          addMessage(INTENTS.greeting.response, false);
+          addMessage(INTENTS.greeting.response, false, TOPIC_MENU);
         }
       }
     });
