@@ -420,7 +420,7 @@ Te responderemos a la brevedad.`
     const label = INTENT_LABELS[intentKey] || intent.keywords[0];
     intent.keywords.forEach((keyword) => {
       normalizeText(keyword).split(/\s+/).forEach((word) => {
-        if (word.length >= 6 && !STOPWORDS.has(word) && !seenDictWords.has(word)) {
+        if (word.length >= 4 && !STOPWORDS.has(word) && !seenDictWords.has(word)) {
           seenDictWords.add(word);
           KEYWORD_DICTIONARY.push({ word, label, response: intent.response });
         }
@@ -445,7 +445,7 @@ Te responderemos a la brevedad.`
       const response = block.heading ? `**${block.heading}**\n\n${block.text}` : block.text;
 
       block.tokens.forEach((word) => {
-        if (word.length >= 6 && !seen.has(word)) {
+        if (word.length >= 4 && !seen.has(word)) {
           seen.add(word);
           dict.push({ word, label, response });
         }
@@ -460,6 +460,15 @@ Te responderemos a la brevedad.`
     return 2;
   }
 
+  // "Autocompletar": si una palabra es el comienzo de la otra (mínimo 4
+  // letras en común), la tratamos como una coincidencia muy fuerte, aunque
+  // la diferencia de longitud sea grande (ej. "cobra" -> "cobranzas").
+  function isPrefixMatch(a, b) {
+    if (a === b) return false;
+    if (a.length < 4 || b.length < 4) return false;
+    return a.startsWith(b) || b.startsWith(a);
+  }
+
   // Devuelve hasta `maxResults` sugerencias distintas, ordenadas de más a
   // menos parecida, combinando las keywords del bot y el contenido real
   // de la página — así el bot puede ofrecer varios ejemplos de lo que
@@ -470,11 +479,17 @@ Te responderemos a la brevedad.`
 
     const queryWords = normalizeText(userText)
       .split(/[^a-z0-9]+/)
-      .filter((w) => w.length >= 6 && !STOPWORDS.has(w));
+      .filter((w) => w.length >= 4 && !STOPWORDS.has(w));
 
     const candidates = [];
     queryWords.forEach((word) => {
       dictionary.forEach((entry) => {
+        if (isPrefixMatch(word, entry.word)) {
+          // Coincidencia por autocompletar: más fuerte que un typo de 1
+          // letra, pero no tanto como una palabra idéntica.
+          candidates.push({ entry, distance: 0.5 });
+          return;
+        }
         if (Math.abs(entry.word.length - word.length) > 2) return;
         const distance = levenshtein(word, entry.word);
         const threshold = fuzzyThreshold(Math.min(word.length, entry.word.length));
