@@ -41,9 +41,15 @@
   // las respuestas del bot).
   const POLITE_RESPONSE = `Lo siento, no puedo responder a ese tipo de mensajes. 🙏`;
 
-  const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).
+  const NO_ANSWER_RESPONSE = `Lo siento, no tengo una respuesta para esa consulta. Solo puedo responder sobre la información publicada en esta página (servicios, diferenciales, resultados, ubicación y contacto).`;
 
-Para continuar tu consulta, escribinos a **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
+  // Derivación al mail: solo se muestra como último recurso, cuando ya
+  // se agotaron las otras instancias (respuestas fijas, búsqueda en la
+  // página, sugerencias por palabra similar y menú de temas) más de una
+  // vez seguida — no en el primer "no entiendo".
+  const NO_ANSWER_RESPONSE_FINAL = `${NO_ANSWER_RESPONSE}
+
+Para continuar tu consulta, escribinos a **${BOT_CONFIG.secondaryContactEmail}** o **${BOT_CONFIG.contactEmail}** y nuestro equipo te responderá a la brevedad. 📧`;
 
   // --- Protección de información confidencial ---
   // El bot solo comparte generalidades públicas sobre servicios y
@@ -1048,6 +1054,9 @@ Te responderemos a la brevedad.`
           if (chip.response) {
             // Sugerencia por palabra similar / ejemplo de la página: se
             // muestra directamente, sin volver a pasar por el buscador.
+            // Al confirmar una sugerencia, la persona sí encontró algo
+            // útil, así que reiniciamos el conteo de fallos seguidos.
+            consecutiveNoAnswers = 0;
             addMessage(chip.label, true);
             showTyping();
             setTimeout(() => {
@@ -1095,6 +1104,12 @@ Te responderemos a la brevedad.`
     if (typingEl) typingEl.remove();
   }
 
+  // Cuenta cuántas veces seguidas el bot no encontró absolutamente nada
+  // (ni respuesta fija, ni contenido de página, ni sugerencia parecida).
+  // Solo cuando se agotaron todas esas instancias más de una vez seguida
+  // se ofrece la derivación por mail, como último recurso.
+  let consecutiveNoAnswers = 0;
+
   function submitQuery(text) {
     const input = document.getElementById('botInput');
     const sendBtn = document.getElementById('botSend');
@@ -1130,27 +1145,33 @@ Te responderemos a la brevedad.`
         //    la página— y ofrecer esos ejemplos para elegir, en vez de
         //    rendirnos directamente.
         // 4) Si ni así encontramos algo, ofrecer un menú de temas para
-        //    que la persona elija qué quiere ver, en vez de un callejón
-        //    sin salida.
+        //    que la persona elija qué quiere ver. Solo si esto también
+        //    falla más de una vez seguida, se agrega la derivación por
+        //    mail como último recurso.
         const response = matchIntent(text) || matchPageContent(text);
         if (response) {
+          consecutiveNoAnswers = 0;
           addMessage(response, false);
         } else {
           const suggestions = findFuzzySuggestions(text, 4);
           if (suggestions.length === 1) {
+            consecutiveNoAnswers = 0;
             addMessage(
               `No estoy seguro de haber entendido bien. ¿Quisiste decir **"${suggestions[0].label}"**?`,
               false,
               [{ label: `Sí, sobre "${suggestions[0].label}"`, response: suggestions[0].response }]
             );
           } else if (suggestions.length > 1) {
+            consecutiveNoAnswers = 0;
             addMessage(
               `No estoy seguro de haber entendido bien. Esto es lo más parecido que encontré en la página, ¿te sirve alguno?`,
               false,
               suggestions.map((s) => ({ label: s.label, response: s.response }))
             );
           } else {
-            addMessage(NO_ANSWER_RESPONSE, false, TOPIC_MENU);
+            consecutiveNoAnswers++;
+            const finalResort = consecutiveNoAnswers >= 2;
+            addMessage(finalResort ? NO_ANSWER_RESPONSE_FINAL : NO_ANSWER_RESPONSE, false, TOPIC_MENU);
           }
         }
       }
