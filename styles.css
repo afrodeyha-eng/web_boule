@@ -1395,6 +1395,12 @@ button {
   font-weight: 700;
 }
 
+.contact-name--second {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .contact-detail {
   font-size: 14px;
   color: #cfcfc7;
