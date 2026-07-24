@@ -1,3 +1,12 @@
+/* ===== Marca — color fijo, NO cambiar salvo pedido explícito ===== */
+:root {
+  --brand-accent: #1BA697;
+  --brand-accent-rgb: 27, 166, 151;
+  --brand-accent-hover: #158377;
+  --brand-accent-dark: #11695F;
+  --brand-accent-dark-rgb: 17, 105, 95;
+}
+
 /* ===== Reset & base ===== */
 * {
   margin: 0;
@@ -23,7 +32,7 @@ a {
 }
 
 a:hover {
-  color: #148577;
+  color: var(--brand-accent-dark);
 }
 
 img {
@@ -41,7 +50,7 @@ button {
   letter-spacing: 1px;
   color: #1a1a1a;
   font-weight: 700;
-  background: #1BA697;
+  background: var(--brand-accent);
   display: inline-block;
   padding: 6px 16px;
   border-radius: 20px;
@@ -60,7 +69,7 @@ button {
 }
 
 .eyebrow--yellow {
-  color: #1BA697;
+  color: var(--brand-accent);
 }
 
 .section-title {
@@ -84,9 +93,9 @@ button {
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
-  color: #148577;
-  background: rgba(27, 166, 151, 0.18);
-  border: 1px solid rgba(20, 133, 119, 0.4);
+  color: var(--brand-accent-dark);
+  background: rgba(var(--brand-accent-rgb), 0.25);
+  border: 1px solid rgba(var(--brand-accent-dark-rgb), 0.4);
   padding: 5px 14px;
   border-radius: 20px;
   margin-top: 14px;
@@ -124,7 +133,7 @@ button {
 
 .btn-primary {
   padding: 12px 28px;
-  background: #1BA697;
+  background: var(--brand-accent);
   color: #1a1a1a;
   font-size: 13px;
   border-radius: 30px;
@@ -132,17 +141,17 @@ button {
 
 .btn-primary:hover {
   color: #1a1a1a;
-  background: #148577;
+  background: var(--brand-accent-hover);
 }
 
 .btn-accent {
-  background: #1BA697;
+  background: var(--brand-accent);
   color: #1a1a1a;
 }
 
 .btn-accent:hover {
   color: #1a1a1a;
-  background: #148577;
+  background: var(--brand-accent-hover);
 }
 
 .btn-outline {
@@ -190,7 +199,7 @@ button {
 }
 
 .brand-logo {
-  height: 46px;
+  height: 30px;
   width: auto;
 }
 
@@ -281,7 +290,7 @@ button {
   top: -60px;
   width: 260px;
   height: 260px;
-  background: #1BA697;
+  background: var(--brand-accent);
   border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
 }
 
@@ -330,7 +339,7 @@ button {
 .hero-rule {
   width: 90px;
   height: 5px;
-  background: #1BA697;
+  background: var(--brand-accent);
   margin-bottom: 26px;
 }
 
@@ -358,8 +367,8 @@ button {
   margin-bottom: 34px;
   max-width: 480px;
   padding: 12px 16px;
-  background: rgba(27, 166, 151, 0.15);
-  border-left: 3px solid #1BA697;
+  background: rgba(var(--brand-accent-rgb), 0.18);
+  border-left: 3px solid var(--brand-accent);
   border-radius: 0 8px 8px 0;
 }
 
@@ -405,7 +414,7 @@ button {
   right: 20px;
   width: 60px;
   height: 60px;
-  border: 3px solid #1BA697;
+  border: 3px solid var(--brand-accent);
   border-radius: 50%;
 }
 
@@ -465,17 +474,10 @@ button {
   font-weight: 600;
 }
 
-.about-photo-grid {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 10px;
-}
-
 .about-photo-frame {
   width: 100%;
-  height: 300px;
+  height: 220px;
+  margin-top: 30px;
   border-radius: 20px;
   overflow: hidden;
 }
@@ -516,68 +518,6 @@ button {
   padding-top: 18px;
 }
 
-/* ===== Casos de exito ===== */
-.cases {
-  padding: 90px 60px;
-  background: white;
-}
-
-.cases-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.case-card {
-  background: #f4f3ef;
-  border-radius: 20px;
-  padding: 34px 30px;
-}
-
-.case-title {
-  font-size: 17px;
-  color: #1a1a1a;
-  margin-bottom: 16px;
-}
-
-.case-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.case-list li {
-  font-size: 14px;
-  color: #4a4a4a;
-  line-height: 1.5;
-  padding-left: 18px;
-  position: relative;
-}
-
-.case-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #1BA697;
-}
-
-.cases-note {
-  font-size: 12.5px;
-  color: #8a8a8a;
-  text-align: center;
-  margin-top: 30px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 /* ===== Diferenciales ===== */
 .differentiators {
   padding: 90px 60px;
@@ -604,7 +544,7 @@ button {
 .diff-badge {
   width: 46px;
   height: 46px;
-  background: #1BA697;
+  background: var(--brand-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -655,7 +595,7 @@ button {
 .evolution-label {
   font-size: 12px;
   font-weight: 700;
-  color: #1BA697;
+  color: var(--brand-accent-dark);
   letter-spacing: 1px;
   margin-bottom: 12px;
 }
@@ -680,7 +620,7 @@ button {
   bottom: -100px;
   width: 280px;
   height: 280px;
-  background: #1BA697;
+  background: var(--brand-accent);
   opacity: 0.5;
   border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
 }
@@ -765,16 +705,16 @@ button {
 .kpi-card::before {
   top: 10px;
   left: 10px;
-  border-top: 2px solid #1BA697;
-  border-left: 2px solid #1BA697;
+  border-top: 2px solid var(--brand-accent);
+  border-left: 2px solid var(--brand-accent);
   transform: translate(-5px, -5px);
 }
 
 .kpi-card::after {
   bottom: 10px;
   right: 10px;
-  border-bottom: 2px solid #1BA697;
-  border-right: 2px solid #1BA697;
+  border-bottom: 2px solid var(--brand-accent);
+  border-right: 2px solid var(--brand-accent);
   transform: translate(5px, 5px);
 }
 
@@ -782,7 +722,7 @@ button {
 .kpi-card.is-open {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.08);
-  border-color: rgba(27, 166, 151, 0.7);
+  border-color: rgba(var(--brand-accent-rgb), 0.7);
 }
 
 .kpi-card:hover::before,
@@ -803,13 +743,13 @@ button {
 
 .kpi-card:hover .kpi-value,
 .kpi-card.is-open .kpi-value {
-  color: #1BA697;
+  color: var(--brand-accent-dark);
 }
 
 .kpi-bar {
   width: 34px;
   height: 3px;
-  background: #1BA697;
+  background: var(--brand-accent);
   border-radius: 2px;
   margin: 12px auto 0;
   transform: scaleX(0);
@@ -872,7 +812,7 @@ button {
 
 .dashboard-live {
   font-size: 12px;
-  color: #1BA697;
+  color: var(--brand-accent);
   font-weight: 700;
   animation: pulse 1.6s ease infinite;
 }
@@ -908,7 +848,7 @@ button {
 .dashboard-bar {
   width: 100%;
   border-radius: 6px 6px 0 0;
-  background: linear-gradient(#1BA697, #1BA697);
+  background: linear-gradient(var(--brand-accent), var(--brand-accent-dark));
   height: var(--h, 0%);
   transform-origin: center bottom;
   animation: barGrow 0.8s ease;
@@ -953,7 +893,7 @@ button {
 
 .dashboard-stat-fill {
   height: 100%;
-  background: #1BA697;
+  background: var(--brand-accent);
   border-radius: 3px;
 }
 
@@ -1182,7 +1122,7 @@ button {
 .dot--c1 { background: #b0224a; }
 .dot--c2 { background: #f5a623; }
 .dot--c3 { background: #4fb3bf; }
-.dot--y  { background: #1BA697; }
+.dot--y  { background: var(--brand-accent-dark); }
 .dot--p  { background: #8b5cf6; }
 .dot--o  { background: #f5a623; }
 .dot--b  { background: #5bc0de; }
@@ -1210,7 +1150,7 @@ button {
 
 .dash2-tab.is-active {
   background: #1a1a1a;
-  color: #1BA697;
+  color: var(--brand-accent);
 }
 
 .dash2-linechart {
@@ -1261,7 +1201,7 @@ button {
 .dash2-line--c1 { stroke: #b0224a; }
 .dash2-line--c2 { stroke: #f5a623; }
 .dash2-line--c3 { stroke: #4fb3bf; }
-.dash2-line--y  { stroke: #1BA697; }
+.dash2-line--y  { stroke: var(--brand-accent-dark); }
 .dash2-line--p  { stroke: #8b5cf6; }
 .dash2-line--o  { stroke: #f5a623; }
 .dash2-line--b  { stroke: #5bc0de; }
@@ -1372,7 +1312,7 @@ button {
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: #1a1a1a;
-  background: #1BA697;
+  background: var(--brand-accent);
   padding: 3px 10px;
   border-radius: 20px;
   margin-bottom: 10px;
@@ -1401,7 +1341,7 @@ button {
 /* ===== CTA + Contacto ===== */
 .cta {
   padding: 90px 60px;
-  background: #1BA697;
+  background: var(--brand-accent);
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 50px;
@@ -1434,7 +1374,7 @@ button {
 
 .cta-text {
   font-size: 15px;
-  color: #3a3a2a;
+  color: rgba(26, 26, 26, 0.78);
   line-height: 1.75;
   max-width: 500px;
   font-weight: 600;
@@ -1556,7 +1496,6 @@ button {
   }
 
   .about,
-  .cases,
   .differentiators,
   .evolution,
   .infrastructure,
@@ -1572,9 +1511,7 @@ button {
   .infrastructure-grid,
   .kpis-grid,
   .services-grid,
-  .evolution-grid,
-  .cases-grid,
-  .about-photo-grid {
+  .evolution-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1589,7 +1526,7 @@ button {
   }
 
   .brand-logo {
-    height: 38px;
+    height: 26px;
   }
 
   .header-actions,
@@ -1636,7 +1573,6 @@ button {
   }
 
   .about,
-  .cases,
   .differentiators,
   .evolution,
   .infrastructure,
