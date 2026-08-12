@@ -1,5 +1,496 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<me
-    
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boulé GovTech · By Global Solutions</title>
+<meta name="description" content="Boulé GovTech conecta al Estado con sus ciudadanos, empresas y organizaciones a través de una plataforma gubernamental integral y modular.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/quienes-somos.jpg" fetchpriority="high">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="brand">
+    <img src="assets/logo.png" alt="Boulé" class="brand-logo" width="353" height="120" fetchpriority="high">
+  </div>
+  <nav class="desktop-nav main-nav">
+    <a href="#diferenciales">Diferenciales</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#kpis">Resultados</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <div class="desktop-nav header-actions">
+    <a href="diagnostico.html" class="btn btn-outline-dark">Diagnosticate</a>
+    <button class="btn btn-primary" data-scroll-to="#contacto">Agendar reunión</button>
+  </div>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">☰</button>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#diferenciales">Diferenciales</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#kpis">Resultados</a>
+  <a href="#contacto">Contacto</a>
+  <a href="diagnostico.html" class="btn btn-outline-dark">Diagnosticate</a>
+  <button class="btn btn-primary" data-scroll-to="#contacto">Agendar reunión</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="hero-card">
+    <div class="hero-blob"></div>
+    <div class="hero-dots" aria-hidden="true"></div>
+
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1>Tecnología y operación para modernizar la gestión pública</h1>
+        <div class="hero-rule"></div>
+        <p class="hero-eyebrow">CENTRO DE CONTACTO CIUDADANO</p>
+        <p class="hero-lead">Diseñamos e implementamos soluciones de atención ciudadana, gestión legislativa, recursos humanos y análisis de datos para gobiernos locales y provinciales.</p>
+        <p class="hero-capacity"><span class="hero-capacity-label">Capacidad proyectada</span> Solución diseñada para administrar operaciones de más de 89.000 interacciones mensuales.</p>
+        <div class="hero-actions">
+          <button class="btn btn-accent" data-scroll-to="#servicios">Ver propuesta</button>
+          <button class="btn btn-outline" data-scroll-to="#contacto">Casos de éxito</button>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <div class="hero-photo-frame">
+          <img src="assets/quienes-somos.jpg" alt="Foto: equipo del centro de atención" class="hero-photo" width="1000" height="667" fetchpriority="high">
+        </div>
+        <div class="hero-ring"></div>
+      </div>
+    </div>
+
+    <div class="hero-clients">
+      <p>Actualmente acompañamos a municipios y gobiernos mediante proyectos de atención ciudadana y gestión legislativa.</p>
+      <p class="hero-clients-secondary">Respaldados por la experiencia operativa de Global Solutions, proveedor de compañías como Movistar, Banco Galicia, Despegar y Prisma.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUIENES SOMOS + VISION -->
+<section class="about reveal">
+  <div>
+    <p class="eyebrow-pill">QUIÉNES SOMOS</p>
+    <h2 class="section-title">Una capa central de orquestación para el Estado</h2>
+    <p class="body-text">Somos Boulé GovTech, una plataforma gubernamental integral y modular que conecta al Estado con los ciudadanos, empresas y organizaciones. Funcionamos como una capa central que se integra con los sistemas públicos existentes para complementarlos, sin necesidad de reemplazarlos.</p>
+    <div class="tag-list">
+      <span class="tag">Implementación ágil</span>
+      <span class="tag">Integramos sistemas existentes</span>
+      <span class="tag">Visión integral 360°</span>
+    </div>
+    <div class="about-photo-frame">
+      <img src="assets/quienes-somos-equipo.jpg" alt="Foto del equipo trabajando" class="about-photo" width="1400" height="933" loading="lazy">
+    </div>
+  </div>
+  <div class="proposal-card">
+    <p class="eyebrow eyebrow--muted">PROPUESTA — OBJETIVO PRINCIPAL</p>
+    <h3 class="proposal-title">Modernizar y eficientizar el Centro de Contacto Ciudadano</h3>
+    <p class="proposal-text">Establecer un nodo operativo de atención descentralizado, operado por Global Solutions, para absorber, gestionar y optimizar el flujo de más de 89.000 llamadas mensuales — garantizando la satisfacción del ciudadano.</p>
+    <p class="proposal-quote">"Crear un proyecto que no solo ofrezca un producto o servicio, sino que genere cercanía, comunidad y experiencias memorables."</p>
+  </div>
+</section>
+
+<!-- DIFERENCIALES -->
+<section id="diferenciales" class="differentiators reveal">
+  <div class="section-head">
+    <p class="eyebrow-pill">NUESTROS DIFERENCIALES</p>
+    <h2 class="section-title section-title--lg">Cuatro ejes que cambian la ecuación</h2>
+  </div>
+
+  <div class="differentiators-grid">
+    <div class="diff-card">
+      <div class="diff-badge">01</div>
+      <h3 class="diff-title">Descentralización</h3>
+      <p class="diff-text">Evitamos el embotellamiento aportando personal especializado, mejorando empatía y precisión en los reclamos.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-badge diff-badge--sm">70%</div>
+      <h3 class="diff-title">Filtro de consultas</h3>
+      <p class="diff-text">Filtramos consultas simples (horarios, requisitos) por nuestros canales, liberando humanos para urgencias reales.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-badge diff-badge--sm">RPC↑</div>
+      <h3 class="diff-title">Resolución en primer contacto</h3>
+      <p class="diff-text">Dejamos de ser un "pasamanos": la plataforma está preparada para integrarse con los sistemas de cada organismo y resolver en el momento, mediante las autorizaciones y desarrollos correspondientes.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-badge diff-badge--md">24/7</div>
+      <h3 class="diff-title">Omnicanalidad modular</h3>
+      <p class="diff-text">Solución modular que puede incorporar telefonía, WhatsApp, chatbot, redes sociales y otros canales digitales, según el alcance de cada implementación.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EVOLUCION DEL SERVICIO -->
+<section class="evolution reveal">
+  <div class="section-head">
+    <p class="eyebrow-pill">EVOLUCIÓN DEL SERVICIO</p>
+    <h2 class="section-title">Modelo Gobiernos Inteligentes</h2>
+  </div>
+  <div class="evolution-grid">
+    <div class="evolution-col">
+      <p class="evolution-label">ENFOQUE</p>
+      <p class="evolution-text">Resolución end-to-end y generación de recaudación</p>
+    </div>
+    <div class="evolution-col">
+      <p class="evolution-label">UBICACIÓN</p>
+      <p class="evolution-text">Descentralizado, con conocimiento local estratégico del territorio</p>
+    </div>
+    <div class="evolution-col">
+      <p class="evolution-label">SISTEMAS</p>
+      <p class="evolution-text">Ecosistema GI+ con posibilidad de integración futura con sistemas tributarios, registrales, sanitarios y administrativos</p>
+    </div>
+    <div class="evolution-col">
+      <p class="evolution-label">CANALES</p>
+      <p class="evolution-text">WhatsApp y chatbot, con posibilidad de incorporar app propia, redes sociales y accesibilidad (LSA) según el alcance del proyecto</p>
+    </div>
+  </div>
+</section>
+
+<!-- INFRAESTRUCTURA Y CAPITAL HUMANO -->
+<section class="infrastructure reveal">
+  <div class="infra-blob"></div>
+  <div class="infra-inner">
+    <div class="section-head">
+      <p class="eyebrow-pill">MÚSCULO OPERATIVO INMEDIATO</p>
+      <h2 class="section-title">Infraestructura y capital humano</h2>
+    </div>
+    <div class="infrastructure-grid">
+      <div class="infra-card">
+        <div class="infra-photo-frame">
+          <img src="assets/infra-locaciones.jpg" alt="Foto: oficinas / sites propios" class="infra-photo" width="900" height="600" loading="lazy">
+        </div>
+        <h3 class="infra-title">Locaciones de primer nivel</h3>
+        <p class="infra-text">Sites propios operativos en San Rafael, Alvear y Córdoba. Flexibilidad para modelo "llave en mano" o híbrido en locaciones del Estado.</p>
+      </div>
+      <div class="infra-card">
+        <div class="infra-photo-frame">
+          <img src="assets/infra-conectados.jpg" alt="Foto: puestos de trabajo conectados" class="infra-photo" width="900" height="600" loading="lazy">
+        </div>
+        <h3 class="infra-title">Entornos conectados</h3>
+        <p class="infra-text">Infraestructura preparada para operar bajo los protocolos de seguridad y acceso definidos por cada organismo.</p>
+      </div>
+      <div class="infra-card">
+        <div class="infra-photo-frame">
+          <img src="assets/infra-equipo.jpg" alt="Foto: equipo telefónico en acción" class="infra-photo" width="900" height="600" loading="lazy">
+        </div>
+        <h3 class="infra-title">Equipo especializado</h3>
+        <p class="infra-text">Personal con experiencia en atención, supervisión, capacitación y gestión de operaciones, con dotación de respaldo para picos de demanda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KPIS -->
+<section id="kpis" class="kpis reveal">
+  <div class="section-head">
+    <p class="eyebrow-pill">MEDICIÓN DE RESULTADOS</p>
+    <h2 class="section-title">Métricas que reportamos</h2>
+  </div>
+  <div class="kpis-grid" id="kpisGrid">
+    <div class="kpi-card" data-kpi="FCR">
+      <p class="kpi-value">FCR</p>
+      <div class="kpi-bar"></div>
+      <p class="kpi-label">Resolución en el Primer Contacto</p>
+      <p class="kpi-detail">Porcentaje de casos resueltos en la primera interacción, sin derivaciones ni reclamos repetidos.</p>
+    </div>
+    <div class="kpi-card" data-kpi="TMO">
+      <p class="kpi-value">TMO</p>
+      <div class="kpi-bar"></div>
+      <p class="kpi-label">Tiempo Medio de Operación</p>
+      <p class="kpi-detail">Duración promedio de cada interacción, desde el inicio hasta la resolución.</p>
+    </div>
+    <div class="kpi-card" data-kpi="SLA">
+      <p class="kpi-value">SLA</p>
+      <div class="kpi-bar"></div>
+      <p class="kpi-label">Nivel de Servicio</p>
+      <p class="kpi-detail">Porcentaje de llamadas atendidas dentro del tiempo objetivo definido por el organismo.</p>
+    </div>
+    <div class="kpi-card" data-kpi="NPS">
+      <p class="kpi-value">NPS</p>
+      <div class="kpi-bar"></div>
+      <p class="kpi-label">Satisfacción del Ciudadano</p>
+      <p class="kpi-detail">Medición directa de la experiencia percibida por quienes usan el servicio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD OPERATIVO -->
+<section class="dashboard reveal">
+  <div class="section-head">
+    <p class="eyebrow-pill">PANEL DE GESTIÓN</p>
+    <h2 class="section-title">Dashboard operativo</h2>
+    <p class="section-sub">Ejemplo del tipo de visibilidad que la plataforma puede ofrecer al organismo</p>
+    <p class="dashboard-disclaimer">Dashboard demostrativo — datos simulados a modo ilustrativo</p>
+  </div>
+
+  <div class="dashboard-panel">
+    <div class="dashboard-chart">
+      <div class="dashboard-chart-head">
+        <p class="dashboard-chart-label">LLAMADAS POR SEMANA</p>
+        <p class="dashboard-live">● EJEMPLO SIMULADO</p>
+      </div>
+      <div class="dashboard-bars" id="dashboardBars">
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 62%"></div><span>L</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 78%"></div><span>M</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 55%"></div><span>M</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 90%"></div><span>J</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 71%"></div><span>V</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 40%"></div><span>S</span></div>
+        <div class="dashboard-bar-col"><div class="dashboard-bar" style="--h: 30%"></div><span>D</span></div>
+      </div>
+    </div>
+
+    <div class="dashboard-stats">
+      <div class="dashboard-stat">
+        <p class="dashboard-stat-label">SLA cumplido</p>
+        <p class="dashboard-stat-value">94%</p>
+        <div class="dashboard-stat-track"><div class="dashboard-stat-fill" style="width: 94%"></div></div>
+      </div>
+      <div class="dashboard-stat">
+        <p class="dashboard-stat-label">Llamadas activas ahora</p>
+        <p class="dashboard-stat-value" id="activeCalls">28</p>
+      </div>
+      <div class="dashboard-stat">
+        <p class="dashboard-stat-label">Satisfacción del día</p>
+        <p class="dashboard-stat-value">98%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de productividad, formato similar a la herramienta interna -->
+  <div class="dash2">
+    <div class="dash2-topbar">
+      <h3 class="dash2-title">Productividad <span>(cola campaña)</span></h3>
+      <div class="dash2-live">
+        <span class="dash2-toggle is-on"><span class="dash2-toggle-knob"></span></span>
+        <span>Monitoreo en tiempo real</span>
+      </div>
+      <span class="dash2-updated">Última actualización: <span id="dash2Updated">—</span></span>
+    </div>
+
+    <div class="dash2-filters">
+      <span class="dash2-filters-label">Campañas</span>
+      <label class="dash2-radio"><input type="radio" name="dash2-campaign" checked><span>Centro de Contacto</span></label>
+      <label class="dash2-radio"><input type="radio" name="dash2-campaign"><span>Municipios</span></label>
+      <label class="dash2-radio"><input type="radio" name="dash2-campaign"><span>Predictivo Grupo C</span></label>
+    </div>
+
+    <div class="dash2-stats">
+      <div class="dash2-stat">
+        <p class="dash2-stat-value" data-count="1248">0</p>
+        <p class="dash2-stat-label">Llamadas totales</p>
+      </div>
+      <div class="dash2-stat">
+        <p class="dash2-stat-value" data-count="94" data-suffix="%">0%</p>
+        <p class="dash2-stat-label">Promedio de derivación</p>
+      </div>
+      <div class="dash2-stat">
+        <p class="dash2-stat-value" data-count="6" data-suffix="%">0%</p>
+        <p class="dash2-stat-label">Promedio de no conecta</p>
+      </div>
+      <div class="dash2-stat">
+        <p class="dash2-stat-value" data-count="94" data-suffix="%">0%</p>
+        <p class="dash2-stat-label">Promedio de conecta</p>
+      </div>
+    </div>
+
+    <div class="dash2-donuts">
+      <div class="dash2-donut-card">
+        <p class="dash2-donut-title">Distribución de llamadas conectadas</p>
+        <div class="dash2-donut-wrap">
+          <div class="dash2-donut" id="dash2Donut1" style="--p1:88; --p2:10; --p3:2;" data-animate="donut1"></div>
+          <ul class="dash2-donut-legend">
+            <li><span class="dot dot--c1"></span>Operador <b>88%</b></li>
+            <li><span class="dot dot--c2"></span>Colas <b>10%</b></li>
+            <li><span class="dot dot--c3"></span>Oyentes <b>2%</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="dash2-donut-card">
+        <p class="dash2-donut-title">Distribución de llamadas no conectadas</p>
+        <div class="dash2-donut-wrap">
+          <div class="dash2-donut" id="dash2Donut2" style="--p1:46; --p2:31; --p3:23;" data-animate="donut2"></div>
+          <ul class="dash2-donut-legend">
+            <li><span class="dot dot--c1"></span>No contesta <b>46%</b></li>
+            <li><span class="dot dot--c2"></span>Ocupado <b>31%</b></li>
+            <li><span class="dot dot--c3"></span>Rechazada <b>23%</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash2-tabs">
+      <button class="dash2-tab is-active" data-tab="horas">Por horas</button>
+      <button class="dash2-tab" data-tab="dias">Por días</button>
+    </div>
+
+    <div class="dash2-linechart">
+      <p class="dash2-linechart-title">Promedio de derivación por horarios y campaña</p>
+      <div class="dash2-linechart-legend">
+        <span><i class="dot dot--c1"></i>Promedio</span>
+        <span><i class="dot dot--c2"></i>IVR Claro</span>
+        <span><i class="dot dot--c3"></i>IVR Personal</span>
+      </div>
+      <svg class="dash2-svg" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Gráfico de derivación por horario">
+        <line x1="0" y1="30" x2="600" y2="30" class="dash2-gridline"/>
+        <line x1="0" y1="75" x2="600" y2="75" class="dash2-gridline"/>
+        <line x1="0" y1="120" x2="600" y2="120" class="dash2-gridline"/>
+        <line x1="0" y1="165" x2="600" y2="165" class="dash2-gridline"/>
+        <polyline class="dash2-line dash2-line--c1" points="0,140 100,120 200,90 300,60 400,45 500,55 600,70"/>
+        <polyline class="dash2-line dash2-line--c2" points="0,155 100,150 200,130 300,110 400,100 500,115 600,125"/>
+        <polyline class="dash2-line dash2-line--c3" points="0,160 100,158 200,150 300,145 400,148 500,152 600,155"/>
+      </svg>
+    </div>
+
+    <!-- Distribución por horarios: conectadas / no conectadas -->
+    <div class="dash2-multi">
+      <div class="dash2-multi-card">
+        <p class="dash2-multi-title">Promedio de distribución de NO CONECTADAS por horarios</p>
+        <div class="dash2-multi-legend">
+          <span><i class="dot dot--y"></i>% No asignado</span>
+          <span><i class="dot dot--p"></i>% No contesta</span>
+          <span><i class="dot dot--o"></i>% Rechazada</span>
+          <span><i class="dot dot--b"></i>% Congestión</span>
+          <span><i class="dot dot--r"></i>% Error de red</span>
+          <span><i class="dot dot--t"></i>% No definida</span>
+        </div>
+        <svg class="dash2-svg dash2-svg--live" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Distribución de llamadas no conectadas por horario">
+          <line x1="0" y1="20" x2="600" y2="20" class="dash2-gridline"/>
+          <line x1="0" y1="65" x2="600" y2="65" class="dash2-gridline"/>
+          <line x1="0" y1="110" x2="600" y2="110" class="dash2-gridline"/>
+          <line x1="0" y1="155" x2="600" y2="155" class="dash2-gridline"/>
+          <polyline id="dash2Multi1Y" class="dash2-line dash2-line--y" points="0,152 150,150 300,153 450,151 600,150"/>
+          <polyline id="dash2Multi1P" class="dash2-line dash2-line--p" points="0,150 150,148 300,151 450,149 600,148"/>
+          <polyline id="dash2Multi1O" class="dash2-line dash2-line--o" points="0,148 150,146 300,149 450,147 600,146"/>
+          <polyline id="dash2Multi1B" class="dash2-line dash2-line--b" points="0,146 150,144 300,147 450,145 600,144"/>
+          <polyline id="dash2Multi1R" class="dash2-line dash2-line--r" points="0,144 150,142 300,145 450,143 600,142"/>
+          <polyline id="dash2Multi1T" class="dash2-line dash2-line--t" points="0,142 150,140 300,143 450,141 600,140"/>
+          <circle id="dash2Multi1Dot" class="dash2-live-dot" cx="600" cy="142" r="4"/>
+        </svg>
+      </div>
+
+      <div class="dash2-multi-card">
+        <p class="dash2-multi-title">Promedio de distribución de CONECTADAS por horarios</p>
+        <div class="dash2-multi-legend">
+          <span><i class="dot dot--y"></i>% Ans. Machine</span>
+          <span><i class="dot dot--p"></i>% Fax</span>
+          <span><i class="dot dot--o"></i>% Colas</span>
+          <span><i class="dot dot--b"></i>% Ringing</span>
+          <span><i class="dot dot--r"></i>% Operador</span>
+          <span><i class="dot dot--t"></i>% Oyentes</span>
+        </div>
+        <svg class="dash2-svg dash2-svg--live" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Distribución de llamadas conectadas por horario">
+          <line x1="0" y1="20" x2="600" y2="20" class="dash2-gridline"/>
+          <line x1="0" y1="65" x2="600" y2="65" class="dash2-gridline"/>
+          <line x1="0" y1="110" x2="600" y2="110" class="dash2-gridline"/>
+          <line x1="0" y1="155" x2="600" y2="155" class="dash2-gridline"/>
+          <polyline id="dash2Multi2R" class="dash2-line dash2-line--r" points="0,45 150,38 300,30 450,26 600,22"/>
+          <polyline id="dash2Multi2O" class="dash2-line dash2-line--o" points="0,148 150,146 300,140 450,144 600,146"/>
+          <polyline id="dash2Multi2B" class="dash2-line dash2-line--b" points="0,152 150,150 300,148 450,150 600,151"/>
+          <polyline id="dash2Multi2T" class="dash2-line dash2-line--t" points="0,154 150,153 300,151 450,153 600,153"/>
+          <polyline id="dash2Multi2Y" class="dash2-line dash2-line--y" points="0,156 150,155 300,154 450,155 600,155"/>
+          <polyline id="dash2Multi2P" class="dash2-line dash2-line--p" points="0,158 150,157 300,156 450,157 600,157"/>
+          <circle id="dash2Multi2Dot" class="dash2-live-dot" cx="600" cy="22" r="4"/>
+        </svg>
+      </div>
+    </div>
+
+    <p class="dashboard-disclaimer">Dashboard demostrativo — datos simulados a modo ilustrativo</p>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="services reveal">
+  <div class="section-head">
+    <p class="eyebrow-pill">SERVICIOS</p>
+    <h2 class="section-title section-title--lg">Una plataforma, seis soluciones</h2>
+    <p class="section-sub">Hacé clic en una solución para ver el detalle</p>
+  </div>
+  <div class="services-grid" id="servicesGrid">
+    <div class="service-card" data-service="Centro de Contacto">
+      <div class="service-head">
+        <h3 class="service-title">Centro de Contacto</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-text">Operado con atención telefónica, orientado a maximizar la satisfacción del ciudadano.</p>
+      <p class="service-detail">Con posibilidad de sumar WhatsApp, redes sociales y bot según el alcance de cada proyecto.</p>
+    </div>
+    <div class="service-card" data-service="Plataforma Legislativa">
+      <div class="service-head">
+        <h3 class="service-title">Plataforma Legislativa</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-text">Plataforma legislativa para modernizar y digitalizar la gestión de concejos deliberantes y cuerpos legislativos.</p>
+      <p class="service-detail">Seguimiento de proyectos de ley, con votaciones en vivo y participación ciudadana digital como módulos según el alcance contratado.</p>
+    </div>
+    <div class="service-card" data-service="Visualización de Datos">
+      <div class="service-head">
+        <h3 class="service-title">Visualización de Datos</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-text">Diseño de tableros e indicadores para la toma de decisiones estratégicas.</p>
+      <p class="service-detail">Con posibilidad de integración a las fuentes de información del organismo.</p>
+    </div>
+    <div class="service-card" data-service="Formación">
+      <div class="service-head">
+        <h3 class="service-title">Formación</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-text">Programas diseñados para generar cambios significativos en habilidades, conocimientos y actitudes.</p>
+      <p class="service-detail">Capacitación continua para equipos de atención, con seguimiento de desempeño.</p>
+    </div>
+    <div class="service-card" data-service="Gestión y Recuperación de Activos">
+      <div class="service-head">
+        <h3 class="service-title">Gestión y Recuperación de Activos</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-tag">Servicio disponible para implementación</p>
+      <p class="service-text">Soluciones de contacto y seguimiento para mejorar la recuperación de tasas, obligaciones y activos públicos.</p>
+      <p class="service-detail">Estrategias de contacto multicanal orientadas a maximizar el recupero manteniendo una buena relación con el contribuyente.</p>
+    </div>
+    <div class="service-card" data-service="IA y analítica de interacciones">
+      <div class="service-head">
+        <h3 class="service-title">IA y analítica de interacciones</h3>
+        <span class="service-arrow">⌄</span>
+      </div>
+      <p class="service-tag">Módulo en desarrollo</p>
+      <p class="service-text">Herramientas orientadas al análisis automatizado de conversaciones, calidad de atención y cumplimiento de protocolos.</p>
+      <p class="service-detail">Funcionalidades en desarrollo: detección de sentimiento, cumplimiento de guiones y oportunidades de mejora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA + CONTACTO -->
+<section id="contacto" class="cta reveal">
+  <div class="cta-blob"></div>
+  <div class="cta-copy">
+    <h2 class="cta-title">Llevemos la gestión pública al siguiente nivel</h2>
+    <p class="cta-text">Global Solutions cuenta con el músculo corporativo y la madurez técnica para asumir el volumen operativo del Estado Provincial.</p>
+  </div>
+  <div class="contact-card">
+    <p class="eyebrow eyebrow--yellow">CONTACTO</p>
+    <p class="contact-name">Alfonsina Coria</p>
+    <p class="contact-detail"><a href="mailto:alfonsina.coria@gsolutions.com.ar">alfonsina.coria@gsolutions.com.ar</a></p>
+    <p class="contact-name contact-name--second">Néstor Moscardo</p>
+    <p class="contact-detail"><a href="mailto:nestor.moscardo@gsolutions.com.ar">nestor.moscardo@gsolutions.com.ar</a></p>
+    <p class="contact-detail"><a href="https://www.gsolutions.ar" target="_blank" rel="noopener">www.gsolutions.ar</a></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  © 2024 Boulé GovTech · By Global Solutions. Todos los derechos reservados.
+</footer>
+
+<script src="script.js"></script>
+<script src="bot-loader.js"></script>
+</body>
+</html>
