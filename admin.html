@@ -3,515 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boulé | Panel Administrativo</title>
+<title>Boulé | Página Protegida</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-  :root{
-    --navy:#0F1E36;
-    --navy-2:#16294a;
-    --teal:#00A896;
-    --teal-dark:#00857a;
-    --orange:#FF6B35;
-    --bg:#eef1f5;
-    --card:#ffffff;
-    --line:#e1e5ec;
-    --text:#1c2434;
-    --muted:#6b7688;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
+:root{
+  --navy:#0F1E36; --navy-2:#16294a; --teal:#00A896; --teal-dark:#00857a;
+  --orange:#FF6B35; --bg:#eef1f5; --card:#ffffff; --line:#e1e5ec;
+  --text:#1c2434; --muted:#6b7688;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
 
-  /* LOGIN */
-  .login-screen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
-    font-family:'Montserrat', sans-serif;
-  }
-  .login-card{
-    background:var(--card);
-    border-radius:16px;
-    padding:48px 40px;
-    box-shadow:0 10px 40px rgba(15,30,54,.3);
-    width:100%;
-    max-width:420px;
-  }
-  .login-card .logo{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:32px;
-    justify-content:center;
-  }
-  .login-card .logo-mark{
-    width:52px;height:52px;border-radius:12px;
-    background:linear-gradient(135deg,var(--teal),var(--teal-dark));
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;font-weight:800;font-size:20px;
-  }
-  .login-card .logo-text{
-    display:flex;flex-direction:column;
-  }
-  .login-card .logo-text .brand{
-    font-size:16px;font-weight:800;color:var(--navy);letter-spacing:.02em;
-  }
-  .login-card .logo-text .subtitle{
-    font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;
-  }
-  .login-card h1{
-    font-size:24px;font-weight:800;color:var(--navy);margin-bottom:12px;text-align:center;
-  }
-  .login-card .hint{
-    font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.5;
-  }
-  .form-group{
-    margin-bottom:20px;
-  }
-  .form-group label{
-    display:block;
-    font-size:11px;font-weight:700;
-    color:var(--text);
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    margin-bottom:8px;
-  }
-  .form-group input{
-    width:100%;
-    padding:12px 14px;
-    border:1.4px solid var(--line);
-    border-radius:10px;
-    font-family:inherit;
-    font-size:14px;
-    color:var(--text);
-    transition:border-color .2s;
-  }
-  .form-group input:focus{
-    outline:none;
-    border-color:var(--teal);
-    box-shadow:0 0 0 3px rgba(0,168,150,.1);
-  }
-  .login-btn{
-    width:100%;
-    padding:14px;
-    background:linear-gradient(135deg, var(--teal), var(--teal-dark));
-    color:#fff;
-    border:none;
-    border-radius:10px;
-    font-family:inherit;
-    font-weight:700;
-    font-size:14px;
-    cursor:pointer;
-    transition:filter .2s;
-    margin-top:8px;
-  }
-  .login-btn:hover{
-    filter:brightness(1.08);
-  }
-  .login-btn:active{
-    filter:brightness(0.95);
-  }
-  .error-msg{
-    color:#c0392b;
-    font-size:12px;
-    margin-top:12px;
-    padding:10px 12px;
-    background:#fdeaea;
-    border-radius:8px;
-    display:none;
-  }
-  .error-msg.show{
-    display:block;
-  }
+/* LOGIN */
+.login-screen{
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+  font-family:'Montserrat', sans-serif;
+  z-index:9999;
+}
+.login-card{
+  background:var(--card); border-radius:16px; padding:48px 40px;
+  box-shadow:0 10px 40px rgba(15,30,54,.3);
+  width:100%; max-width:420px;
+}
+.login-card h1{
+  font-size:24px; font-weight:800; color:var(--navy); margin-bottom:12px; text-align:center;
+}
+.login-card .hint{
+  font-size:13px; color:var(--muted); text-align:center; margin-bottom:28px; line-height:1.5;
+}
+.form-group{
+  margin-bottom:20px;
+}
+.form-group label{
+  display:block; font-size:11px; font-weight:700; color:var(--text);
+  text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;
+}
+.form-group input{
+  width:100%; padding:12px 14px; border:1.4px solid var(--line);
+  border-radius:10px; font-family:inherit; font-size:14px; color:var(--text);
+}
+.form-group input:focus{
+  outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(0,168,150,.1);
+}
+.login-btn{
+  width:100%; padding:14px; background:linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color:#fff; border:none; border-radius:10px; font-family:inherit;
+  font-weight:700; font-size:14px; cursor:pointer; margin-top:8px;
+}
+.login-btn:hover{ filter:brightness(1.08); }
+.error-msg{
+  color:#c0392b; font-size:12px; margin-top:12px; padding:10px 12px;
+  background:#fdeaea; border-radius:8px; display:none;
+}
+.error-msg.show{ display:block; }
 
-  /* APP */
-  body{
-    font-family:'Montserrat', sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    display:flex;
-    min-height:100vh;
-  }
-  .sidebar{
-    width:262px;
-    min-width:262px;
-    background:var(--navy);
-    color:#cfd6e4;
-    display:flex;
-    flex-direction:column;
-    padding:10px 0 24px;
-    max-height:100vh;
-    overflow-y:auto;
-  }
-  .sidebar .brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:16px 18px 20px;
-    border-bottom:1px solid rgba(255,255,255,.08);
-    margin-bottom:6px;
-  }
-  .sidebar .brand .mark{
-    width:32px;height:32px;border-radius:8px;
-    background:linear-gradient(135deg,var(--teal),var(--teal-dark));
-    display:flex;align-items:center;justify-content:center;
-    font-weight:800;color:#fff;font-size:15px;flex-shrink:0;
-  }
-  .sidebar .brand .word{
-    font-size:13.5px;font-weight:700;letter-spacing:.03em;color:#fff;line-height:1.15;
-  }
-  .sidebar .brand .word span{
-    display:block;font-size:9.5px;font-weight:500;color:#8b96ac;letter-spacing:.08em;margin-top:1px;
-  }
-  .navgroup-label{
-    font-size:10px;
-    text-transform:uppercase;
-    letter-spacing:.09em;
-    color:#5c6885;
-    padding:14px 18px 6px;
-    font-weight:600;
-  }
-  .navitem{
-    display:flex;
-    align-items:center;
-    gap:11px;
-    padding:9px 18px;
-    font-size:13px;
-    font-weight:500;
-    cursor:pointer;
-    color:#c3cbdc;
-    border-left:3px solid transparent;
-    transition:background .12s;
-    user-select:none;
-  }
-  .navitem:hover{
-    background:rgba(255,255,255,.05);
-  }
-  .navitem.active{
-    background:var(--teal);
-    color:#fff;
-    font-weight:600;
-    border-left:3px solid var(--orange);
-  }
-  .navitem .ico{
-    width:18px;height:18px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    font-size:10.5px;font-weight:700;
-    border:1.4px solid currentColor;
-    border-radius:4px;
-    opacity:.85;
-  }
-  .navitem.active .ico{
-    border-color:#fff;
-    opacity:1;
-  }
-
-  .main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    min-width:0;
-  }
-  .topbar{
-    background:var(--card);
-    border-bottom:1px solid var(--line);
-    padding:18px 32px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:14px;
-    position:sticky;
-    top:0;
-    z-index:5;
-  }
-  .topbar .titleblock{
-    display:flex;
-    align-items:center;
-    gap:16px;
-  }
-  .topbar .logo-mark{
-    width:52px;height:52px;border-radius:12px;
-    background:var(--navy);
-    display:flex;align-items:center;justify-content:center;
-    color:var(--teal);
-    font-weight:800;
-    font-size:18px;
-  }
-  .topbar h1{
-    font-size:19px;
-    font-weight:800;
-    color:var(--navy);
-    letter-spacing:.01em;
-  }
-  .topbar h1 small{
-    display:block;
-    font-size:11px;
-    font-weight:600;
-    color:var(--muted);
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    margin-top:2px;
-  }
-  .btn-logout{
-    background:#fdeaea;
-    color:#c0392b;
-    border:none;
-    font-family:inherit;
-    font-weight:700;
-    font-size:13px;
-    padding:11px 20px;
-    border-radius:8px;
-    cursor:pointer;
-  }
-  .btn-logout:hover{
-    background:#f5c7c7;
-  }
-
-  .content{
-    padding:24px 32px 48px;
-    flex:1;
-  }
-
-  .admin-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:32px;
-    margin-bottom:24px;
-    box-shadow:0 1px 3px rgba(15,30,54,.05);
-  }
-  .admin-card h2{
-    font-size:18px;
-    font-weight:800;
-    color:var(--navy);
-    margin-bottom:16px;
-  }
-  .admin-card p{
-    font-size:13.5px;
-    color:var(--muted);
-    line-height:1.6;
-  }
-  .badge{
-    display:inline-block;
-    font-size:11px;
-    font-weight:700;
-    padding:4px 10px;
-    border-radius:14px;
-    background:#e7f6f4;
-    color:var(--teal-dark);
-    margin-right:8px;
-    margin-bottom:12px;
-  }
-
-  @media (max-width:700px){
-    .sidebar{
-      display:none;
-    }
-    .content{
-      padding:18px;
-    }
-    .topbar{
-      padding:16px 18px;
-    }
-  }
+/* APP */
+body{ font-family:'Montserrat', sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
+.sidebar{ width:270px; min-width:270px; background:var(--navy); color:#cfd6e4; display:flex; flex-direction:column; padding:10px 0 24px; max-height:100vh; overflow-y:auto; }
+.sidebar::-webkit-scrollbar{ width:6px; }
+.sidebar::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:4px; }
+.brand{ display:flex; align-items:center; gap:10px; padding:16px 18px 20px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:6px; }
+.brand .mark{ width:32px;height:32px;border-radius:8px; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); display:flex;align-items:center;justify-content:center; font-weight:800;color:#fff;font-size:15px; flex-shrink:0; }
+.brand .word{ font-size:13.5px;font-weight:700;letter-spacing:.03em;color:#fff;line-height:1.15; }
+.brand .word span{display:block;font-size:9.5px;font-weight:500;color:#8b96ac;letter-spacing:.08em;margin-top:1px;}
+.navgroup-label{ font-size:10px; text-transform:uppercase; letter-spacing:.09em; color:#5c6885; padding:16px 18px 6px; font-weight:600; }
+.navitem{ display:flex; align-items:center; gap:11px; padding:10px 18px; font-size:13px; font-weight:500; cursor:pointer; color:#c3cbdc; border-left:3px solid transparent; transition:background .12s; user-select:none; }
+.navitem:hover{ background:rgba(255,255,255,.05); }
+.navitem.active{ background:var(--teal); color:#fff; font-weight:600; border-left:3px solid var(--orange); }
+.navitem .ico{ width:22px;height:22px;flex-shrink:0; display:flex;align-items:center;justify-content:center; font-size:10.5px; font-weight:700; border:1.4px solid currentColor; border-radius:50%; opacity:.85; }
+.navitem.active .ico{ border-color:#fff; opacity:1; }
+.main{ flex:1; display:flex; flex-direction:column; min-width:0; }
+.topbar{ background:var(--card); border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; position:sticky; top:0; z-index:600; }
+.titleblock{ display:flex; align-items:center; gap:16px; }
+.logo-mark{ width:52px;height:52px;border-radius:12px; background:var(--navy); display:flex;align-items:center;justify-content:center; color:var(--teal); font-weight:800; font-size:18px; }
+.topbar h1{ font-size:19px; font-weight:800; color:var(--navy); letter-spacing:.01em; }
+.topbar h1 small{ display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin-top:2px; }
+.btn-logout{ background:#fdeaea; color:#c0392b; border:none; font-family:inherit; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px; cursor:pointer; }
+.btn-logout:hover{ background:#f5c7c7; }
+.content{ padding:26px 32px 48px; flex:1; }
+.section-label{ font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin:0 0 12px; display:flex; align-items:center; gap:8px; }
+.section-label .n{ background:var(--teal); color:#fff; width:18px;height:18px;border-radius:5px; display:flex;align-items:center;justify-content:center; font-size:10px; }
+.proc-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:32px; }
+.proc-card{ background:var(--card); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:10px; padding:16px 18px; cursor:pointer; transition:box-shadow .12s, transform .12s; }
+.proc-card:hover{ box-shadow:0 3px 10px rgba(15,30,54,.08); transform:translateY(-1px); }
+.proc-card.selected{ border-left-color:var(--orange); box-shadow:0 0 0 2px rgba(255,107,53,.15); }
+.proc-card .step{ font-size:10px; font-weight:700; color:var(--teal-dark); letter-spacing:.06em; margin-bottom:6px; }
+.proc-card .name{ font-size:14px; font-weight:700; color:var(--navy); line-height:1.3; }
+.tablewrap{ overflow-x:auto; border-radius:10px; border:1px solid var(--line); background:#fff; box-shadow:0 1px 3px rgba(15,30,54,.05); }
+table{ width:100%; border-collapse:collapse; font-size:13px; min-width:520px; }
+thead th{ background:var(--teal); color:#fff; text-align:left; padding:12px 16px; font-weight:700; font-size:11px; letter-spacing:.02em; text-transform:uppercase; white-space:nowrap; }
+tbody td{ padding:14px 16px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); line-height:1.45; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody tr:hover{ background:#f7f9fc; }
+.rol{ font-weight:700; color:var(--navy); white-space:nowrap; }
+.breadcrumb{ display:flex; align-items:center; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.bc-item{ font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:16px; background:#fff; border:1.4px solid var(--line); color:var(--muted); cursor:pointer; }
+.bc-item.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.bc-arrow{ color:#c3cbdc; }
+@media (max-width:700px){ .sidebar{ display:none; } .content{ padding:18px; } .topbar{ padding:16px 18px; } }
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="logo">
-      <div class="logo-mark">🔐</div>
-      <div class="logo-text">
-        <div class="brand">BOULÉ</div>
-        <div class="subtitle">Panel Administrativo</div>
-      </div>
-    </div>
-    <h1>Acceso Restringido</h1>
-    <p class="hint">Ingresá la contraseña para acceder al panel administrativo privado.</p>
+    <h1>🔐 Acceso Restringido</h1>
+    <p class="hint">Página protegida. Ingresá la contraseña para continuar.</p>
     <form id="loginForm">
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Ingresá la contraseña" autofocus>
+        <input type="password" id="password" placeholder="Contraseña" autofocus>
       </div>
       <button type="submit" class="login-btn">Ingresar</button>
-      <div id="errorMsg" class="error-msg">Contraseña incorrecta. Intentá de nuevo.</div>
+      <div id="errorMsg" class="error-msg">Contraseña incorrecta.</div>
     </form>
   </div>
 </div>
 
-<!-- APP (hidden by default) -->
+<!-- APP -->
 <div id="appScreen" style="display:none; width:100%;">
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="mark">A</div>
-      <div class="word">BOULÉ<span>ADMIN · PRUEBA</span></div>
+      <div class="mark">M+</div>
+      <div class="word">BOULÉ<span>GOVTECH · MINERÍA</span></div>
     </div>
-    <div class="navgroup-label">Secciones</div>
     <!-- nav items added by JS -->
   </aside>
 
   <div class="main">
     <div class="topbar">
       <div class="titleblock">
-        <div class="logo-mark">A</div>
-        <h1 id="pageTitle">Bienvenido<small id="pageSubtitle">Panel Administrativo Privado</small></h1>
+        <div class="logo-mark">M+</div>
+        <h1 id="pageTitle">Proceso Productivo Minero<small id="pageSubtitle">Fases, procesos y participantes</small></h1>
       </div>
       <button class="btn-logout" id="logoutBtn">🚪 Cerrar Sesión</button>
     </div>
-
     <div class="content" id="content"></div>
   </div>
 </div>
 
-<script>
-// ========== CONFIGURACIÓN ==========
-const ADMIN_PASSWORD = "admin123"; // Cambiar por contraseña segura
-const SESSION_KEY = "admin_session_token";
+<script type="module">
+// ========== CONFIG ==========
+const ADMIN_PASSWORD = "admin123";
+const SESSION_KEY = "admin_authenticated";
 
-// ========== DATA SECTIONS ==========
-const SECTIONS = [
-  {
-    id: "dashboard",
-    label: "Panel Principal",
-    icon: "D",
-    title: "Panel Principal",
-    subtitle: "Resumen del sistema",
-    content: `
-      <div class="admin-card">
-        <h2>👋 Bienvenido al Panel Administrativo</h2>
-        <p>Esta es una página privada protegida por contraseña que solo vos podés ver. Acá podés organizar contenido confidencial, pruebas y configuraciones especiales.</p>
-        <p style="margin-top:16px;"><strong>Características:</strong></p>
-        <ul style="margin:12px 0 0 24px; line-height:1.8;">
-          <li>Protección por contraseña en el navegador</li>
-          <li>Sesión guardada en sessionStorage (persiste mientras la pestaña esté abierta)</li>
-          <li>Acceso solo desde este dispositivo</li>
-          <li>Interfaz con el mismo diseño Boulé</li>
-        </ul>
-      </div>
+// ========== DATA ==========
+function proc(name){ return { name }; }
+function part(rol, funcion){ return { rol, funcion }; }
 
-      <div class="admin-card">
-        <h2>📊 Estadísticas de Prueba</h2>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-top:16px;">
-          <div style="background:#e7f6f4; padding:16px; border-radius:8px;">
-            <div style="font-size:24px; font-weight:800; color:var(--teal);">42</div>
-            <div style="font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:700; margin-top:4px;">Pruebas Ejecutadas</div>
-          </div>
-          <div style="background:#fff2e6; padding:16px; border-radius:8px;">
-            <div style="font-size:24px; font-weight:800; color:#c8631a;">15</div>
-            <div style="font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:700; margin-top:4px;">Cambios Pendientes</div>
-          </div>
-          <div style="background:#fdeaea; padding:16px; border-radius:8px;">
-            <div style="font-size:24px; font-weight:800; color:#c0392b;">3</div>
-            <div style="font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:700; margin-top:4px;">Alertas</div>
-          </div>
-        </div>
-      </div>
-    `
-  },
-  {
-    id: "configuracion",
-    label: "Configuración",
-    icon: "C",
-    title: "Configuración del Sistema",
-    subtitle: "Ajustes y parámetros",
-    content: `
-      <div class="admin-card">
-        <h2>⚙️ Parámetros de Prueba</h2>
-        <p>Acá podés guardar configuraciones, notas privadas o ajustes especiales que solo vos necesitás ver.</p>
-        <div style="margin-top:20px;">
-          <span class="badge">Producción</span>
-          <span class="badge">Testing</span>
-          <span class="badge">Experimental</span>
-        </div>
-        <div style="background:#f4f6f9; padding:16px; border-radius:8px; margin-top:16px; font-family:monospace; font-size:12px; color:var(--text); line-height:1.6;">
-          // Configuración privada<br>
-          const CONFIG = {<br>
-          &nbsp;&nbsp;environment: "prueba",<br>
-          &nbsp;&nbsp;debug: true,<br>
-          &nbsp;&nbsp;access: "admin_only"<br>
-          };
-        </div>
-      </div>
-    `
-  },
-  {
-    id: "notas",
-    label: "Notas Privadas",
-    icon: "N",
-    title: "Notas Privadas",
-    subtitle: "Tu espacio de anotaciones",
-    content: `
-      <div class="admin-card">
-        <h2>📝 Notas y Recordatorios</h2>
-        <p>Mantené aquí tus notas privadas, ideas y recordatorios confidenciales.</p>
-        <div style="margin-top:20px; background:#f9fafb; padding:20px; border-radius:8px; border-left:4px solid var(--teal);">
-          <div style="font-weight:700; color:var(--navy); margin-bottom:8px;">Nota de ejemplo</div>
-          <p style="font-size:13px; color:var(--text); margin:0;">Esta es una sección privada donde podés escribir lo que necesites. Solo vos tenés acceso con la contraseña que configuraste.</p>
-          <div style="font-size:11px; color:var(--muted); margin-top:12px;">Modificado: hoy</div>
-        </div>
-      </div>
-    `
-  },
-  {
-    id: "seguridad",
-    label: "Seguridad",
-    icon: "S",
-    title: "Información de Seguridad",
-    subtitle: "Detalles de acceso",
-    content: `
-      <div class="admin-card">
-        <h2>🔒 Estado de Seguridad</h2>
-        <ul style="margin:12px 0 0 24px; line-height:2;">
-          <li><strong>Protección:</strong> Contraseña en el navegador (JavaScript)</li>
-          <li><strong>Almacenamiento:</strong> sessionStorage (se borra al cerrar pestaña)</li>
-          <li><strong>Método:</strong> Cliente (sin servidor)</li>
-          <li><strong>Visibilidad:</strong> Solo este dispositivo y navegador</li>
-        </ul>
-        <div style="background:#fff2e6; padding:14px; border-radius:8px; margin-top:16px; font-size:12px; color:#c8631a;">
-          ⚠️ <strong>Nota:</strong> Para máxima seguridad, cambiá la contraseña en el código. El código fuente contiene la contraseña (no uses en producción sin HTTPS y backend).
-        </div>
-      </div>
-    `
-  }
+const PHASES = [
+  { id:"exploracion", label:"Prospección y Exploración",
+    procesos:[ proc("Muestreo y geofísica"), proc("Cartografía regional"), proc("Modelo geológico") ],
+    participantes:[ part("Geólogos","Reconocimiento y evaluación de recursos"), part("Geofísicos","Estudios de suelo y anomalías") ] },
+  { id:"factibilidad", label:"Evaluación y Factibilidad",
+    procesos:[ proc("Diseño de la mina"), proc("Estudios de rentabilidad"), proc("Impacto Ambiental (EIA)") ],
+    participantes:[ part("Ingenieros de minas","Planificación de métodos"), part("Gerente financiero","Flujo de caja e inversión"), part("Consultores ambientales","Gestión de sostenibilidad"), part("Abogados","Revisión jurídica y titularidad") ] },
+  { id:"construccion", label:"Desarrollo y Construcción",
+    procesos:[ proc("Obras de infraestructura"), proc("Construcción de plantas"), proc("Accesos y energía") ],
+    participantes:[ part("Empresas constructoras","Ejecución de obras"), part("Ingenieros civiles","Diseño estructural"), part("Proveedores","Logística, catering y salud") ] },
+  { id:"produccion", label:"Producción o Explotación",
+    procesos:[ proc("Extracción y transporte"), proc("Procesamiento y beneficio"), proc("Fundición y refinación"), proc("Mantenimiento preventivo") ],
+    participantes:[ part("Operadores","Perforación, voladura y carguío"), part("Técnicos mecánicos","Soporte y revisiones"), part("Ingenieros químicos","Control de procesamiento"), part("Gerente de operaciones","Gestión productiva") ] },
+  { id:"cierre", label:"Cierre y Post-Cierre",
+    procesos:[ proc("Estabilización física y química"), proc("Rehabilitación ambiental"), proc("Monitoreo post-cierre") ],
+    participantes:[ part("Especialistas en remediación","Restauración del sitio"), part("Autoridad Ambiental","Verificación de cumplimiento") ] },
+  { id:"gobernanza", label:"Gobernanza y Control",
+    procesos:[],
+    participantes:[ part("Provincias","Dueñas de recursos y policía minera"), part("Secretaría de Nación","Políticas y asistencia"), part("Comunidades","Intercambio socioambiental") ] },
 ];
 
-// ========== LOGIN LOGIC ==========
+// ========== LOGIN ==========
 function initLogin(){
-  const loginForm = document.getElementById('loginForm');
-  const passwordInput = document.getElementById('password');
-  const errorMsg = document.getElementById('errorMsg');
-
-  loginForm.addEventListener('submit', (e)=>{
+  document.getElementById('loginForm').addEventListener('submit', (e)=>{
     e.preventDefault();
-    const password = passwordInput.value;
-
-    if(password === ADMIN_PASSWORD){
-      sessionStorage.setItem(SESSION_KEY, 'authenticated');
+    const pwd = document.getElementById('password').value;
+    if(pwd === ADMIN_PASSWORD){
+      sessionStorage.setItem(SESSION_KEY, 'true');
       showApp();
-      passwordInput.value = '';
     } else {
-      errorMsg.classList.add('show');
-      passwordInput.value = '';
-      passwordInput.focus();
-      setTimeout(()=>errorMsg.classList.remove('show'), 3000);
+      document.getElementById('errorMsg').classList.add('show');
+      document.getElementById('password').value = '';
+      setTimeout(()=>document.getElementById('errorMsg').classList.remove('show'), 3000);
     }
   });
 }
 
 function checkSession(){
-  return sessionStorage.getItem(SESSION_KEY) === 'authenticated';
+  return sessionStorage.getItem(SESSION_KEY) === 'true';
 }
 
-// ========== APP LOGIC ==========
+// ========== APP ==========
 function showApp(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'flex';
   renderSidebar();
-  renderSection(SECTIONS[0].id);
+  renderPhase('exploracion');
 }
 
 function hideApp(){
@@ -523,40 +214,60 @@ function hideApp(){
 
 function renderSidebar(){
   const sidebar = document.getElementById('sidebar');
-  const navContainer = sidebar.querySelector('.navgroup-label').nextElementSibling || sidebar;
+  const grp = document.createElement('div');
+  grp.className='navgroup-label';
+  grp.textContent='Proceso Productivo Minero';
+  sidebar.appendChild(grp);
 
-  SECTIONS.forEach(section => {
+  PHASES.forEach((p,i)=>{
     const item = document.createElement('div');
-    item.className = 'navitem';
-    item.dataset.id = section.id;
-    item.innerHTML = `<span class="ico">${section.icon}</span> ${section.label}`;
-    item.addEventListener('click', () => renderSection(section.id));
+    item.className='navitem';
+    item.dataset.id=p.id;
+    item.innerHTML = `<span class="ico">${i+1}</span> ${p.label}`;
+    item.addEventListener('click', ()=>renderPhase(p.id));
     sidebar.appendChild(item);
   });
 }
 
-function renderSection(sectionId){
-  const section = SECTIONS.find(s => s.id === sectionId);
-  if(!section) return;
+function renderPhase(id){
+  const idx = PHASES.findIndex(p=>p.id===id);
+  const p = PHASES[idx];
 
-  document.querySelectorAll('.navitem').forEach(el => {
-    el.classList.toggle('active', el.dataset.id === sectionId);
+  document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+  document.getElementById('pageTitle').innerHTML = `${p.label}<small id="pageSubtitle">Procesos y participantes de la fase</small>`;
+
+  const content = document.getElementById('content');
+  let html = `<div class="breadcrumb">` + PHASES.map((ph,i)=>
+    `<span class="bc-item ${ph.id===id?'active':''}" data-nav="${ph.id}">${i+1}. ${ph.label}</span>${i<PHASES.length-1?'<span class="bc-arrow">›</span>':''}`
+  ).join('') + `</div>`;
+
+  if(p.procesos.length){
+    html += `<div class="section-label"><span class="n">P</span>Procesos</div><div class="proc-grid">`;
+    p.procesos.forEach((pr,i)=>{ html += `<div class="proc-card" data-idx="${i}"><div class="step">PASO ${i+1}</div><div class="name">${pr.name}</div></div>`; });
+    html += `</div>`;
+  }
+
+  html += `<div class="section-label"><span class="n">R</span>Participantes y Roles</div>
+    <div class="tablewrap"><table><thead><tr><th>Rol</th><th>Función</th></tr></thead><tbody>`;
+  p.participantes.forEach(pa=>{ html += `<tr><td class="rol">${pa.rol}</td><td>${pa.funcion}</td></tr>`; });
+  html += `</tbody></table></div>`;
+
+  content.innerHTML = html;
+
+  content.querySelectorAll('.proc-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const already = card.classList.contains('selected');
+      content.querySelectorAll('.proc-card').forEach(c=>c.classList.remove('selected'));
+      if(!already) card.classList.add('selected');
+    });
   });
-
-  document.getElementById('pageTitle').innerHTML = `${section.title}<small id="pageSubtitle">${section.subtitle}</small>`;
-  document.getElementById('content').innerHTML = section.content;
+  content.querySelectorAll('.bc-item').forEach(el=> el.addEventListener('click', ()=>renderPhase(el.dataset.nav)) );
 }
 
 // ========== INIT ==========
-document.addEventListener('DOMContentLoaded', () => {
-  initLogin();
-
-  document.getElementById('logoutBtn').addEventListener('click', hideApp);
-
-  if(checkSession()){
-    showApp();
-  }
-});
+document.getElementById('logoutBtn').addEventListener('click', hideApp);
+initLogin();
+if(checkSession()) showApp();
 </script>
 </body>
 </html>
