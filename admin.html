@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boulé | Página Protegida</title>
+<title>Boulé | Panel de Gestión Integral</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root{
     --navy:#0F1E36;
@@ -29,6 +31,8 @@
     font-family:'Montserrat', sans-serif;
     z-index:9999;
   }
+  .login-screen.hidden{ display:none; }
+
   .login-card{
     background:var(--card); border-radius:16px; padding:48px 40px;
     box-shadow:0 10px 40px rgba(15,30,54,.3);
@@ -66,88 +70,181 @@
   }
   .error-msg.show{ display:block; }
 
-  /* APP */
-  body{ font-family:'Montserrat', sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
-  .sidebar{ width:262px; min-width:262px; background:var(--navy); color:#cfd6e4; display:flex; flex-direction:column; padding:10px 0 24px; max-height:100vh; overflow-y:auto; }
+  /* MAIN APP */
+  body{
+    font-family:'Montserrat', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar{
+    width:262px; min-width:262px;
+    background:var(--navy); color:#cfd6e4;
+    display:flex; flex-direction:column;
+    padding:10px 0 24px;
+    max-height:100vh; overflow-y:auto;
+  }
   .sidebar::-webkit-scrollbar{ width:6px; }
   .sidebar::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:4px; }
-  .sidebar .brand{ display:flex; align-items:center; gap:10px; padding:16px 18px 20px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:6px; }
-  .sidebar .brand .mark{ width:32px;height:32px;border-radius:8px; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); display:flex;align-items:center;justify-content:center; font-weight:800;color:#fff;font-size:15px; flex-shrink:0; }
+
+  .sidebar .brand{
+    display:flex; align-items:center; gap:10px;
+    padding:16px 18px 20px; border-bottom:1px solid rgba(255,255,255,.08);
+    margin-bottom:6px;
+  }
+  .sidebar .brand .mark{
+    width:32px;height:32px;border-radius:8px;
+    background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#fff;font-size:15px; flex-shrink:0;
+  }
   .sidebar .brand .word{ font-size:13.5px;font-weight:700;letter-spacing:.03em;color:#fff;line-height:1.15; }
   .sidebar .brand .word span{display:block;font-size:9.5px;font-weight:500;color:#8b96ac;letter-spacing:.08em;margin-top:1px;}
-  .navgroup-label{ font-size:10px; text-transform:uppercase; letter-spacing:.09em; color:#5c6885; padding:14px 18px 6px; font-weight:600; }
-  .navitem{ display:flex; align-items:center; gap:11px; padding:9px 18px; font-size:13px; font-weight:500; cursor:pointer; color:#c3cbdc; border-left:3px solid transparent; transition:background .12s; user-select:none; }
+
+  .navgroup-label{
+    font-size:10px; text-transform:uppercase; letter-spacing:.09em;
+    color:#5c6885; padding:14px 18px 6px; font-weight:600;
+  }
+  .navitem{
+    display:flex; align-items:center; gap:11px;
+    padding:9px 18px; font-size:13px; font-weight:500;
+    cursor:pointer; color:#c3cbdc; border-left:3px solid transparent;
+    transition:background .12s; user-select:none;
+  }
   .navitem:hover{ background:rgba(255,255,255,.05); }
   .navitem.active{ background:var(--teal); color:#fff; font-weight:600; border-left:3px solid var(--orange); }
-  .navitem .ico{ width:18px;height:18px;flex-shrink:0; display:flex;align-items:center;justify-content:center; font-size:10.5px; font-weight:700; border:1.4px solid currentColor; border-radius:4px; opacity:.85; }
+  .navitem .ico{
+    width:18px;height:18px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10.5px; font-weight:700;
+    border:1.4px solid currentColor; border-radius:4px; opacity:.85;
+  }
   .navitem.active .ico{ border-color:#fff; opacity:1; }
+
+  /* MAIN */
   .main{ flex:1; display:flex; flex-direction:column; min-width:0; }
-  .topbar{ background:var(--card); border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; position:sticky; top:0; z-index:5; }
+
+  .topbar{
+    background:var(--card); border-bottom:1px solid var(--line);
+    padding:18px 32px; display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:14px; position:sticky; top:0; z-index:5;
+  }
   .topbar .titleblock{ display:flex; align-items:center; gap:16px; }
-  .topbar .logo-mark{ width:52px;height:52px;border-radius:12px; background:var(--navy); display:flex;align-items:center;justify-content:center; color:var(--teal); font-weight:800; font-size:18px; }
+  .topbar .logo-mark{
+    width:52px;height:52px;border-radius:12px; background:var(--navy);
+    display:flex;align-items:center;justify-content:center; color:var(--teal); font-weight:800; font-size:18px;
+  }
   .topbar h1{ font-size:19px; font-weight:800; color:var(--navy); letter-spacing:.01em; }
-  .topbar h1 small{ display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; margin-top:2px; }
-  .btn-add{ background:var(--orange); color:#fff; border:none; font-family:inherit; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px; cursor:pointer; box-shadow:0 2px 6px rgba(255,107,53,.35); }
+  .topbar h1 small{
+    display:block; font-size:11px; font-weight:600; color:var(--muted);
+    letter-spacing:.08em; text-transform:uppercase; margin-top:2px;
+  }
+  .btn-add{
+    background:var(--orange); color:#fff; border:none;
+    font-family:inherit; font-weight:700; font-size:13px;
+    padding:11px 20px; border-radius:8px; cursor:pointer;
+    box-shadow:0 2px 6px rgba(255,107,53,.35);
+  }
   .btn-add:hover{ filter:brightness(1.06); }
+
   .content{ padding:24px 32px 48px; flex:1; }
-  .showall{ background:#fff; border:1.4px solid var(--line); border-radius:20px; font-family:inherit; font-size:12px; font-weight:600; color:var(--muted); padding:8px 16px; cursor:pointer; margin-bottom:16px; }
+
+  /* SIMPLE PANEL (utility modules) */
+  .simple-panel{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:48px 32px; text-align:center; color:var(--muted); font-size:13.5px;
+  }
+  .simple-panel .big-ico{
+    width:52px;height:52px;border-radius:12px;background:#eef6f5;color:var(--teal);
+    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;
+    margin:0 auto 14px;
+  }
+  .simple-panel h3{ color:var(--navy); font-size:15px; margin-bottom:6px; }
+
+  /* STATS */
+  .showall{
+    background:#fff; border:1.4px solid var(--line); border-radius:20px;
+    font-family:inherit; font-size:12px; font-weight:600; color:var(--muted);
+    padding:8px 16px; cursor:pointer; margin-bottom:16px;
+  }
   .showall:hover{ border-color:var(--teal); color:var(--teal-dark); }
-  .stats-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:24px; }
-  .stat-card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; cursor:pointer; transition:box-shadow .12s, transform .12s; }
+
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:24px;
+  }
+  .stat-card{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; cursor:pointer; transition:box-shadow .12s, transform .12s;
+  }
   .stat-card:hover{ box-shadow:0 3px 10px rgba(15,30,54,.08); transform:translateY(-1px); }
   .stat-card.selected{ border-color:var(--teal); box-shadow:0 0 0 2px rgba(0,168,150,.18); }
-  .stat-card .label{ display:flex; align-items:center; gap:8px; font-size:11.5px; font-weight:700; color:#3a4257; letter-spacing:.02em; margin-bottom:10px; text-transform:uppercase; }
+  .stat-card .label{
+    display:flex; align-items:center; gap:8px; font-size:11.5px; font-weight:700;
+    color:#3a4257; letter-spacing:.02em; margin-bottom:10px; text-transform:uppercase;
+  }
   .stat-ico{ width:11px;height:11px; border-radius:2px; flex-shrink:0; display:inline-block; }
   .stat-ico.square{ border-radius:2px; }
   .stat-ico.check::after{ content:"✔"; font-size:12px; line-height:11px; }
   .stat-ico.star::after{ content:"★"; font-size:12px; line-height:11px; }
   .stat-ico.folder::after{ content:"🗂"; font-size:12px; line-height:11px; }
   .stat-card .count{ font-size:26px; font-weight:800; color:var(--navy); }
+
   .c-orange{ background:var(--orange); color:var(--orange); }
   .c-green{ background:#2e9e4f; color:#2e9e4f; }
   .c-gray{ background:#8a93a6; color:#8a93a6; }
   .c-navy{ background:var(--navy); color:var(--navy); }
   .c-teal{ background:var(--teal); color:var(--teal); }
   .c-red{ background:#d9483a; color:#d9483a; }
+
   @media (max-width:1200px){ .stats-grid{ grid-template-columns:repeat(3,1fr);} }
   @media (max-width:860px){ .stats-grid{ grid-template-columns:repeat(2,1fr);} }
+
+  /* TABLE */
   .tablewrap{ overflow-x:auto; border-radius:10px; border:1px solid var(--line); background:#fff; box-shadow:0 1px 3px rgba(15,30,54,.05); }
   table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:920px; }
-  thead th{ background:var(--teal); color:#fff; text-align:left; padding:12px 16px; font-weight:700; font-size:11px; letter-spacing:.02em; text-transform:uppercase; white-space:nowrap; position:sticky; top:0; }
+  thead th{
+    background:var(--teal); color:#fff; text-align:left;
+    padding:12px 16px; font-weight:700; font-size:11px;
+    letter-spacing:.02em; text-transform:uppercase; white-space:nowrap; position:sticky; top:0;
+  }
   tbody td{ padding:13px 16px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); line-height:1.45; }
   tbody tr:last-child td{ border-bottom:none; }
   tbody tr:hover{ background:#f7f9fc; }
   .rownum{ color:var(--muted); font-weight:600; }
-  .estado-pill{ display:inline-block; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:.02em; white-space:nowrap; }
+
+  .estado-pill{
+    display:inline-block; font-size:10.5px; font-weight:700;
+    padding:4px 10px; border-radius:20px; letter-spacing:.02em; white-space:nowrap;
+  }
+
   .section-label{ font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin:22px 0 10px; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <h1>🔐 Acceso Restringido</h1>
-    <p class="hint">Página protegida. Ingresá la contraseña para continuar.</p>
-    <form id="loginForm">
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <h1>Boulé Admin</h1>
+      <div class="hint">Ingresá tu contraseña para acceder al panel</div>
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Contraseña" autofocus>
+        <label>Contraseña</label>
+        <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="off">
       </div>
-      <button type="submit" class="login-btn">Ingresar</button>
-      <div id="errorMsg" class="error-msg">Contraseña incorrecta.</div>
-    </form>
+      <button class="login-btn" onclick="checkPassword()">Ingresar</button>
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
   </div>
-</div>
 
-<!-- APP -->
-<div id="appScreen" style="display:none; width:100%;">
+  <!-- APP CONTENT -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="mark">M+</div>
-      <div class="word">BOULÉ<span>GOVTECH</span></div>
+      <div class="word">BOULÉ<span>GOVTECH · MINERÍA</span></div>
     </div>
-    <!-- nav items added by JS -->
   </aside>
 
   <div class="main">
@@ -158,21 +255,45 @@
       </div>
       <button class="btn-add" id="addBtn">+ Agregar</button>
     </div>
-
     <div class="content" id="content"></div>
   </div>
-</div>
 
 <script>
-// ========== CONFIG ==========
-const ADMIN_PASSWORD = "admin123";
-const SESSION_KEY = "admin_authenticated";
+/* AUTH */
+const CORRECT_PASSWORD = 'admin123';
 
-// ========== DATA ==========
+function checkPassword(){
+  const pwd = document.getElementById('passwordInput').value;
+  if(pwd === CORRECT_PASSWORD){
+    sessionStorage.setItem('admin_authenticated', 'true');
+    document.getElementById('loginScreen').classList.add('hidden');
+    initApp();
+  } else {
+    const err = document.getElementById('errorMsg');
+    err.textContent = 'Contraseña incorrecta';
+    err.classList.add('show');
+    document.getElementById('passwordInput').value = '';
+  }
+}
+
+document.getElementById('passwordInput').addEventListener('keypress', (e)=>{
+  if(e.key === 'Enter') checkPassword();
+});
+
+// Check auth on load
+window.addEventListener('load', ()=>{
+  if(sessionStorage.getItem('admin_authenticated') === 'true'){
+    document.getElementById('loginScreen').classList.add('hidden');
+    initApp();
+  }
+});
+
+/* APP DATA */
 function stat(label,count,color,ico){ return {label,count,color,ico}; }
 function row(cells){ return cells; }
 
 const AREAS = {
+
   bandeja: {
     group:"General", label:"Bandeja de Casos", icon:"B", type:"dashboard",
     title:"Bandeja de Casos", subtitle:"Vista consolidada · todas las áreas",
@@ -194,47 +315,193 @@ const AREAS = {
       row(["5","ALERTA","Seguridad","SG-0019","10/8/2026","06:52","Concentración de metano sobre umbral en galería.","Nivel -240","Jefe de Guardia"]),
     ]
   },
-  buscador: { group:"General", label:"Buscador", icon:"Q", type:"simple", title:"Buscador", subtitle:"Búsqueda global de casos", msg:"Buscá cualquier caso por código, responsable, área o palabra clave en la descripción, en todos los módulos a la vez." },
-  reportes: { group:"General", label:"Reportes", icon:"R", type:"simple", title:"Reportes", subtitle:"Indicadores y exportables", msg:"Generá reportes por área, período o responsable, listos para exportar en PDF o Excel." },
-  crear: { group:"General", label:"Crear Caso", icon:"C", type:"simple", title:"Crear Caso", subtitle:"Nuevo registro", msg:"Elegí el área correspondiente en el menú lateral y usá "+ Agregar" para cargar un caso nuevo." },
+
+  buscador: { group:"General", label:"Buscador", icon:"Q", type:"simple", title:"Buscador", subtitle:"Búsqueda global de casos",
+    msg:"Buscá cualquier caso por código, responsable, área o palabra clave en la descripción, en todos los módulos a la vez." },
+
+  reportes: { group:"General", label:"Reportes", icon:"R", type:"simple", title:"Reportes", subtitle:"Indicadores y exportables",
+    msg:"Generá reportes por área, período o responsable, listos para exportar en PDF o Excel." },
+
+  crear: { group:"General", label:"Crear Caso", icon:"C", type:"simple", title:"Crear Caso", subtitle:"Nuevo registro",
+    msg:"Elegí el área correspondiente en el menú lateral y usá "+ Agregar" para cargar un caso nuevo." },
+
+  comunitario_reclamos: {
+    group:"Relacionamiento Comunitario", label:"Reclamos y Servicios", icon:"R", type:"dashboard",
+    title:"Reclamos y Servicios", subtitle:"Relacionamiento Comunitario",
+    stats:[
+      stat("NUEVO",5,"c-orange","square"),
+      stat("EN GESTIÓN",9,"c-green","square"),
+      stat("RESPONDIDO",3,"c-gray","square"),
+      stat("ESCALADO",2,"c-red","square"),
+      stat("VALIDADO",6,"c-navy","check"),
+      stat("CERRADO",41,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Tipo","Código","Fecha","Hora","Descripción","Procedencia","Responsable"],
+    rows:[
+      row(["1","NUEVO","Reclamo","RC-0231","11/8/2026","19:05","Reclamo por ruido y polvo en suspensión, ref. operación de chancado sector norte.","Rama Caída","Junta Vecinal Rama Caída"]),
+      row(["2","EN GESTIÓN","Consulta","RC-0229","10/8/2026","14:12","Consulta sobre cronograma de riego de caminos internos en temporada seca.","Comunidad El Sosneado","Mesa de Diálogo Local"]),
+      row(["3","ESCALADO","Reclamo","RC-0225","09/8/2026","11:03","Reclamo reiterado por vibraciones asociadas a voladura programada.","Las Malvinas","Vecinos Autoconvocados"]),
+    ]
+  },
+
+  comunitario_planes: {
+    group:"Relacionamiento Comunitario", label:"Planes de Relacionamiento", icon:"P", type:"dashboard",
+    title:"Planes de Relacionamiento", subtitle:"Compromisos y seguimiento regulatorio",
+    stats:[
+      stat("NUEVO",2,"c-orange","square"),
+      stat("EN EJECUCIÓN",7,"c-green","square"),
+      stat("EN REVISIÓN",4,"c-gray","square"),
+      stat("VALIDADO",5,"c-navy","check"),
+      stat("CUMPLIDO",22,"c-teal","star"),
+      stat("ARCHIVADO",15,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Compromiso","Código","Fecha","Hora","Descripción","Titular de Tierra","Responsable"],
+    rows:[
+      row(["1","EN EJECUCIÓN","Servidumbre","PL-0041","08/8/2026","09:00","Firma de acuerdo de servidumbre para tendido eléctrico auxiliar.","Familia Ortega","Área Legal / Comunidades"]),
+      row(["2","CUMPLIDO","Compensación","PL-0038","03/8/2026","16:20","Entrega de compensación acordada por uso de camino vecinal.","Estancia Los Álamos","Relacionamiento Comunitario"]),
+    ]
+  },
+
+  mant_flota: {
+    group:"Mantenimiento", label:"Flota y Maquinaria", icon:"F", type:"dashboard",
+    title:"Flota y Maquinaria", subtitle:"Mantenimiento · unidades móviles",
+    stats:[
+      stat("NUEVO",6,"c-orange","square"),
+      stat("PROGRAMADO",11,"c-green","square"),
+      stat("EN TALLER",4,"c-gray","square"),
+      stat("EN CAMPO",7,"c-navy","check"),
+      stat("COMPLETADO",19,"c-teal","star"),
+      stat("ARCHIVADO",64,"c-navy","folder"),
+    ],
+    columns:["Nº OT","Estado","Tipo","Equipo","Fecha","Hora","Descripción","Ubicación","Responsable"],
+    rows:[
+      row(["1042","EN TALLER","Preventivo","MacLean 04","11/8/2026","10:28","Cambio de filtros y revisión hidráulica por alerta de horas de motor.","Nivel -180","Taller Flota Subterránea"]),
+      row(["1039","PROGRAMADO","Correctivo","Perforadora PF-11","10/8/2026","07:40","Reemplazo de manguera de alta presión detectado en inspección diaria.","Nivel -210","Guardia Mecánica"]),
+      row(["1035","COMPLETADO","Preventivo","Empernadora EB-02","08/8/2026","15:10","Servicio de 500 horas completado, unidad reincorporada a producción.","Nivel -150","Taller Flota Subterránea"]),
+    ]
+  },
+
+  mant_planta: {
+    group:"Mantenimiento", label:"Planta y Activos Fijos", icon:"P", type:"dashboard",
+    title:"Planta y Activos Fijos", subtitle:"Mantenimiento · trituración y molienda",
+    stats:[
+      stat("NUEVO",3,"c-orange","square"),
+      stat("PROGRAMADO",8,"c-green","square"),
+      stat("EN INTERVENCIÓN",2,"c-gray","square"),
+      stat("EN CONDICIÓN",5,"c-navy","check"),
+      stat("COMPLETADO",14,"c-teal","star"),
+      stat("ARCHIVADO",47,"c-navy","folder"),
+    ],
+    columns:["Nº OT","Estado","Activo","Código","Fecha","Hora","Descripción","Área Planta","Responsable"],
+    rows:[
+      row(["512","EN CONDICIÓN","Trituradora primaria","AT-011","11/8/2026","06:15","Vibración sobre umbral detectada por sensor de condición.","Chancado Primario","Ingeniería de Mantenimiento"]),
+      row(["508","PROGRAMADO","Faja transportadora","AT-034","09/8/2026","13:00","Cambio programado de rodillos por desgaste acumulado.","Molienda","Taller Planta"]),
+    ]
+  },
+
+  amb_carbono: {
+    group:"Ambiental", label:"Huella de Carbono", icon:"H", type:"dashboard",
+    title:"Huella de Carbono", subtitle:"Contabilidad de emisiones GEI",
+    stats:[
+      stat("NUEVO",1,"c-orange","square"),
+      stat("EN CÁLCULO",4,"c-green","square"),
+      stat("EN REVISIÓN",2,"c-gray","square"),
+      stat("VALIDADO",9,"c-navy","check"),
+      stat("AUDITADO",6,"c-teal","star"),
+      stat("ARCHIVADO",31,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Fuente","Código","Fecha","Hora","Descripción","Alcance","Responsable"],
+    rows:[
+      row(["1","EN CÁLCULO","Combustible flota","HC-0071","10/8/2026","12:00","Actualización de consumo de diésel mensual de flota MacLean.","Alcance 1","Sustentabilidad"]),
+      row(["2","VALIDADO","Energía eléctrica","HC-0069","05/8/2026","09:30","Cierre de consumo eléctrico de molienda, período julio.","Alcance 2","Sustentabilidad"]),
+    ]
+  },
+
+  amb_sensores: {
+    group:"Ambiental", label:"Sensores e Instrumentación", icon:"S", type:"dashboard",
+    title:"Sensores e Instrumentación", subtitle:"Monitoreo hídrico y estructural en tiempo real",
+    stats:[
+      stat("NUEVO",2,"c-orange","square"),
+      stat("EN MONITOREO",12,"c-green","square"),
+      stat("ALERTA",2,"c-red","square"),
+      stat("VALIDADO",27,"c-navy","check"),
+      stat("ARCHIVADO",70,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Instrumento","Código","Fecha","Hora","Lectura / Descripción","Ubicación","Responsable"],
+    rows:[
+      row(["1","ALERTA","Piezómetro","P-12","10/8/2026","09:41","Lectura fuera de rango en dique de relaves, verificar estabilidad.","Depósito Norte","Monitoreo Relaves"]),
+      row(["2","EN MONITOREO","Caudalímetro","CD-05","10/8/2026","07:00","Caudal de drenaje dentro de parámetros normales.","Quebrada Sur","Ingeniería Ambiental"]),
+      row(["3","VALIDADO","Sismógrafo","SM-02","09/8/2026","16:45","Registro de vibración post voladura dentro de límite permitido.","Sector Voladuras","Ingeniería Ambiental"]),
+    ]
+  },
+
+  traz_lotes: {
+    group:"Trazabilidad", label:"Control de Lotes", icon:"T", type:"dashboard",
+    title:"Control de Lotes", subtitle:"Trazabilidad del mineral · mina a puerto",
+    stats:[
+      stat("NUEVO",4,"c-orange","square"),
+      stat("EN PROCESO PLANTA",8,"c-green","square"),
+      stat("EN TRÁNSITO",3,"c-gray","square"),
+      stat("DESPACHADO",15,"c-navy","check"),
+      stat("ENTREGADO",52,"c-teal","star"),
+      stat("ARCHIVADO",12,"c-navy","folder"),
+    ],
+    columns:["Nº Lote","Estado","Mineral","Código","Fecha","Hora","Descripción","Destino","Responsable"],
+    rows:[
+      row(["0248","DESPACHADO","Concentrado Cu","LT-0248","10/8/2026","08:15","Despacho hacia puerto, leyes de laboratorio conformes.","Puerto San Antonio","Control de Calidad"]),
+      row(["0247","EN TRÁNSITO","Concentrado Cu","LT-0247","09/8/2026","18:30","Lote en camino, pesaje de báscula de salida registrado.","Puerto San Antonio","Logística"]),
+      row(["0245","ENTREGADO","Polimetálico","LT-0245","07/8/2026","10:00","Entrega confirmada en refinería, cierre de trazabilidad end-to-end.","Refinería Externa","Logística"]),
+    ]
+  },
+
+  seg_alertas: {
+    group:"Higiene y Seguridad", label:"Alertas en Tiempo Real", icon:"A", type:"dashboard",
+    title:"Alertas en Tiempo Real", subtitle:"Sensado IoT de gases y condiciones",
+    stats:[
+      stat("NUEVO",2,"c-orange","square"),
+      stat("EVALUANDO",5,"c-green","square"),
+      stat("ALERTA ACTIVA",1,"c-red","square"),
+      stat("EVACUACIÓN",0,"c-orange","square"),
+      stat("RESUELTO",38,"c-teal","star"),
+      stat("ARCHIVADO",22,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Tipo","Código","Fecha","Hora","Descripción","Zona","Responsable"],
+    rows:[
+      row(["1","ALERTA ACTIVA","Gas metano","SG-0019","10/8/2026","06:52","Concentración de metano sobre umbral, notificación automática al Jefe de Guardia.","Nivel -240","Jefe de Guardia"]),
+      row(["2","RESUELTO","Gas CO2","SG-0017","08/8/2026","14:10","Lectura elevada normalizada tras ventilación forzada.","Nivel -210","Guardia Mecánica"]),
+    ]
+  },
+
+  seg_perfiles: {
+    group:"Higiene y Seguridad", label:"Perfiles de Riesgo", icon:"K", type:"dashboard",
+    title:"Perfiles de Riesgo", subtitle:"Lógica difusa FHS · patrones de riesgo",
+    stats:[
+      stat("NUEVO",1,"c-orange","square"),
+      stat("EN EVALUACIÓN",6,"c-green","square"),
+      stat("RIESGO MEDIO",4,"c-gray","square"),
+      stat("RIESGO ALTO",1,"c-red","square"),
+      stat("APTO",29,"c-teal","star"),
+      stat("ARCHIVADO",18,"c-navy","folder"),
+    ],
+    columns:["Nº","Estado","Operador","Código","Fecha","Hora","Descripción","Turno","Responsable"],
+    rows:[
+      row(["1","RIESGO ALTO","Operador Nivel -240","PR-0033","10/8/2026","06:00","Patrón combinado de fatiga y clima adverso detectado por Kronos FHS.","Noche","Jefe de Guardia"]),
+      row(["2","APTO","Operador Flota","PR-0031","09/8/2026","22:00","Evaluación de ingreso sin observaciones, condiciones normales.","Noche","Seguridad Operacional"]),
+    ]
+  },
+
+  legal: { group:"Sistema", label:"Asesoría Legal", icon:"A", type:"simple", title:"Asesoría Legal", subtitle:"Piezas legales y dictámenes",
+    msg:"Consultá dictámenes, contratos de servidumbre y piezas legales vinculadas a cualquier caso del sistema." },
+
+  notas: { group:"Sistema", label:"Notas", icon:"N", type:"simple", title:"Notas", subtitle:"Notas internas",
+    msg:"Registrá notas internas de seguimiento, visibles solo para el equipo de gestión." },
+
+  accesos: { group:"Sistema", label:"Registro de Accesos", icon:"R", type:"simple", title:"Registro de Accesos", subtitle:"Auditoría del sistema",
+    msg:"Consultá el historial de accesos e ingresos por usuario, fecha y módulo." },
 };
 
-// ========== LOGIN ==========
-function initLogin(){
-  document.getElementById('loginForm').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const pwd = document.getElementById('password').value;
-    if(pwd === ADMIN_PASSWORD){
-      sessionStorage.setItem(SESSION_KEY, 'true');
-      showApp();
-    } else {
-      document.getElementById('errorMsg').classList.add('show');
-      document.getElementById('password').value = '';
-      setTimeout(()=>document.getElementById('errorMsg').classList.remove('show'), 3000);
-    }
-  });
-}
-
-function checkSession(){
-  return sessionStorage.getItem(SESSION_KEY) === 'true';
-}
-
-// ========== APP ==========
-function showApp(){
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'flex';
-  renderSidebar();
-  selectArea('bandeja');
-}
-
-function hideApp(){
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('password').focus();
-}
-
-function renderSidebar(){
+/* APP INIT */
+function initApp(){
   const sidebarEl = document.getElementById('sidebar');
   let currentGroup = null;
   Object.entries(AREAS).forEach(([id,a])=>{
@@ -252,102 +519,105 @@ function renderSidebar(){
     item.addEventListener('click', ()=>selectArea(id));
     sidebarEl.appendChild(item);
   });
-}
 
-function selectArea(id){
-  document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
-  const a = AREAS[id];
-  document.getElementById('pageTitle').innerHTML = `${a.title}<small id="pageSubtitle">${a.subtitle}</small>`;
-  document.getElementById('addBtn').textContent = a.type==='dashboard' ? '+ Agregar Caso' : '+ Agregar';
+  function selectArea(id){
+    document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+    const a = AREAS[id];
+    document.getElementById('pageTitle').innerHTML = `${a.title}<small id="pageSubtitle">${a.subtitle}</small>`;
+    document.getElementById('addBtn').textContent = a.type==='dashboard' ? '+ Agregar Caso' : '+ Agregar';
 
-  const content = document.getElementById('content');
-  if(a.type==='simple'){
-    content.innerHTML = `<div style="background:var(--card); border:1px solid var(--line); border-radius:10px; padding:48px 32px; text-align:center; color:var(--muted); font-size:13.5px;"><div style="width:52px;height:52px;border-radius:12px;background:#eef6f5;color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin:0 auto 14px;">${a.icon}</div><h3 style="color:var(--navy); font-size:15px; margin-bottom:6px;">${a.title}</h3><p>${a.msg}</p></div>`;
-    return;
+    const content = document.getElementById('content');
+    if(a.type==='simple'){
+      content.innerHTML = `
+        <div class="simple-panel">
+          <div class="big-ico">${a.icon}</div>
+          <h3>${a.title}</h3>
+          <p>${a.msg}</p>
+        </div>`;
+      return;
+    }
+
+    // dashboard
+    let statsHtml = `<button class="showall" id="showAllBtn">mostrar todo</button><div class="stats-grid">`;
+    a.stats.forEach((s,i)=>{
+      statsHtml += `
+        <div class="stat-card" data-idx="${i}">
+          <div class="label"><span class="stat-ico ${s.color} ${s.ico}"></span>${s.label}</div>
+          <div class="count">${s.count}</div>
+        </div>`;
+    });
+    statsHtml += `</div>`;
+
+    let tableHtml = `<div class="section-label">Historial · ${a.title}</div><div class="tablewrap"><table><thead><tr>`;
+    a.columns.forEach(c=> tableHtml += `<th>${c}</th>`);
+    tableHtml += `</tr></thead><tbody>`;
+    a.rows.forEach(r=>{
+      tableHtml += `<tr>`;
+      r.forEach((cell,ci)=>{
+        if(ci===0){ tableHtml += `<td class="rownum">${cell}</td>`; }
+        else if(ci===1){ tableHtml += `<td>${estadoPill(cell)}</td>`; }
+        else { tableHtml += `<td>${cell}</td>`; }
+      });
+      tableHtml += `</tr>`;
+    });
+    tableHtml += `</tbody></table></div>`;
+
+    content.innerHTML = statsHtml + tableHtml;
+
+    document.querySelectorAll('.stat-card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        const already = card.classList.contains('selected');
+        document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('selected'));
+        if(!already) card.classList.add('selected');
+      });
+    });
+    document.getElementById('showAllBtn').addEventListener('click', ()=>{
+      document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('selected'));
+    });
   }
 
-  let statsHtml = `<button class="showall" id="showAllBtn">mostrar todo</button><div class="stats-grid">`;
-  a.stats.forEach((s,i)=>{
-    statsHtml += `<div class="stat-card" data-idx="${i}"><div class="label"><span class="stat-ico ${s.color} ${s.ico}"></span>${s.label}</div><div class="count">${s.count}</div></div>`;
-  });
-  statsHtml += `</div>`;
+  function estadoPill(estado){
+    const map = {
+      "NUEVO":"#fff2e6;color:#c8631a",
+      "EN GESTIÓN":"#eaf7ec;color:#237a3d",
+      "EN PROCESO":"#eaf7ec;color:#237a3d",
+      "PROGRAMADO":"#eaf7ec;color:#237a3d",
+      "EN CÁLCULO":"#eaf7ec;color:#237a3d",
+      "EN MONITOREO":"#eaf7ec;color:#237a3d",
+      "EN PROCESO PLANTA":"#eaf7ec;color:#237a3d",
+      "EVALUANDO":"#eaf7ec;color:#237a3d",
+      "EN EJECUCIÓN":"#eaf7ec;color:#237a3d",
+      "RESPONDIDO":"#eef0f3;color:#6b7688",
+      "EN TALLER":"#eef0f3;color:#6b7688",
+      "EN INTERVENCIÓN":"#eef0f3;color:#6b7688",
+      "EN REVISIÓN":"#eef0f3;color:#6b7688",
+      "EN TRÁNSITO":"#eef0f3;color:#6b7688",
+      "RIESGO MEDIO":"#eef0f3;color:#6b7688",
+      "ESCALADO":"#fdeaea;color:#c0392b",
+      "ALERTA":"#fdeaea;color:#c0392b",
+      "ALERTA ACTIVA":"#fdeaea;color:#c0392b",
+      "RIESGO ALTO":"#fdeaea;color:#c0392b",
+      "EVACUACIÓN":"#fdeaea;color:#c0392b",
+      "EN CAMPO":"#e7f0fb;color:#1c5fa8",
+      "VALIDADO":"#e7f0fb;color:#1c5fa8",
+      "EN CONDICIÓN":"#e7f0fb;color:#1c5fa8",
+      "DESPACHADO":"#e7f0fb;color:#1c5fa8",
+      "COMPLETADO":"#e7f6f4;color:#00857a",
+      "CUMPLIDO":"#e7f6f4;color:#00857a",
+      "AUDITADO":"#e7f6f4;color:#00857a",
+      "ENTREGADO":"#e7f6f4;color:#00857a",
+      "RESUELTO":"#e7f6f4;color:#00857a",
+      "APTO":"#e7f6f4;color:#00857a",
+      "CERRADO":"#eef0f3;color:#6b7688",
+      "ARCHIVADO":"#eef0f3;color:#6b7688",
+    };
+    const style = map[estado] || "#eef0f3;color:#6b7688";
+    const [bg,colorPart] = style.split(';color:');
+    return `<span class="estado-pill" style="background:${bg};color:${colorPart}">${estado}</span>`;
+  }
 
-  let tableHtml = `<div class="section-label">Historial · ${a.title}</div><div class="tablewrap"><table><thead><tr>`;
-  a.columns.forEach(c=> tableHtml += `<th>${c}</th>`);
-  tableHtml += `</tr></thead><tbody>`;
-  a.rows.forEach(r=>{
-    tableHtml += `<tr>`;
-    r.forEach((cell,ci)=>{
-      if(ci===0){ tableHtml += `<td class="rownum">${cell}</td>`; }
-      else if(ci===1){ tableHtml += `<td>${estadoPill(cell)}</td>`; }
-      else { tableHtml += `<td>${cell}</td>`; }
-    });
-    tableHtml += `</tr>`;
-  });
-  tableHtml += `</tbody></table></div>`;
-
-  content.innerHTML = statsHtml + tableHtml;
-
-  document.querySelectorAll('.stat-card').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      const already = card.classList.contains('selected');
-      document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('selected'));
-      if(!already) card.classList.add('selected');
-    });
-  });
-  document.getElementById('showAllBtn').addEventListener('click', ()=>{
-    document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('selected'));
-  });
+  selectArea('bandeja');
 }
-
-function estadoPill(estado){
-  const map = {
-    "NUEVO":"#fff2e6;color:#c8631a",
-    "EN GESTIÓN":"#eaf7ec;color:#237a3d",
-    "EN PROCESO":"#eaf7ec;color:#237a3d",
-    "PROGRAMADO":"#eaf7ec;color:#237a3d",
-    "EN CÁLCULO":"#eaf7ec;color:#237a3d",
-    "EN MONITOREO":"#eaf7ec;color:#237a3d",
-    "EN PROCESO PLANTA":"#eaf7ec;color:#237a3d",
-    "EVALUANDO":"#eaf7ec;color:#237a3d",
-    "EN EJECUCIÓN":"#eaf7ec;color:#237a3d",
-    "RESPONDIDO":"#eef0f3;color:#6b7688",
-    "EN TALLER":"#eef0f3;color:#6b7688",
-    "EN INTERVENCIÓN":"#eef0f3;color:#6b7688",
-    "EN REVISIÓN":"#eef0f3;color:#6b7688",
-    "EN TRÁNSITO":"#eef0f3;color:#6b7688",
-    "RIESGO MEDIO":"#eef0f3;color:#6b7688",
-    "ESCALADO":"#fdeaea;color:#c0392b",
-    "ALERTA":"#fdeaea;color:#c0392b",
-    "ALERTA ACTIVA":"#fdeaea;color:#c0392b",
-    "RIESGO ALTO":"#fdeaea;color:#c0392b",
-    "EVACUACIÓN":"#fdeaea;color:#c0392b",
-    "EN CAMPO":"#e7f0fb;color:#1c5fa8",
-    "VALIDADO":"#e7f0fb;color:#1c5fa8",
-    "EN CONDICIÓN":"#e7f0fb;color:#1c5fa8",
-    "DESPACHADO":"#e7f0fb;color:#1c5fa8",
-    "COMPLETADO":"#e7f6f4;color:#00857a",
-    "CUMPLIDO":"#e7f6f4;color:#00857a",
-    "AUDITADO":"#e7f6f4;color:#00857a",
-    "ENTREGADO":"#e7f6f4;color:#00857a",
-    "RESUELTO":"#e7f6f4;color:#00857a",
-    "APTO":"#e7f6f4;color:#00857a",
-    "CERRADO":"#eef0f3;color:#6b7688",
-    "ARCHIVADO":"#eef0f3;color:#6b7688",
-  };
-  const style = map[estado] || "#eef0f3;color:#6b7688";
-  const [bg,colorPart] = style.split(';color:');
-  return `<span class="estado-pill" style="background:${bg};color:${colorPart}">${estado}</span>`;
-}
-
-// ========== INIT ==========
-document.getElementById('appScreen').querySelector('.btn-add').addEventListener('click', function(){
-  // Placeholder for add functionality
-  alert('Funcionalidad de agregar en desarrollo');
-});
-
-initLogin();
-if(checkSession()) showApp();
 </script>
 </body>
 </html>
