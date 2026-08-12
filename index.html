@@ -488,9 +488,24 @@
 <!-- FOOTER -->
 <footer class="site-footer">
   © 2024 Boulé GovTech · By Global Solutions. Todos los derechos reservados.
+  <span id="adminAccess" style="cursor:pointer; opacity:0.3; font-size:12px; margin-left:8px;" title="Panel Administrativo">⚙️</span>
 </footer>
 
 <script src="script.js"></script>
 <script src="bot-loader.js"></script>
+
+<script>
+// Acceso secreto al panel admin
+document.getElementById('adminAccess').addEventListener('click', () => {
+  window.location.href = 'admin.html';
+});
+
+// Atajo de teclado: Ctrl+Shift+A
+document.addEventListener('keydown', (e) => {
+  if(e.ctrlKey && e.shiftKey && e.key === 'A') {
+    window.location.href = 'admin.html';
+  }
+});
+</script>
 </body>
 </html>
