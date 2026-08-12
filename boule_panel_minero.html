@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boulé | Proceso Productivo Minero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --navy:#0F1E36; --navy-2:#16294a; --teal:#00A896; --teal-dark:#00857a;
+  --orange:#FF6B35; --bg:#eef1f5; --card:#ffffff; --line:#e1e5ec;
+  --text:#1c2434; --muted:#6b7688;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{ font-family:'Montserrat', sans-serif; background:var(--bg); color:var(--text); display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar{ width:270px; min-width:270px; background:var(--navy); color:#cfd6e4; display:flex; flex-direction:column; padding:10px 0 24px; max-height:100vh; overflow-y:auto; }
+.sidebar::-webkit-scrollbar{ width:6px; }
+.sidebar::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:4px; }
+.brand{ display:flex; align-items:center; gap:10px; padding:16px 18px 20px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:6px; }
+.brand .mark{ width:32px;height:32px;border-radius:8px; background:linear-gradient(135deg,var(--teal),var(--teal-dark)); display:flex;align-items:center;justify-content:center; font-weight:800;color:#fff;font-size:15px; flex-shrink:0; }
+.brand .word{ font-size:13.5px;font-weight:700;letter-spacing:.03em;color:#fff;line-height:1.15; }
+.brand .word span{display:block;font-size:9.5px;font-weight:500;color:#8b96ac;letter-spacing:.08em;margin-top:1px;}
+
+.navgroup-label{ font-size:10px; text-transform:uppercase; letter-spacing:.09em; color:#5c6885; padding:16px 18px 6px; font-weight:600; }
+.navitem{ display:flex; align-items:center; gap:11px; padding:10px 18px; font-size:13px; font-weight:500; cursor:pointer; color:#c3cbdc; border-left:3px solid transparent; transition:background .12s; user-select:none; }
+.navitem:hover{ background:rgba(255,255,255,.05); }
+.navitem.active{ background:var(--teal); color:#fff; font-weight:600; border-left:3px solid var(--orange); }
+.navitem .ico{ width:22px;height:22px;flex-shrink:0; display:flex;align-items:center;justify-content:center; font-size:10.5px; font-weight:700; border:1.4px solid currentColor; border-radius:50%; opacity:.85; }
+.navitem.active .ico{ border-color:#fff; opacity:1; }
+.navitem .pin-ico{ border-radius:4px; }
+
+/* MAIN */
+.main{ flex:1; display:flex; flex-direction:column; min-width:0; }
+.topbar{ background:var(--card); border-bottom:1px solid var(--line); padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; position:sticky; top:0; z-index:600; }
+.titleblock{ display:flex; align-items:center; gap:16px; }
+.logo-mark{ width:52px;height:52px;border-radius:12px; background:var(--navy); display:flex;align-items:center;justify-content:center; color:var(--teal); font-weight:800; font-size:18px; }
+.topbar h1{ font-size:19px; font-weight:800; color:var(--navy); letter-spacing:.01em; }
+.topbar h1 small{ display:block; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin-top:2px; }
+.phase-pill{ background:var(--navy); color:#fff; font-size:11px; font-weight:700; padding:6px 14px; border-radius:20px; letter-spacing:.03em; }
+
+.content{ padding:26px 32px 48px; flex:1; }
+
+.section-label{ font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin:0 0 12px; display:flex; align-items:center; gap:8px; }
+.section-label .n{ background:var(--teal); color:#fff; width:18px;height:18px;border-radius:5px; display:flex;align-items:center;justify-content:center; font-size:10px; }
+
+/* PROCESOS cards */
+.proc-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-bottom:32px; }
+.proc-card{ background:var(--card); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:10px; padding:16px 18px; cursor:pointer; transition:box-shadow .12s, transform .12s; }
+.proc-card:hover{ box-shadow:0 3px 10px rgba(15,30,54,.08); transform:translateY(-1px); }
+.proc-card.selected{ border-left-color:var(--orange); box-shadow:0 0 0 2px rgba(255,107,53,.15); }
+.proc-card .step{ font-size:10px; font-weight:700; color:var(--teal-dark); letter-spacing:.06em; margin-bottom:6px; }
+.proc-card .name{ font-size:14px; font-weight:700; color:var(--navy); line-height:1.3; }
+
+/* PARTICIPANTES table */
+.tablewrap{ overflow-x:auto; border-radius:10px; border:1px solid var(--line); background:#fff; box-shadow:0 1px 3px rgba(15,30,54,.05); }
+table{ width:100%; border-collapse:collapse; font-size:13px; min-width:520px; }
+thead th{ background:var(--teal); color:#fff; text-align:left; padding:12px 16px; font-weight:700; font-size:11px; letter-spacing:.02em; text-transform:uppercase; white-space:nowrap; }
+tbody td{ padding:14px 16px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); line-height:1.45; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody tr:hover{ background:#f7f9fc; }
+.rol{ font-weight:700; color:var(--navy); white-space:nowrap; }
+
+.breadcrumb{ display:flex; align-items:center; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.bc-item{ font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:16px; background:#fff; border:1.4px solid var(--line); color:var(--muted); cursor:pointer; }
+.bc-item.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.bc-arrow{ color:#c3cbdc; }
+
+/* ============ GEO MODULE ============ */
+.geo-layout{ display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:start; }
+@media (max-width:1100px){ .geo-layout{ grid-template-columns:1fr; } }
+
+#map{ height:560px; border-radius:12px; border:1px solid var(--line); box-shadow:0 1px 3px rgba(15,30,54,.06); z-index:1; }
+@media (max-width:1100px){ #map{ height:420px; } }
+
+.geo-side{ display:flex; flex-direction:column; gap:16px; }
+.geo-panel{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+.geo-panel h3{ font-size:13px; color:var(--navy); font-weight:800; margin-bottom:4px; }
+.geo-panel .hint{ font-size:11.5px; color:var(--muted); line-height:1.5; margin-bottom:14px; }
+
+.geo-btn{ width:100%; font-family:inherit; font-weight:700; font-size:12.5px; padding:11px 14px; border-radius:9px; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:8px; }
+.geo-btn.primary{ background:var(--teal); color:#fff; }
+.geo-btn.primary:hover{ background:var(--teal-dark); }
+.geo-btn.orange{ background:var(--orange); color:#fff; margin-top:8px; }
+.geo-btn.orange:hover{ filter:brightness(1.06); }
+.geo-btn.ghost{ background:#fff; color:var(--navy); border:1.4px solid var(--line); margin-top:8px; }
+.geo-btn.ghost:hover{ border-color:var(--teal); }
+
+.geo-status{ font-size:11px; font-weight:600; margin-top:10px; padding:8px 10px; border-radius:7px; background:#f4f6f9; color:var(--muted); line-height:1.4; }
+.geo-status.ok{ background:#e7f6f4; color:var(--teal-dark); }
+.geo-status.err{ background:#fdeaea; color:#c0392b; }
+
+.field{ margin-bottom:10px; }
+.field label{ display:block; font-size:10.5px; font-weight:700; color:#3a4257; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }
+.field input, .field select{ width:100%; font-family:inherit; font-size:12.5px; padding:9px 11px; border:1.4px solid var(--line); border-radius:8px; background:#fff; color:var(--text); }
+.field input:focus, .field select:focus{ outline:none; border-color:var(--teal); }
+
+.filter-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+.filter-chip{ font-size:11px; font-weight:600; padding:6px 11px; border-radius:16px; border:1.4px solid var(--line); background:#fff; color:var(--muted); cursor:pointer; user-select:none; }
+.filter-chip.active{ color:#fff; border-color:transparent; }
+
+.points-list{ display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; }
+.point-item{ display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:9px; cursor:pointer; transition:background .12s; }
+.point-item:hover{ background:#f7f9fc; }
+.point-dot{ width:11px;height:11px;border-radius:50%; margin-top:3px; flex-shrink:0; }
+.point-item .pi-name{ font-size:12.5px; font-weight:700; color:var(--navy); line-height:1.25; }
+.point-item .pi-meta{ font-size:10.5px; color:var(--muted); margin-top:2px; }
+.point-item .pi-del{ margin-left:auto; color:#c3cbdc; font-weight:700; cursor:pointer; font-size:14px; padding:0 2px; }
+.point-item .pi-del:hover{ color:#c0392b; }
+
+.kpis{ display:flex; gap:10px; margin-bottom:16px; }
+.kpi{ flex:1; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+.kpi .v{ font-size:22px; font-weight:800; color:var(--navy); }
+.kpi .l{ font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+
+.adding-banner{ display:none; background:var(--orange); color:#fff; font-size:12px; font-weight:700; padding:10px 14px; border-radius:9px; margin-bottom:12px; align-items:center; gap:8px; }
+.adding-banner.show{ display:flex; }
+
+.sync-badge{ font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:14px; display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; }
+.sync-badge.on{ background:#e7f6f4; color:var(--teal-dark); }
+.sync-badge.off{ background:#fff2e6; color:#c8631a; }
+.sync-badge .dot{ width:7px;height:7px;border-radius:50%; background:currentColor; }
+
+.leaflet-popup-content{ font-family:'Montserrat',sans-serif; font-size:12.5px; }
+.leaflet-popup-content b{ color:var(--navy); }
+
+@media (max-width:700px){ .sidebar{ display:none; } .content{ padding:18px; } .topbar{ padding:16px 18px; } }
+
+</style>
+</head>
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="mark">M+</div>
+      <div class="word">BOULÉ<span>GOVTECH · MINERÍA</span></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="titleblock">
+        <div class="logo-mark">M+</div>
+        <h1 id="pageTitle">Proceso Productivo Minero<small id="pageSubtitle">Fases, procesos y participantes</small></h1>
+      </div>
+      <span class="phase-pill" id="phasePill">FASE 1 / 6</span>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+
+<script type="module">
+// ================= DATA: FASES =================
+function proc(name){ return { name }; }
+function part(rol, funcion){ return { rol, funcion }; }
+const PHASES = [
+  { id:"exploracion", label:"Prospección y Exploración",
+    procesos:[ proc("Muestreo y geofísica"), proc("Cartografía regional"), proc("Modelo geológico") ],
+    participantes:[ part("Geólogos","Reconocimiento y evaluación de recursos"), part("Geofísicos","Estudios de suelo y anomalías") ] },
+  { id:"factibilidad", label:"Evaluación y Factibilidad",
+    procesos:[ proc("Diseño de la mina"), proc("Estudios de rentabilidad"), proc("Impacto Ambiental (EIA)") ],
+    participantes:[ part("Ingenieros de minas","Planificación de métodos"), part("Gerente financiero","Flujo de caja e inversión"), part("Consultores ambientales","Gestión de sostenibilidad"), part("Abogados","Revisión jurídica y titularidad") ] },
+  { id:"construccion", label:"Desarrollo y Construcción",
+    procesos:[ proc("Obras de infraestructura"), proc("Construcción de plantas"), proc("Accesos y energía") ],
+    participantes:[ part("Empresas constructoras","Ejecución de obras"), part("Ingenieros civiles","Diseño estructural"), part("Proveedores","Logística, catering y salud") ] },
+  { id:"produccion", label:"Producción o Explotación",
+    procesos:[ proc("Extracción y transporte"), proc("Procesamiento y beneficio"), proc("Fundición y refinación"), proc("Mantenimiento preventivo") ],
+    participantes:[ part("Operadores","Perforación, voladura y carguío"), part("Técnicos mecánicos","Soporte y revisiones"), part("Ingenieros químicos","Control de procesamiento"), part("Gerente de operaciones","Gestión productiva") ] },
+  { id:"cierre", label:"Cierre y Post-Cierre",
+    procesos:[ proc("Estabilización física y química"), proc("Rehabilitación ambiental"), proc("Monitoreo post-cierre") ],
+    participantes:[ part("Especialistas en remediación","Restauración del sitio"), part("Autoridad Ambiental","Verificación de cumplimiento") ] },
+  { id:"gobernanza", label:"Gobernanza y Control",
+    procesos:[],
+    participantes:[ part("Provincias","Dueñas de recursos y policía minera"), part("Secretaría de Nación","Políticas y asistencia"), part("Comunidades","Intercambio socioambiental") ] },
+];
+
+// ================= DATA: GEO =================
+const GEO_CATS = {
+  exploracion:     { label:"Exploración",       color:"#00A896" },
+  produccion:      { label:"Producción",        color:"#FF6B35" },
+  ambiental:       { label:"Monitoreo Amb.",    color:"#2e9e4f" },
+  comunidad:       { label:"Comunidad",         color:"#6b4fa0" },
+  infraestructura: { label:"Infraestructura",   color:"#1c5fa8" },
+};
+const MAP_CENTER = [-34.658, -68.345]; // San Rafael, Mendoza
+
+// Puntos semilla — solo se usan si Firebase NO está configurado (modo memoria)
+const SEED_POINTS = [
+  { name:"Frente de exploración Sur", cat:"exploracion",     lat:-34.720, lng:-68.420, desc:"Muestreo y geofísica en curso" },
+  { name:"Planta de procesamiento",   cat:"produccion",      lat:-34.640, lng:-68.360, desc:"Beneficio y concentrado de mineral" },
+  { name:"Estación piezómetro P-12",  cat:"ambiental",       lat:-34.665, lng:-68.300, desc:"Monitoreo de dique de relaves" },
+  { name:"Mesa de diálogo Rama Caída",cat:"comunidad",       lat:-34.590, lng:-68.290, desc:"Relacionamiento comunitario" },
+  { name:"Acceso y subestación",      cat:"infraestructura", lat:-34.700, lng:-68.340, desc:"Accesos y energía a faena" },
+];
+
+// ===============================================================
+//  store.js — capa de persistencia de puntos de geolocalización
+//  Usa Firebase Firestore si hay configuración válida.
+//  Si no, cae automáticamente a modo memoria (con puntos semilla).
+// ===============================================================
+
+// -------- 1) CONFIGURACIÓN DE FIREBASE --------
+// Pegá acá la config de tu proyecto (Firebase Console → Configuración → Tus apps → SDK).
+// Dejá los valores como están (REEMPLAZAR_*) para trabajar en modo memoria.
+const firebaseConfig = {
+  apiKey:            "REEMPLAZAR_API_KEY",
+  authDomain:        "REEMPLAZAR.firebaseapp.com",
+  projectId:         "REEMPLAZAR_PROJECT_ID",
+  storageBucket:     "REEMPLAZAR.appspot.com",
+  messagingSenderId: "REEMPLAZAR_SENDER_ID",
+  appId:             "REEMPLAZAR_APP_ID",
+};
+
+const FIREBASE_READY = !firebaseConfig.apiKey.startsWith("REEMPLAZAR");
+const COLLECTION = "geo_points";
+
+let db = null;
+let fs = null; // funciones de firestore
+
+// -------- 2) INICIALIZACIÓN --------
+async function initStore(){
+  if(!FIREBASE_READY){
+    return { mode:"memory" };
+  }
+  try{
+    const appMod = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    fs = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const app = appMod.initializeApp(firebaseConfig);
+    db = fs.getFirestore(app);
+    return { mode:"firebase" };
+  }catch(err){
+    console.error("Firebase no disponible, uso modo memoria:", err);
+    return { mode:"memory", error:err };
+  }
+}
+
+// -------- 3) API UNIFICADA --------
+// subscribe(callback): llama a callback(points[]) cada vez que cambian los datos.
+// En Firebase usa onSnapshot (tiempo real). En memoria emite una vez.
+
+let memPoints = SEED_POINTS.map((p,i)=>({ id:"mem_"+(i+1), ...p }));
+let memListeners = [];
+let memSeq = memPoints.length;
+function subscribe(callback){
+  if(db && fs){
+    const col = fs.collection(db, COLLECTION);
+    return fs.onSnapshot(col, (snap)=>{
+      const points = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+      callback(points);
+    }, (err)=>{
+      console.error("onSnapshot error:", err);
+      callback([]);
+    });
+  } else {
+    memListeners.push(callback);
+    callback([...memPoints]);
+    return () => { memListeners = memListeners.filter(cb=>cb!==callback); };
+  }
+}
+async function addPoint(point){
+  if(db && fs){
+    await fs.addDoc(fs.collection(db, COLLECTION), point);
+  } else {
+    memPoints.push({ id:"mem_"+(++memSeq), ...point });
+    memListeners.forEach(cb=>cb([...memPoints]));
+  }
+}
+async function deletePoint(id){
+  if(db && fs){
+    await fs.deleteDoc(fs.doc(db, COLLECTION, id));
+  } else {
+    memPoints = memPoints.filter(p=>p.id!==id);
+    memListeners.forEach(cb=>cb([...memPoints]));
+  }
+}
+
+function renderPhase(id){
+  const idx = PHASES.findIndex(p=>p.id===id);
+  const p = PHASES[idx];
+
+  document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+  document.getElementById('pageTitle').innerHTML = `${p.label}<small id="pageSubtitle">Procesos y participantes de la fase</small>`;
+  const pill = document.getElementById('phasePill');
+  pill.style.display=''; pill.textContent = `FASE ${idx+1} / ${PHASES.length}`;
+
+  const content = document.getElementById('content');
+  let html = `<div class="breadcrumb">` + PHASES.map((ph,i)=>
+    `<span class="bc-item ${ph.id===id?'active':''}" data-nav="${ph.id}">${i+1}. ${ph.label}</span>${i<PHASES.length-1?'<span class="bc-arrow">›</span>':''}`
+  ).join('') + `</div>`;
+
+  if(p.procesos.length){
+    html += `<div class="section-label"><span class="n">P</span>Procesos</div><div class="proc-grid">`;
+    p.procesos.forEach((pr,i)=>{ html += `<div class="proc-card" data-idx="${i}"><div class="step">PASO ${i+1}</div><div class="name">${pr.name}</div></div>`; });
+    html += `</div>`;
+  }
+
+  html += `<div class="section-label"><span class="n">R</span>Participantes y Roles</div>
+    <div class="tablewrap"><table><thead><tr><th>Rol</th><th>Función</th></tr></thead><tbody>`;
+  p.participantes.forEach(pa=>{ html += `<tr><td class="rol">${pa.rol}</td><td>${pa.funcion}</td></tr>`; });
+  html += `</tbody></table></div>`;
+
+  content.innerHTML = html;
+
+  content.querySelectorAll('.proc-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const already = card.classList.contains('selected');
+      content.querySelectorAll('.proc-card').forEach(c=>c.classList.remove('selected'));
+      if(!already) card.classList.add('selected');
+    });
+  });
+  content.querySelectorAll('.bc-item').forEach(el=> el.addEventListener('click', ()=>renderPhase(el.dataset.nav)) );
+}
+
+
+
+let map=null, markers={}, userMarker=null;
+let addingMode=false;
+let activeFilters=new Set(Object.keys(GEO_CATS));
+let POINTS=[];
+let unsubscribe=null;
+let storeMode="memory";
+function setStoreMode(mode){ storeMode = mode; }
+function renderGeo(){
+  document.querySelectorAll('.navitem').forEach(el=>el.classList.toggle('active', el.dataset.id==='geo'));
+  document.getElementById('pageTitle').innerHTML = `Geolocalización<small>Mapa operativo · puntos de faena</small>`;
+  document.getElementById('phasePill').style.display='none';
+
+  const syncOn = storeMode==="firebase";
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="sync-badge ${syncOn?'on':'off'}"><span class="dot"></span>${syncOn ? 'Sincronizado con Firebase (los puntos quedan guardados)' : 'Modo memoria — configurá Firebase en js/store.js para guardar'}</div>
+    <div class="kpis" id="geoKpis"></div>
+    <div class="adding-banner" id="addingBanner">📍 Modo alta activo — hacé clic en el mapa para ubicar el nuevo punto (Esc para cancelar)</div>
+    <div class="geo-layout">
+      <div id="map"></div>
+      <div class="geo-side">
+        <div class="geo-panel">
+          <h3>Mi ubicación</h3>
+          <p class="hint">Centrá el mapa en tu posición real usando el GPS del dispositivo.</p>
+          <button class="geo-btn primary" id="locateBtn">◎ Ubicarme ahora</button>
+          <div class="geo-status" id="locStatus">Ubicación no solicitada.</div>
+        </div>
+
+        <div class="geo-panel">
+          <h3>Nuevo punto</h3>
+          <p class="hint">Cargá un punto de faena. Escribí las coordenadas o activá el modo mapa y hacé clic.</p>
+          <div class="field"><label>Nombre</label><input id="npName" placeholder="Ej: Frente de voladura N-3"></div>
+          <div class="field"><label>Categoría</label><select id="npCat">${Object.entries(GEO_CATS).map(([k,c])=>`<option value="${k}">${c.label}</option>`).join('')}</select></div>
+          <div class="field"><label>Descripción</label><input id="npDesc" placeholder="Detalle breve"></div>
+          <div class="field"><label>Latitud</label><input id="npLat" placeholder="-34.658"></div>
+          <div class="field"><label>Longitud</label><input id="npLng" placeholder="-68.345"></div>
+          <button class="geo-btn orange" id="addMapBtn">📍 Marcar en el mapa</button>
+          <button class="geo-btn primary" id="saveBtn" style="margin-top:8px;">Guardar punto</button>
+        </div>
+
+        <div class="geo-panel">
+          <h3>Puntos registrados</h3>
+          <div class="filter-row" id="filterRow"></div>
+          <div class="points-list" id="pointsList"></div>
+        </div>
+      </div>
+    </div>`;
+
+  setTimeout(()=>{
+    map = L.map('map', {zoomControl:true}).setView(MAP_CENTER, 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'© OpenStreetMap' }).addTo(map);
+    map.on('click', (e)=>{
+      if(addingMode){
+        document.getElementById('npLat').value = e.latlng.lat.toFixed(5);
+        document.getElementById('npLng').value = e.latlng.lng.toFixed(5);
+        setAddingMode(false);
+        document.getElementById('npName').focus();
+      }
+    });
+    renderFilters();
+
+    // suscripción a datos (tiempo real si Firebase)
+    if(unsubscribe) unsubscribe();
+    unsubscribe = subscribe((points)=>{
+      POINTS = points;
+      if(map){ renderMarkers(); renderPointsList(); renderKpis(); }
+    });
+
+    document.getElementById('locateBtn').addEventListener('click', locateUser);
+    document.getElementById('addMapBtn').addEventListener('click', ()=>setAddingMode(!addingMode));
+    document.getElementById('saveBtn').addEventListener('click', savePoint);
+  }, 50);
+}
+
+function catIcon(color){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:20px;height:20px;background:${color};border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 5px rgba(0,0,0,.35)"></div>`,
+    iconSize:[20,20], iconAnchor:[10,20], popupAnchor:[0,-18]
+  });
+}
+
+function renderMarkers(){
+  Object.values(markers).forEach(m=>map.removeLayer(m));
+  markers={};
+  POINTS.filter(p=>activeFilters.has(p.cat)).forEach(p=>{
+    const c = GEO_CATS[p.cat] || {label:p.cat, color:'#6b7688'};
+    const m = L.marker([p.lat,p.lng], {icon:catIcon(c.color)}).addTo(map);
+    m.bindPopup(`<b>${p.name}</b><br><span style="color:${c.color};font-weight:700;font-size:11px">${c.label}</span><br>${p.desc||''}<br><small>${(+p.lat).toFixed(4)}, ${(+p.lng).toFixed(4)}</small>`);
+    markers[p.id]=m;
+  });
+}
+
+function renderFilters(){
+  const row = document.getElementById('filterRow');
+  row.innerHTML = Object.entries(GEO_CATS).map(([k,c])=>{
+    const on = activeFilters.has(k);
+    return `<span class="filter-chip ${on?'active':''}" data-cat="${k}" style="${on?`background:${c.color}`:''}">${c.label}</span>`;
+  }).join('');
+  row.querySelectorAll('.filter-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const cat = chip.dataset.cat;
+      if(activeFilters.has(cat)) activeFilters.delete(cat); else activeFilters.add(cat);
+      renderFilters(); renderMarkers(); renderPointsList(); renderKpis();
+    });
+  });
+}
+
+function renderPointsList(){
+  const list = document.getElementById('pointsList');
+  if(!list) return;
+  const visible = POINTS.filter(p=>activeFilters.has(p.cat));
+  if(!visible.length){ list.innerHTML = `<p style="font-size:12px;color:#9aa3b5;padding:6px 2px">No hay puntos para los filtros activos.</p>`; return; }
+  list.innerHTML = visible.map(p=>{
+    const c = GEO_CATS[p.cat] || {label:p.cat, color:'#6b7688'};
+    return `<div class="point-item" data-id="${p.id}">
+      <span class="point-dot" style="background:${c.color}"></span>
+      <div><div class="pi-name">${p.name}</div><div class="pi-meta">${c.label} · ${(+p.lat).toFixed(3)}, ${(+p.lng).toFixed(3)}</div></div>
+      <span class="pi-del" data-del="${p.id}" title="Eliminar">✕</span>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.point-item').forEach(el=>{
+    el.addEventListener('click', (ev)=>{
+      if(ev.target.dataset.del) return;
+      const p = POINTS.find(x=>x.id==el.dataset.id);
+      map.setView([p.lat,p.lng], 14);
+      if(markers[p.id]) markers[p.id].openPopup();
+    });
+  });
+  list.querySelectorAll('.pi-del').forEach(el=>{
+    el.addEventListener('click', async (ev)=>{
+      ev.stopPropagation();
+      await deletePoint(el.dataset.del);
+    });
+  });
+}
+
+function renderKpis(){
+  const el = document.getElementById('geoKpis');
+  if(!el) return;
+  const total = POINTS.length;
+  const visible = POINTS.filter(p=>activeFilters.has(p.cat)).length;
+  const cats = new Set(POINTS.map(p=>p.cat)).size;
+  el.innerHTML = `
+    <div class="kpi"><div class="v">${total}</div><div class="l">Puntos totales</div></div>
+    <div class="kpi"><div class="v">${visible}</div><div class="l">Visibles</div></div>
+    <div class="kpi"><div class="v">${cats}</div><div class="l">Categorías activas</div></div>`;
+}
+
+function setAddingMode(on){
+  addingMode = on;
+  document.getElementById('addingBanner').classList.toggle('show', on);
+  if(map) map.getContainer().style.cursor = on ? 'crosshair' : '';
+  document.getElementById('addMapBtn').textContent = on ? '✕ Cancelar marcado' : '📍 Marcar en el mapa';
+}
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && addingMode) setAddingMode(false); });
+
+async function savePoint(){
+  const name = document.getElementById('npName').value.trim();
+  const cat = document.getElementById('npCat').value;
+  const desc = document.getElementById('npDesc').value.trim();
+  const lat = parseFloat(document.getElementById('npLat').value);
+  const lng = parseFloat(document.getElementById('npLng').value);
+  if(!name){ alert('Ingresá un nombre para el punto.'); return; }
+  if(isNaN(lat)||isNaN(lng)){ alert('Ingresá coordenadas válidas o marcá en el mapa.'); return; }
+  if(!activeFilters.has(cat)) activeFilters.add(cat);
+  await addPoint({ name, cat, lat, lng, desc });
+  document.getElementById('npName').value='';
+  document.getElementById('npDesc').value='';
+  document.getElementById('npLat').value='';
+  document.getElementById('npLng').value='';
+  renderFilters();
+  map.setView([lat,lng], 14);
+}
+
+function locateUser(){
+  const st = document.getElementById('locStatus');
+  if(!navigator.geolocation){ st.className='geo-status err'; st.textContent='El navegador no soporta geolocalización.'; return; }
+  st.className='geo-status'; st.textContent='Solicitando ubicación…';
+  navigator.geolocation.getCurrentPosition(
+    (pos)=>{
+      const {latitude, longitude, accuracy} = pos.coords;
+      map.setView([latitude, longitude], 14);
+      if(userMarker) map.removeLayer(userMarker);
+      userMarker = L.circleMarker([latitude,longitude], {radius:9, color:'#1c5fa8', fillColor:'#1c5fa8', fillOpacity:.6, weight:3}).addTo(map);
+      userMarker.bindPopup(`<b>Mi ubicación</b><br><small>Precisión ~${Math.round(accuracy)} m</small>`).openPopup();
+      st.className='geo-status ok'; st.textContent=`Ubicación fijada: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (±${Math.round(accuracy)} m).`;
+    },
+    (err)=>{
+      st.className='geo-status err';
+      const msgs={1:'Permiso denegado. Habilitá la ubicación en el navegador.',2:'Posición no disponible.',3:'Tiempo de espera agotado.'};
+      st.textContent = msgs[err.code] || 'No se pudo obtener la ubicación.';
+    },
+    {enableHighAccuracy:true, timeout:10000, maximumAge:0}
+  );
+}
+
+
+
+
+
+// -------- SIDEBAR --------
+const sidebarEl = document.getElementById('sidebar');
+
+const grp = document.createElement('div');
+grp.className='navgroup-label';
+grp.textContent='Proceso Productivo Minero';
+sidebarEl.appendChild(grp);
+
+PHASES.forEach((p,i)=>{
+  const item = document.createElement('div');
+  item.className='navitem'; item.dataset.id=p.id;
+  item.innerHTML = `<span class="ico">${i+1}</span> ${p.label}`;
+  item.addEventListener('click', ()=>renderPhase(p.id));
+  sidebarEl.appendChild(item);
+});
+
+const grp2 = document.createElement('div');
+grp2.className='navgroup-label';
+grp2.textContent='Herramientas';
+sidebarEl.appendChild(grp2);
+
+const geoItem = document.createElement('div');
+geoItem.className='navitem'; geoItem.dataset.id='geo';
+geoItem.innerHTML = `<span class="ico pin-ico">◎</span> Geolocalización`;
+geoItem.addEventListener('click', ()=>renderGeo());
+sidebarEl.appendChild(geoItem);
+
+// -------- INIT --------
+(async ()=>{
+  const { mode } = await initStore();
+  setStoreMode(mode);
+  console.log("Persistencia:", mode);
+  renderPhase('exploracion'); // vista inicial
+})();
+
+</script>
+</body>
+</html>
