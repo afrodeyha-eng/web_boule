@@ -52,6 +52,10 @@ const MODULES = {
         title: 'Equipos',
         component: loadPlaceholder
     },
+    calendario: {
+        title: 'Calendario',
+        component: loadPlaceholder
+    },
     feriados: {
         title: 'Feriados',
         component: loadPlaceholder
