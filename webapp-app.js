@@ -4,12 +4,42 @@ const APP_CONFIG = {
     sidebarOpen: window.innerWidth > 768
 };
 
-// MODULE REGISTRY - Aquí irán los módulos disponibles
+// MODULE REGISTRY - Módulos disponibles consolidados
 const MODULES = {
     dashboard: {
-        title: 'Dashboard',
+        title: 'Ir al inicio',
         component: loadDashboard
     },
+    // RECURSOS HUMANOS
+    legajos: {
+        title: 'Legajos',
+        component: loadPlaceholder
+    },
+    'rrhh-agenda': {
+        title: 'RRHH Agenda',
+        component: loadPlaceholder
+    },
+    'rrhh-cargos': {
+        title: 'RRHH Cargos',
+        component: loadPlaceholder
+    },
+    'rrhh-vacantes': {
+        title: 'RRHH Vacantes',
+        component: loadPlaceholder
+    },
+    desempenio: {
+        title: 'Desempeño',
+        component: loadPlaceholder
+    },
+    novedades: {
+        title: 'Novedades',
+        component: loadPlaceholder
+    },
+    recuperacion: {
+        title: 'Recuperación',
+        component: loadPlaceholder
+    },
+    // GESTIÓN OPERATIVA
     asistencia: {
         title: 'Asistencia',
         component: loadPlaceholder
@@ -26,30 +56,20 @@ const MODULES = {
         title: 'Feriados',
         component: loadPlaceholder
     },
-    legajos: {
-        title: 'Legajos',
+    reservas: {
+        title: 'Reservas de Salas',
         component: loadPlaceholder
     },
-    'rrhh-agenda': {
-        title: 'Agenda RRHH',
+    // ATENCIÓN AL CIUDADANO
+    'audit-llamadas': {
+        title: 'Audit de Llamadas',
         component: loadPlaceholder
     },
-    'rrhh-cargos': {
-        title: 'Cargos',
+    inbox: {
+        title: 'Inbox',
         component: loadPlaceholder
     },
-    'rrhh-vacantes': {
-        title: 'Vacantes',
-        component: loadPlaceholder
-    },
-    desempenio: {
-        title: 'Desempeño',
-        component: loadPlaceholder
-    },
-    auditorias: {
-        title: 'Auditorías/Reclamos',
-        component: loadPlaceholder
-    },
+    // GESTIÓN DE RECLAMOS
     reclamos: {
         title: 'Reclamos',
         component: loadPlaceholder
@@ -59,13 +79,18 @@ const MODULES = {
         component: loadPlaceholder
     },
     'reclamos-resueltos': {
-        title: 'Reclamos Resueltos',
+        title: 'Reclamos resueltos',
+        component: loadPlaceholder
+    },
+    'reclamos-estadisticas': {
+        title: 'Reclamos estadísticas',
         component: loadPlaceholder
     },
     'ordenes-trabajo': {
-        title: 'Órdenes de Trabajo',
+        title: 'Órdenes de trabajo',
         component: loadPlaceholder
     },
+    // GESTIÓN DE SOLICITUDES
     solicitudes: {
         title: 'Solicitudes',
         component: loadPlaceholder
@@ -75,13 +100,10 @@ const MODULES = {
         component: loadPlaceholder
     },
     'pedidos-insumos': {
-        title: 'Pedidos de Insumos',
+        title: 'Pedidos de insumos',
         component: loadPlaceholder
     },
-    reservas: {
-        title: 'Reservas',
-        component: loadPlaceholder
-    },
+    // INFORMACIÓN Y REPORTES
     reportes: {
         title: 'Reportes',
         component: loadPlaceholder
@@ -90,24 +112,34 @@ const MODULES = {
         title: 'Documentos',
         component: loadPlaceholder
     },
-    casos: {
-        title: 'Casos',
-        component: loadPlaceholder
-    },
     activos: {
         title: 'Activos',
+        component: loadPlaceholder
+    },
+    casos: {
+        title: 'Casos',
         component: loadPlaceholder
     },
     biblioteca: {
         title: 'Biblioteca',
         component: loadPlaceholder
     },
-    notificaciones: {
-        title: 'Notificaciones',
+    'tablero-comercial': {
+        title: 'Tablero Comercial',
         component: loadPlaceholder
     },
+    // SOPORTE
+    it: {
+        title: 'IT',
+        component: loadPlaceholder
+    },
+    // CONFIGURACIÓN
     ajustes: {
         title: 'Ajustes',
+        component: loadPlaceholder
+    },
+    notificaciones: {
+        title: 'Notificaciones',
         component: loadPlaceholder
     },
     'mi-cuenta': {
