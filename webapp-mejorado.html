@@ -1103,7 +1103,7 @@
                             </p>
                         </div>
 
-                        <div>
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
                             <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Recomendaciones</h3>
                             <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; border-left: 4px solid var(--primary);">
                                 <p style="margin: 0; color: var(--text-primary); font-size: 14px; line-height: 1.6;">
@@ -1112,7 +1112,76 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 25px; display: flex; gap: 10px;">
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">📋 Asistencias del Período</h3>
+                            <div class="table-container">
+                                <table style="font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Entrada</th>
+                                            <th>Salida</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Array.from({length: 10}, (_, i) => {
+                                            const fecha = new Date(2026, 7, Math.floor(Math.random() * 28) + 1);
+                                            const fechaStr = fecha.toLocaleDateString('es-AR');
+                                            const entrada = `${Math.floor(Math.random() * 3) + 7}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`;
+                                            const salida = `${Math.floor(Math.random() * 3) + 16}:${Math.floor(Math.random() * 60).toString().padStart(2, '0')}`;
+                                            const estadoOpciones = ['✓ Presente', '⚠ Tardanza', '✗ Ausente'];
+                                            const estado = estadoOpciones[Math.floor(Math.random() * 3)];
+                                            const badgeState = estado.includes('Presente') ? 'badge-success' : estado.includes('Tardanza') ? 'badge-warning' : 'badge-danger';
+                                            return `
+                                                <tr>
+                                                    <td>${fechaStr}</td>
+                                                    <td>${entrada}</td>
+                                                    <td>${salida}</td>
+                                                    <td><span class="badge ${badgeState}">${estado}</span></td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">📜 Certificados Presentados</h3>
+                            <div class="table-container">
+                                <table style="font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Certificado</th>
+                                            <th>Institución</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Array.from({length: Math.floor(Math.random() * 4) + 1}, (_, i) => {
+                                            const certificados = ['Certificado en Gestión de Proyectos', 'Certificado en Liderazgo', 'Certificado en Tecnología', 'Certificado en Comunicación', 'Certificado en Ventas', 'Certificado en Excel Avanzado', 'Certificado en Seguridad Informática'];
+                                            const instituciones = ['Coursera', 'Google', 'Microsoft', 'LinkedIn Learning', 'INESEM', 'Udemy'];
+                                            const cert = certificados[Math.floor(Math.random() * certificados.length)];
+                                            const inst = instituciones[Math.floor(Math.random() * instituciones.length)];
+                                            const fecha = new Date(2026, Math.floor(Math.random() * 8), Math.floor(Math.random() * 28) + 1);
+                                            const fechaStr = fecha.toLocaleDateString('es-AR');
+                                            return `
+                                                <tr>
+                                                    <td>${cert}</td>
+                                                    <td>${inst}</td>
+                                                    <td>${fechaStr}</td>
+                                                    <td><span class="badge badge-success">✓ Validado</span></td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
                             <button class="btn" onclick="window.print();" style="background: none; color: var(--primary); border: 1px solid var(--primary);">🖨️ Imprimir</button>
                             <button class="btn" onclick="descargarInforme();">📥 Descargar</button>
                         </div>
