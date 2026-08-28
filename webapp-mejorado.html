@@ -551,12 +551,24 @@
         function loadLegajos(c) {
             const dpttos = ['RRHH', 'IT', 'Contabilidad', 'Operaciones', 'Ventas', 'Marketing'];
             const ubicaciones = ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza', 'La Plata'];
+            const puestos = ['Gerente', 'Coordinador', 'Analista', 'Especialista', 'Asistente', 'Desarrollador', 'Diseñador'];
 
-            const empleados = generarEmpleados(15).map(emp => ({
+            const empleados = generarEmpleados(15).map((emp, idx) => ({
                 ...emp,
                 dpto: dpttos[Math.floor(Math.random()*dpttos.length)],
-                ubicacion: ubicaciones[Math.floor(Math.random()*ubicaciones.length)]
+                ubicacion: ubicaciones[Math.floor(Math.random()*ubicaciones.length)],
+                id: idx + 1,
+                fechaIngreso: `${2020 + Math.floor(Math.random()*4)}-${String(Math.floor(Math.random()*12)+1).padStart(2,'0')}-${String(Math.floor(Math.random()*28)+1).padStart(2,'0')}`,
+                telefono: `+54 ${Math.floor(Math.random()*9)+1} ${Math.floor(Math.random()*9000)+1000}`,
+                email: `${emp.nombre.toLowerCase().replace(' ','')}@empresa.com`,
+                estado: Math.random() > 0.1 ? 'Activo' : 'Licencia',
+                cedula: `${Math.floor(Math.random()*90000000)+10000000}`,
+                cuit: `20${Math.floor(Math.random()*90000000)+10000000}-9`,
+                salario: `$${(Math.floor(Math.random()*500)+400)*1000}`,
+                tipoContrato: ['Indefinido', 'Plazo Fijo', 'Pasantía'][Math.floor(Math.random()*3)]
             }));
+
+            window.empleadosLegajos = empleados;
 
             c.innerHTML = `
                 <div class="module-header">
@@ -568,20 +580,147 @@
                     <select class="filter-select"><option>Todos</option>${dpttos.map(d => `<option>${d}</option>`).join('')}</select>
                     <select class="filter-select"><option>Todas</option>${ubicaciones.map(u => `<option>${u}</option>`).join('')}</select>
                 </div>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Nombre</th><th>Puesto</th><th>Departamento</th><th>Ubicación</th></tr></thead>
-                        <tbody>
-                            ${empleados.map(e => `<tr>
-                                <td><div class="employee-info"><div class="avatar" style="background-color: ${e.color}">${e.emoji}</div><span>${e.nombre}</span></div></td>
-                                <td>${e.puesto}</td>
-                                <td>${e.dpto}</td>
-                                <td>${e.ubicacion}</td>
-                            </tr>`).join('')}
-                        </tbody>
-                    </table>
+                <div id="legajosListContainer">
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Nombre</th><th>Puesto</th><th>Departamento</th><th>Ubicación</th><th>Estado</th></tr></thead>
+                            <tbody>
+                                ${empleados.map(e => `<tr onclick="abrirLegajo(${e.id})" style="cursor: pointer; transition: background 0.2s;">
+                                    <td><div class="employee-info"><div class="avatar" style="background-color: ${e.color}">${e.emoji}</div><span>${e.nombre}</span></div></td>
+                                    <td>${e.puesto}</td>
+                                    <td>${e.dpto}</td>
+                                    <td>${e.ubicacion}</td>
+                                    <td><span style="background: ${e.estado === 'Activo' ? '#51cf66' : '#ffa94d'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${e.estado}</span></td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="legajoDetalleContainer" style="display: none;"></div>
+            `;
+
+            document.querySelectorAll('tr').forEach(tr => {
+                tr.addEventListener('mouseover', () => tr.style.backgroundColor = '#f0f0f0');
+                tr.addEventListener('mouseout', () => tr.style.backgroundColor = '');
+            });
+        }
+
+        function abrirLegajo(id) {
+            const empleado = window.empleadosLegajos.find(e => e.id === id);
+            if (!empleado) return;
+
+            const container = document.getElementById('legajosListContainer');
+            const detalleContainer = document.getElementById('legajoDetalleContainer');
+
+            detalleContainer.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 8px; max-width: 1200px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="font-size: 80px; background: ${empleado.color}; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">${empleado.emoji}</div>
+                            <div>
+                                <h2 style="margin: 0; color: var(--primary);">${empleado.nombre}</h2>
+                                <p style="margin: 5px 0; color: #666; font-size: 16px;">${empleado.puesto}</p>
+                                <p style="margin: 5px 0; color: #888; font-size: 14px;">${empleado.dpto} • ${empleado.ubicacion}</p>
+                            </div>
+                        </div>
+                        <button class="btn" onclick="cerrarLegajo()" style="padding: 10px 20px;">← Volver</button>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-top: 0;">Información Personal</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">CÉDULA DE IDENTIDAD</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.cedula}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">CUIT</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.cuit}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">TELÉFONO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.telefono}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">EMAIL</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.email}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-top: 0;">Información Laboral</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px;">
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">PUESTO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.puesto}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">DEPARTAMENTO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.dpto}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">FECHA DE INGRESO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.fechaIngreso}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">TIPO DE CONTRATO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.tipoContrato}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">UBICACIÓN</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.ubicacion}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">SALARIO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;">${empleado.salario}</p>
+                            </div>
+                            <div>
+                                <p style="color: #888; margin: 5px 0; font-size: 12px;">ESTADO</p>
+                                <p style="margin: 0; font-weight: 600; font-size: 16px;"><span style="background: ${empleado.estado === 'Activo' ? '#51cf66' : '#ffa94d'}; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block;">${empleado.estado}</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #e8f4f8; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #0d7377;">
+                        <h3 style="color: var(--primary); margin-top: 0;">Documentos y Archivos</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 6px; text-align: center; cursor: pointer; border: 1px solid #ddd;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">📄</div>
+                                <p style="margin: 0; font-size: 12px; color: #666;">Contrato</p>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 6px; text-align: center; cursor: pointer; border: 1px solid #ddd;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">🎓</div>
+                                <p style="margin: 0; font-size: 12px; color: #666;">Capacitaciones</p>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 6px; text-align: center; cursor: pointer; border: 1px solid #ddd;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">⚠️</div>
+                                <p style="margin: 0; font-size: 12px; color: #666;">Incidentes</p>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 6px; text-align: center; cursor: pointer; border: 1px solid #ddd;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+                                <p style="margin: 0; font-size: 12px; color: #666;">Evaluaciones</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" onclick="cerrarLegajo()" style="padding: 10px 20px;">← Volver</button>
+                        <button class="btn" style="background: none; color: var(--primary); border: 1px solid var(--primary); padding: 10px 20px;">✏️ Editar</button>
+                        <button class="btn" style="background: none; color: var(--primary); border: 1px solid var(--primary); padding: 10px 20px;">📥 Descargar Legajo</button>
+                    </div>
                 </div>
             `;
+
+            container.style.display = 'none';
+            detalleContainer.style.display = 'block';
+        }
+
+        function cerrarLegajo() {
+            const container = document.getElementById('legajosListContainer');
+            const detalleContainer = document.getElementById('legajoDetalleContainer');
+            container.style.display = 'block';
+            detalleContainer.style.display = 'none';
         }
 
         function loadAsistencia(c) {
