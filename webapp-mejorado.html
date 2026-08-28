@@ -981,50 +981,102 @@
                 { id: 'evaluacion', label: 'Evaluación 360' },
                 { id: 'habilidades', label: 'Desarrollo de Habilidades' }
             ];
-            const empleados = generarEmpleados(10);
+            const empleados = generarEmpleados(15);
 
             c.innerHTML = `
                 <div class="module-header">
-                    <div class="header-title"><span class="header-icon">📈</span><h2>Informe Individual de Desempeño</h2></div>
+                    <div class="header-title"><span class="header-icon">📈</span><h2>Informe de Desempeño</h2></div>
                 </div>
 
                 <div class="card" style="margin-bottom: 30px;">
-                    <div class="card-title" style="margin: 0 0 20px 0;">🔧 Seleccionar Parámetros</div>
+                    <div class="card-title" style="margin: 0 0 20px 0;">🔧 Tipo de Informe</div>
 
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <div>
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Empleado:</label>
-                            <select id="select-empleado" class="filter-select" style="width: 100%;">
-                                <option value="">-- Seleccionar empleado --</option>
-                                ${empleados.map((emp, idx) => `<option value="${idx}">${emp.nombre}</option>`).join('')}
-                            </select>
+                    <div style="display: flex; gap: 30px; margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" id="tipo-individual" name="tipo-informe" value="individual" checked style="cursor: pointer;">
+                            <label for="tipo-individual" style="cursor: pointer; font-weight: 500;">Por Empleado Individual</label>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" id="tipo-area" name="tipo-informe" value="area" style="cursor: pointer;">
+                            <label for="tipo-area" style="cursor: pointer; font-weight: 500;">Por Área Completa</label>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border); padding-top: 25px;">
+                        <div id="params-individual" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Empleado:</label>
+                                <select id="select-empleado" class="filter-select" style="width: 100%;">
+                                    <option value="">-- Seleccionar empleado --</option>
+                                    ${empleados.map((emp, idx) => `<option value="${idx}">${emp.nombre}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">KPI:</label>
+                                <select id="select-kpi" class="filter-select" style="width: 100%;">
+                                    <option value="">-- Seleccionar KPI --</option>
+                                    ${kpis.map(kpi => `<option value="${kpi.id}">${kpi.label}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Período:</label>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <input type="date" id="fecha-inicio" value="2026-08-01" class="filter-input" style="flex: 1;">
+                                    <span style="color: var(--text-secondary);">→</span>
+                                    <input type="date" id="fecha-fin" value="2026-08-28" class="filter-input" style="flex: 1;">
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">KPI:</label>
-                            <select id="select-kpi" class="filter-select" style="width: 100%;">
-                                <option value="">-- Seleccionar KPI --</option>
-                                ${kpis.map(kpi => `<option value="${kpi.id}">${kpi.label}</option>`).join('')}
-                            </select>
-                        </div>
+                        <div id="params-area" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Área/Departamento:</label>
+                                <select id="select-area" class="filter-select" style="width: 100%;">
+                                    <option value="">-- Seleccionar área --</option>
+                                    ${dpttos.map(d => `<option value="${d}">${d}</option>`).join('')}
+                                </select>
+                            </div>
 
-                        <div>
-                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Período:</label>
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <input type="date" id="fecha-inicio" value="2026-08-01" class="filter-input" style="flex: 1;">
-                                <span style="color: var(--text-secondary);">→</span>
-                                <input type="date" id="fecha-fin" value="2026-08-28" class="filter-input" style="flex: 1;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Período:</label>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <input type="date" id="fecha-inicio-area" value="2026-08-01" class="filter-input" style="flex: 1;">
+                                    <span style="color: var(--text-secondary);">→</span>
+                                    <input type="date" id="fecha-fin-area" value="2026-08-28" class="filter-input" style="flex: 1;">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <button class="btn" style="margin-top: 20px; width: 100%;" onclick="generarInformePersona();">✓ Generar Informe</button>
+                    <button class="btn" style="margin-top: 20px; width: 100%;" onclick="generarInforme();">✓ Generar Informe</button>
                 </div>
 
                 <div id="informe-contenido"></div>
             `;
 
-            window.generarInformePersona = function() {
+            document.getElementById('tipo-individual').addEventListener('change', function() {
+                document.getElementById('params-individual').style.display = 'grid';
+                document.getElementById('params-area').style.display = 'none';
+            });
+
+            document.getElementById('tipo-area').addEventListener('change', function() {
+                document.getElementById('params-individual').style.display = 'none';
+                document.getElementById('params-area').style.display = 'grid';
+            });
+
+            window.generarInforme = function() {
+                const tipoInforme = document.querySelector('input[name="tipo-informe"]:checked').value;
+
+                if (tipoInforme === 'individual') {
+                    generarInformeIndividual(empleados, kpis);
+                } else {
+                    generarInformeArea(dpttos, empleados);
+                }
+            };
+
+            function generarInformeIndividual(empleados, kpis) {
                 const empleadoIdx = document.getElementById('select-empleado').value;
                 const kpiId = document.getElementById('select-kpi').value;
                 const fechaInicio = document.getElementById('fecha-inicio').value;
@@ -1227,7 +1279,165 @@
                 `;
 
                 document.getElementById('informe-contenido').innerHTML = html;
-            };
+            }
+
+            function generarInformeArea(dpttos, empleados) {
+                const areaSeleccionada = document.getElementById('select-area').value;
+                const fechaInicio = document.getElementById('fecha-inicio-area').value;
+                const fechaFin = document.getElementById('fecha-fin-area').value;
+
+                if (!areaSeleccionada) {
+                    alert('Por favor selecciona un área/departamento');
+                    return;
+                }
+
+                const empleadosArea = empleados.slice(0, Math.floor(Math.random() * 6) + 4);
+                const totalEmpleados = empleadosArea.length;
+
+                const presentes = Math.floor(Math.random() * 80) + 75;
+                const tardanzas = Math.floor(Math.random() * 10) + 2;
+                const ausentes = Math.floor(Math.random() * 15) + 3;
+                const certificadosCount = Math.floor(Math.random() * totalEmpleados * 3) + totalEmpleados;
+                const cursosCount = Math.floor(Math.random() * totalEmpleados * 2) + totalEmpleados;
+
+                const tareasEmpleadosArea = empleadosArea.reduce((acc, emp) => {
+                    if (TAREAS[emp.nombre]) {
+                        acc = acc.concat(TAREAS[emp.nombre].map(t => ({ ...t, empleado: emp.nombre })));
+                    }
+                    return acc;
+                }, []);
+
+                const tareasCompletadas = tareasEmpleadosArea.filter(t => t.avance === 100).length;
+                const tareasPendientes = tareasEmpleadosArea.length - tareasCompletadas;
+                const porcentajeTareas = tareasEmpleadosArea.length > 0 ? Math.round((tareasCompletadas / tareasEmpleadosArea.length) * 100) : 0;
+
+                const puntuacionArea = Math.floor(Math.random() * 25) + 75;
+                const estado = puntuacionArea >= 85 ? 'Excelente' : puntuacionArea >= 75 ? 'Bueno' : 'Necesita mejora';
+                const badgeClass = puntuacionArea >= 85 ? 'badge-success' : puntuacionArea >= 75 ? 'badge-warning' : 'badge-danger';
+
+                const descripcionArea = `Durante el período evaluado del ${fechaInicio} al ${fechaFin}, el área de ${areaSeleccionada} ha demostrado un desempeño ${estado.toLowerCase()}. Se registraron ${presentes}% de asistencia general, con ${tardanzas} tardanzas y ${ausentes} ausencias reportadas en total. El equipo cuenta con ${totalEmpleados} empleados activos en este período.
+
+En cuanto a desarrollo de competencias, se identificaron ${certificadosCount} certificados presentados por los miembros del equipo, indicando un compromiso con la capacitación continua. Se registraron ${cursosCount} participaciones en cursos y programas de desarrollo, reflejando inversión en el crecimiento profesional.
+
+Respecto a la gestión de tareas y proyectos, el área ha completado ${tareasCompletadas} tareas (${porcentajeTareas}% de tasa de cumplimiento) con ${tareasPendientes} tareas aún en proceso. Este desempeño ${puntuacionArea >= 85 ? 'refleja excelencia operacional' : puntuacionArea >= 75 ? 'refleja un desempeño sólido' : 'indica oportunidades de mejora'}.
+
+Se recomienda ${puntuacionArea >= 85 ? 'mantener el nivel actual de desempeño y considerar al área como referente en la organización' : puntuacionArea >= 75 ? 'continuar con el trabajo actual y establecer metas más ambiciosas para el próximo período' : 'implementar un plan de mejora que aborde la productividad y la puntualidad'}.`;
+
+                const html = `
+                    <div class="card">
+                        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Área/Departamento</div>
+                                    <div style="font-size: 18px; font-weight: 600;">${areaSeleccionada}</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Total de Empleados</div>
+                                    <div style="font-size: 18px; font-weight: 600;">${totalEmpleados}</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Período</div>
+                                    <div style="font-size: 14px; font-weight: 500;">${fechaInicio} al ${fechaFin}</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Puntuación General</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: var(--primary);">${puntuacionArea}%</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Estado</div>
+                                    <div><span class="badge ${badgeClass}">${estado}</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: white; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 600; color: var(--text-secondary);">Desempeño General</h3>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <div style="background: var(--bg-secondary); border-radius: 8px; height: 30px; overflow: hidden;">
+                                        <div style="background: ${puntuacionArea >= 85 ? '#16a34a' : puntuacionArea >= 75 ? '#ea580c' : '#dc2626'}; height: 100%; width: ${puntuacionArea}%; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 600; font-size: 12px;">
+                                            ${puntuacionArea}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Análisis Detallado del Área</h3>
+                            <p style="margin: 0; line-height: 1.6; color: var(--text-primary); font-size: 14px;">
+                                ${descripcionArea}
+                            </p>
+                        </div>
+
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">📊 Estadísticas de Asistencia</h3>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #16a34a;">${presentes}%</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Presentes</div>
+                                </div>
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #ea580c;">${tardanzas}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Tardanzas</div>
+                                </div>
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #dc2626;">${ausentes}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Ausentes</div>
+                                </div>
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; text-align: center;">
+                                    <div style="font-size: 20px; font-weight: bold; color: var(--primary);">${certificadosCount}</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Certificados</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">👥 Empleados del Área</h3>
+                            <div class="table-container">
+                                <table style="font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Asistencia</th>
+                                            <th>Certificados</th>
+                                            <th>Tareas Completadas</th>
+                                            <th>Desempeño</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${empleadosArea.map(emp => {
+                                            const asistencia = Math.floor(Math.random() * 15) + 85;
+                                            const certificados = Math.floor(Math.random() * 3) + 1;
+                                            const tareasEmp = TAREAS[emp.nombre] ? TAREAS[emp.nombre].filter(t => t.avance === 100).length : 0;
+                                            const desempenio = Math.floor(Math.random() * 25) + 75;
+                                            const desempenioClass = desempenio >= 85 ? 'badge-success' : desempenio >= 75 ? 'badge-warning' : 'badge-danger';
+                                            return `
+                                                <tr>
+                                                    <td style="font-weight: 500;">${emp.nombre}</td>
+                                                    <td>${asistencia}%</td>
+                                                    <td>${certificados}</td>
+                                                    <td>${tareasEmp}</td>
+                                                    <td><span class="badge ${desempenioClass}">${desempenio}%</span></td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" onclick="window.print();" style="background: none; color: var(--primary); border: 1px solid var(--primary);">🖨️ Imprimir</button>
+                            <button class="btn" onclick="descargarInforme();">📥 Descargar</button>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('informe-contenido').innerHTML = html;
+            }
 
             window.descargarInforme = function() {
                 alert('Función de descarga PDF disponible en versión de producción');
