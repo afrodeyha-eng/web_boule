@@ -130,7 +130,7 @@ const MODULES = {
     },
     'tablero-comercial': {
         title: 'Tablero Comercial',
-        component: loadPlaceholder
+        component: loadTableroPersonal
     },
     // SOPORTE
     it: {
@@ -249,6 +249,143 @@ function loadModule(moduleId) {
 }
 
 // MODULE COMPONENTS
+function loadTableroPersonal(container) {
+    container.innerHTML = `
+        <div class="tablero-module">
+            <div class="tablero-header">
+                <div class="header-left">
+                    <span class="tablero-icon">🏆</span>
+                    <h2>Tablero de Requerimientos de Personal</h2>
+                </div>
+                <div class="period-selector">
+                    <label>PERÍODO:</label>
+                    <select class="period-select">
+                        <option>SEPTIEMBRE 2026</option>
+                        <option>AGOSTO 2026</option>
+                        <option>JULIO 2026</option>
+                    </select>
+                    <span class="date-range">2026-08-25 — 2026-09-24</span>
+                </div>
+            </div>
+
+            <div class="tablero-summary">
+                <div class="summary-item">
+                    <span class="summary-label">Total Requerido</span>
+                    <span class="summary-value">156</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Cubierto</span>
+                    <span class="summary-value" style="color: var(--success-color);">89</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Porcentaje Cubierto</span>
+                    <span class="summary-value" style="color: var(--primary-color);">57%</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Pendiente</span>
+                    <span class="summary-value" style="color: var(--danger-color);">67</span>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="tablero-table">
+                    <thead>
+                        <tr>
+                            <th class="col-departamento">Departamento</th>
+                            <th colspan="6" class="section-header">SOLICITADO</th>
+                            <th colspan="6" class="section-header">APROBADO</th>
+                            <th colspan="5" class="section-header">CUBIERTO</th>
+                            <th class="section-header">%</th>
+                        </tr>
+                        <tr>
+                            <th class="col-departamento"></th>
+                            <th>Hoy</th>
+                            <th>Prev</th>
+                            <th>Aprob</th>
+                            <th>Arrastre</th>
+                            <th>Total</th>
+                            <th>Obj</th>
+                            <th>Hoy</th>
+                            <th>Prev</th>
+                            <th>Aprob</th>
+                            <th>Arrastre</th>
+                            <th>Total</th>
+                            <th>Base</th>
+                            <th>Hoy</th>
+                            <th>Prev</th>
+                            <th>Aprob</th>
+                            <th>Arrastre</th>
+                            <th>Total</th>
+                            <th>%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="group-header">
+                            <td colspan="19" style="font-weight: 700; background-color: #003d52; color: white;">DIRECCIÓN GENERAL</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Administración</td>
+                            <td>0</td><td>3</td><td>1</td><td>0</td><td>4</td><td>5</td>
+                            <td>0</td><td>3</td><td>1</td><td>0</td><td>4</td><td>68%</td>
+                            <td>0</td><td>2</td><td>0</td><td>0</td><td>2</td><td class="progress-cell" style="background-color: #4CAF50;">50%</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Finanzas</td>
+                            <td>0</td><td>5</td><td>2</td><td>1</td><td>8</td><td>8</td>
+                            <td>0</td><td>5</td><td>2</td><td>1</td><td>8</td><td>92%</td>
+                            <td>0</td><td>4</td><td>2</td><td>0</td><td>6</td><td class="progress-cell" style="background-color: #FFC107;">75%</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">RRHH</td>
+                            <td>0</td><td>2</td><td>1</td><td>0</td><td>3</td><td>3</td>
+                            <td>0</td><td>2</td><td>1</td><td>0</td><td>3</td><td>85%</td>
+                            <td>0</td><td>2</td><td>1</td><td>0</td><td>3</td><td class="progress-cell" style="background-color: #4CAF50;">100%</td>
+                        </tr>
+                        <tr class="group-header">
+                            <td colspan="19" style="font-weight: 700; background-color: #003d52; color: white;">OPERACIONES</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Infraestructura</td>
+                            <td>0</td><td>15</td><td>8</td><td>2</td><td>25</td><td>28</td>
+                            <td>0</td><td>14</td><td>8</td><td>2</td><td>24</td><td>78%</td>
+                            <td>0</td><td>10</td><td>5</td><td>1</td><td>16</td><td class="progress-cell" style="background-color: #4CAF50;">64%</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Operaciones</td>
+                            <td>0</td><td>22</td><td>12</td><td>3</td><td>37</td><td>42</td>
+                            <td>0</td><td>20</td><td>12</td><td>3</td><td>35</td><td>72%</td>
+                            <td>0</td><td>16</td><td>8</td><td>2</td><td>26</td><td class="progress-cell" style="background-color: #FFC107;">70%</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Logística</td>
+                            <td>0</td><td>8</td><td>4</td><td>1</td><td>13</td><td>15</td>
+                            <td>0</td><td>7</td><td>4</td><td>1</td><td>12</td><td>68%</td>
+                            <td>0</td><td>5</td><td>3</td><td>0</td><td>8</td><td class="progress-cell" style="background-color: #FF6B6B;">61%</td>
+                        </tr>
+                        <tr class="group-header">
+                            <td colspan="19" style="font-weight: 700; background-color: #003d52; color: white;">ATENCIÓN AL CLIENTE</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Call Center</td>
+                            <td>0</td><td>35</td><td>20</td><td>5</td><td>60</td><td>68</td>
+                            <td>0</td><td>32</td><td>20</td><td>5</td><td>57</td><td>80%</td>
+                            <td>0</td><td>28</td><td>18</td><td>4</td><td>50</td><td class="progress-cell" style="background-color: #4CAF50;">83%</td>
+                        </tr>
+                        <tr>
+                            <td class="col-departamento">Soporte</td>
+                            <td>0</td><td>12</td><td>8</td><td>2</td><td>22</td><td>25</td>
+                            <td>0</td><td>11</td><td>8</td><td>2</td><td>21</td><td>76%</td>
+                            <td>0</td><td>9</td><td>6</td><td>1</td><td>16</td><td class="progress-cell" style="background-color: #FFC107;">73%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    addTableroStyles();
+}
+
 function loadReservas(container) {
     const days = ['Lun 31', 'Mar 1', 'Mié 2', 'Jue 3', 'Vie 4'];
     const hours = [];
@@ -984,6 +1121,198 @@ function addModuleStyles() {
                 to {
                     opacity: 1;
                 }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function addTableroStyles() {
+    if (!document.getElementById('tablero-styles')) {
+        const style = document.createElement('style');
+        style.id = 'tablero-styles';
+        style.textContent = `
+            .tablero-module {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .tablero-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .tablero-icon {
+                font-size: 32px;
+            }
+
+            .tablero-header h2 {
+                font-size: 28px;
+                margin: 0;
+                color: var(--text-primary);
+            }
+
+            .period-selector {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .period-selector label {
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
+                color: var(--text-secondary);
+            }
+
+            .period-select {
+                padding: 8px 12px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                font-family: inherit;
+                font-size: 13px;
+                background-color: var(--bg-primary);
+            }
+
+            .date-range {
+                font-size: 12px;
+                color: var(--text-secondary);
+                white-space: nowrap;
+            }
+
+            .tablero-summary {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                margin-bottom: 25px;
+                background-color: var(--bg-secondary);
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            .summary-item {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .summary-label {
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: var(--text-secondary);
+            }
+
+            .summary-value {
+                font-size: 28px;
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+
+            .table-wrapper {
+                background-color: var(--bg-primary);
+                border-radius: 8px;
+                overflow-x: auto;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .tablero-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px;
+            }
+
+            .tablero-table thead {
+                background-color: #F0F0F0;
+                border-bottom: 2px solid var(--border-color);
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .tablero-table th {
+                padding: 10px 8px;
+                text-align: center;
+                font-weight: 600;
+                color: var(--text-primary);
+                border-right: 1px solid var(--border-color);
+                white-space: nowrap;
+            }
+
+            .tablero-table th:last-child {
+                border-right: none;
+            }
+
+            .col-departamento {
+                text-align: left !important;
+                font-weight: 600;
+                min-width: 160px;
+                background-color: var(--bg-secondary);
+                position: sticky;
+                left: 0;
+                z-index: 5;
+            }
+
+            .section-header {
+                background-color: #E8E8E8;
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 11px;
+            }
+
+            .tablero-table td {
+                padding: 10px 8px;
+                text-align: center;
+                border-right: 1px solid #E0E0E0;
+                border-bottom: 1px solid #E0E0E0;
+            }
+
+            .tablero-table td:last-child {
+                border-right: none;
+            }
+
+            .group-header {
+                background-color: #003d52 !important;
+                font-weight: 700;
+                color: white !important;
+            }
+
+            .tablero-table tbody tr:nth-child(odd):not(.group-header) {
+                background-color: #F9F9F9;
+            }
+
+            .progress-cell {
+                font-weight: 600;
+                color: white;
+            }
+
+            @media (max-width: 768px) {
+                .period-selector {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .tablero-summary {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .table-wrapper {
+                    font-size: 11px;
+                }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
         `;
         document.head.appendChild(style);
