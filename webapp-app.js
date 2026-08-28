@@ -996,152 +996,375 @@ function loadAsistencia(container) {
     container.innerHTML = `
         <div class="asistencia-module">
             <div class="asistencia-header">
-                <div class="header-left">
-                    <h2>Asistencia</h2>
-                    <div class="tabs-group">
-                        <button class="tab-btn active" onclick="switchAsistenciaTab(this, 'compania')">Compañía</button>
-                        <button class="tab-btn" onclick="switchAsistenciaTab(this, 'mi')">Mi</button>
+                <h2>Asistencia</h2>
+            </div>
+
+            <div class="main-tabs">
+                <button class="main-tab-btn active" onclick="switchAsistenciaMainTab(event, 'general')">Asistencia General</button>
+                <button class="main-tab-btn" onclick="switchAsistenciaMainTab(event, 'relojes')">Relojes Estado</button>
+                <button class="main-tab-btn" onclick="switchAsistenciaMainTab(event, 'reportes')">Reportes de Asistencia</button>
+            </div>
+
+            <!-- ASISTENCIA GENERAL TAB -->
+            <div class="main-tab-content active" id="general-tab">
+                <div class="asistencia-header-inner">
+                    <div class="header-left">
+                        <div class="tabs-group">
+                            <button class="tab-btn active" onclick="switchAsistenciaTab(this, 'compania')">Compañía</button>
+                            <button class="tab-btn" onclick="switchAsistenciaTab(this, 'mi')">Mi</button>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button class="action-btn" title="Exportar">
+                            <span>📥</span> Exportar
+                        </button>
+                        <button class="action-btn" title="Enviar recordatorio">
+                            <span>📧</span> Enviar recordatorio
+                        </button>
                     </div>
                 </div>
-                <div class="header-right">
-                    <button class="action-btn" title="Exportar">
-                        <span>📥</span> Exportar
-                    </button>
-                    <button class="action-btn" title="Enviar recordatorio">
-                        <span>📧</span> Enviar recordatorio
-                    </button>
+
+                <div class="subtabs">
+                    <button class="subtab-btn active" onclick="switchSubtab(this, 'vista-general')">Vista general</button>
+                    <button class="subtab-btn" onclick="switchSubtab(this, 'horas-extra')">Horas extra</button>
+                </div>
+
+                <div class="controls-bar">
+                    <div class="date-control">
+                        <button class="date-nav-btn">◀</button>
+                        <input type="text" class="date-range-input" value="${startDate} - ${endDate}" readonly>
+                        <button class="date-nav-btn">▶</button>
+                        <button class="refresh-btn" title="Refrescar">🔄</button>
+                    </div>
+
+                    <div class="filter-controls">
+                        <button class="filter-add-btn">⚙️ Añadir filtro</button>
+                        <div class="search-box">
+                            <input type="text" placeholder="Buscar..." class="search-input">
+                            <span class="search-icon">🔍</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-info">
+                    Mostrando 1 - 6 de 6 en total
+                </div>
+
+                <div class="table-container">
+                    <table class="asistencia-table">
+                        <thead>
+                            <tr>
+                                <th class="col-icon"></th>
+                                <th class="col-nombre">Nombre completo</th>
+                                <th class="col-numero">Previsto</th>
+                                <th class="col-numero">Trabajado</th>
+                                <th class="col-numero">Horas extra</th>
+                                <th class="col-numero">Descanso</th>
+                                <th class="col-numero">Licencia paga</th>
+                                <th class="col-numero">Licencia no paga</th>
+                                <th class="col-numero">Total licencia</th>
+                                <th class="col-numero">Diferencia</th>
+                                <th class="col-acciones"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">ALEJANDRA RUBIO</td>
+                                <td class="col-numero">180h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-180h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">ALFONSINA CORIA</td>
+                                <td class="col-numero">180h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-180h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">MARIA CALZADA</td>
+                                <td class="col-numero">80h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-80h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">PABLO CANTERA</td>
+                                <td class="col-numero">80h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-80h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">ROCIO GONZALEZ</td>
+                                <td class="col-numero">80h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-80h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                            <tr>
+                                <td class="col-icon">⭐</td>
+                                <td class="col-nombre">TANIA PAJON CORREA</td>
+                                <td class="col-numero">80h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero">0h</td>
+                                <td class="col-numero negative">-80h</td>
+                                <td class="col-acciones"><button class="action-icon">→</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div class="subtabs">
-                <button class="subtab-btn active" onclick="switchSubtab(this, 'vista-general')">Vista general</button>
-                <button class="subtab-btn" onclick="switchSubtab(this, 'horas-extra')">Horas extra</button>
-            </div>
+            <!-- RELOJES ESTADO TAB -->
+            <div class="main-tab-content" id="relojes-tab">
+                <div class="relojes-container">
+                    <div class="relojes-section">
+                        <h3 class="section-title">Administración</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">ALVEAR 1</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">ALVEAR 2</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="controls-bar">
-                <div class="date-control">
-                    <button class="date-nav-btn">◀</button>
-                    <input type="text" class="date-range-input" value="${startDate} - ${endDate}" readonly>
-                    <button class="date-nav-btn">▶</button>
-                    <button class="refresh-btn" title="Refrescar">🔄</button>
-                </div>
+                    <div class="relojes-section">
+                        <h3 class="section-title">Finanzas</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">BOWEN</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">FAMILIA</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="filter-controls">
-                    <button class="filter-add-btn">⚙️ Añadir filtro</button>
-                    <div class="search-box">
-                        <input type="text" placeholder="Buscar..." class="search-input">
-                        <span class="search-icon">🔍</span>
+                    <div class="relojes-section">
+                        <h3 class="section-title">RRHH</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">JUZGADO</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">POLI</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relojes-section">
+                        <h3 class="section-title">Operaciones</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">CARMENSA</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">MATADERO</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status offline">Desconectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">OESTE</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relojes-section">
+                        <h3 class="section-title">Atención al Cliente</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">SPAT 1</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">SPAT 2</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relojes-section">
+                        <h3 class="section-title">Contingencia</h3>
+                        <div class="relojes-grid">
+                            <div class="reloj-card">
+                                <div class="reloj-nombre">CONTINGENCIA</div>
+                                <div class="reloj-timestamp">28/08/2026 09:37</div>
+                                <div class="reloj-status online">Conectado</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="results-info">
-                Mostrando 1 - 6 de 6 en total
-            </div>
+            <!-- REPORTES DE ASISTENCIA TAB -->
+            <div class="main-tab-content" id="reportes-tab">
+                <div class="reportes-asistencia">
+                    <div class="reportes-header">
+                        <h3>Reportes de Asistencia por Departamento</h3>
+                        <button class="refresh-btn" onclick="refreshReportesAsistencia()" title="Actualizar datos">🔄 Actualizar</button>
+                    </div>
 
-            <div class="table-container">
-                <table class="asistencia-table">
-                    <thead>
-                        <tr>
-                            <th class="col-icon"></th>
-                            <th class="col-nombre">Nombre completo</th>
-                            <th class="col-numero">Previsto</th>
-                            <th class="col-numero">Trabajado</th>
-                            <th class="col-numero">Horas extra</th>
-                            <th class="col-numero">Descanso</th>
-                            <th class="col-numero">Licencia paga</th>
-                            <th class="col-numero">Licencia no paga</th>
-                            <th class="col-numero">Total licencia</th>
-                            <th class="col-numero">Diferencia</th>
-                            <th class="col-acciones"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">ALEJANDRA RUBIO</td>
-                            <td class="col-numero">180h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-180h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">ALFONSINA CORIA</td>
-                            <td class="col-numero">180h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-180h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">MARIA CALZADA</td>
-                            <td class="col-numero">80h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-80h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">PABLO CANTERA</td>
-                            <td class="col-numero">80h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-80h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">ROCIO GONZALEZ</td>
-                            <td class="col-numero">80h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-80h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                        <tr>
-                            <td class="col-icon">⭐</td>
-                            <td class="col-nombre">TANIA PAJON CORREA</td>
-                            <td class="col-numero">80h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero">0h</td>
-                            <td class="col-numero negative">-80h</td>
-                            <td class="col-acciones"><button class="action-icon">→</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <div class="reportes-charts">
+                        <div class="chart-container">
+                            <h4>Asistencia General</h4>
+                            <canvas id="asistencia-chart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4>Distribución por Departamento</h4>
+                            <canvas id="departamento-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 30px; margin-bottom: 15px;">Detalles por Departamento</h4>
+                    <div class="reportes-grid">
+                        <div class="reporte-card">
+                            <div class="reporte-titulo">Administración</div>
+                            <div class="reporte-chart">
+                                <svg viewBox="0 0 100 100" class="progress-circle">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="8" stroke-dasharray="214.5 254.47" transform="rotate(-90 50 50)"/>
+                                    <text x="50" y="55" text-anchor="middle" font-size="18" font-weight="bold">95%</text>
+                                </svg>
+                            </div>
+                            <div class="reporte-stat">Presentes: <strong>19/20</strong></div>
+                            <div class="reporte-stat">Ausentes: <strong>1</strong></div>
+                            <div class="reporte-stat">Tardanzas: <strong>1</strong></div>
+                        </div>
+                        <div class="reporte-card">
+                            <div class="reporte-titulo">Finanzas</div>
+                            <div class="reporte-chart">
+                                <svg viewBox="0 0 100 100" class="progress-circle">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="8" stroke-dasharray="248.88 254.47" transform="rotate(-90 50 50)"/>
+                                    <text x="50" y="55" text-anchor="middle" font-size="18" font-weight="bold">98%</text>
+                                </svg>
+                            </div>
+                            <div class="reporte-stat">Presentes: <strong>49/50</strong></div>
+                            <div class="reporte-stat">Ausentes: <strong>0</strong></div>
+                            <div class="reporte-stat">Tardanzas: <strong>1</strong></div>
+                        </div>
+                        <div class="reporte-card">
+                            <div class="reporte-titulo">RRHH</div>
+                            <div class="reporte-chart">
+                                <svg viewBox="0 0 100 100" class="progress-circle">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#4CAF50" stroke-width="8" stroke-dasharray="254.47 254.47" transform="rotate(-90 50 50)"/>
+                                    <text x="50" y="55" text-anchor="middle" font-size="18" font-weight="bold">100%</text>
+                                </svg>
+                            </div>
+                            <div class="reporte-stat">Presentes: <strong>15/15</strong></div>
+                            <div class="reporte-stat">Ausentes: <strong>0</strong></div>
+                            <div class="reporte-stat">Tardanzas: <strong>0</strong></div>
+                        </div>
+                        <div class="reporte-card">
+                            <div class="reporte-titulo">Operaciones</div>
+                            <div class="reporte-chart">
+                                <svg viewBox="0 0 100 100" class="progress-circle">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#FFC107" stroke-width="8" stroke-dasharray="233.58 254.47" transform="rotate(-90 50 50)"/>
+                                    <text x="50" y="55" text-anchor="middle" font-size="18" font-weight="bold">92%</text>
+                                </svg>
+                            </div>
+                            <div class="reporte-stat">Presentes: <strong>69/75</strong></div>
+                            <div class="reporte-stat">Ausentes: <strong>3</strong></div>
+                            <div class="reporte-stat">Tardanzas: <strong>2</strong></div>
+                        </div>
+                        <div class="reporte-card">
+                            <div class="reporte-titulo">Atención al Cliente</div>
+                            <div class="reporte-chart">
+                                <svg viewBox="0 0 100 100" class="progress-circle">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#FF6B6B" stroke-width="8" stroke-dasharray="223.93 254.47" transform="rotate(-90 50 50)"/>
+                                    <text x="50" y="55" text-anchor="middle" font-size="18" font-weight="bold">88%</text>
+                                </svg>
+                            </div>
+                            <div class="reporte-stat">Presentes: <strong>44/50</strong></div>
+                            <div class="reporte-stat">Ausentes: <strong>5</strong></div>
+                            <div class="reporte-stat">Tardanzas: <strong>3</strong></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
 
     addAsistenciaStyles();
+    addAsistenciaEventListeners();
+}
+
+function switchAsistenciaMainTab(evt, tab) {
+    evt.preventDefault();
+    document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.main-tab-content').forEach(c => c.classList.remove('active'));
+    evt.target.classList.add('active');
+    document.getElementById(tab + '-tab').classList.add('active');
+}
+
+function addAsistenciaEventListeners() {
+    const mainTabBtns = document.querySelectorAll('.main-tab-btn');
+    mainTabBtns.forEach(btn => {
+        btn.addEventListener('click', switchAsistenciaMainTab);
+    });
+}
+
+function refreshReportesAsistencia() {
+    console.log('Actualizando datos de reportes...');
 }
 
 function switchAsistenciaTab(btn, tab) {
@@ -2435,6 +2658,220 @@ function addAsistenciaStyles() {
                 .col-numero {
                     font-size: 12px;
                 }
+            }
+
+            .main-tabs {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 25px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .main-tab-btn {
+                padding: 12px 20px;
+                background: none;
+                border: none;
+                border-bottom: 3px solid transparent;
+                cursor: pointer;
+                font-size: 14px;
+                color: var(--text-secondary);
+                font-weight: 600;
+                transition: var(--transition);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .main-tab-btn:hover {
+                color: var(--primary-color);
+            }
+
+            .main-tab-btn.active {
+                color: var(--primary-color);
+                border-bottom-color: var(--primary-color);
+            }
+
+            .main-tab-content {
+                display: none;
+                animation: fadeIn 0.3s ease;
+            }
+
+            .main-tab-content.active {
+                display: block;
+            }
+
+            .asistencia-header-inner {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .relojes-container {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .relojes-section {
+                margin-bottom: 35px;
+            }
+
+            .section-title {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 15px;
+                padding: 10px 0;
+                border-bottom: 2px solid var(--border-color);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .relojes-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .reloj-card {
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 15px;
+                text-align: center;
+                transition: var(--transition);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .reloj-card:hover {
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                transform: translateY(-2px);
+            }
+
+            .reloj-nombre {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 8px;
+            }
+
+            .reloj-timestamp {
+                font-size: 12px;
+                color: var(--text-secondary);
+                margin-bottom: 10px;
+            }
+
+            .reloj-status {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            .reloj-status.online {
+                background-color: #E8F5E9;
+                color: #2E7D32;
+            }
+
+            .reloj-status.offline {
+                background-color: #FFEBEE;
+                color: #C62828;
+            }
+
+            .reportes-asistencia {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .reportes-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .reportes-header h3 {
+                margin: 0;
+                font-size: 18px;
+                color: var(--text-primary);
+            }
+
+            .reportes-charts {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 25px;
+                margin-bottom: 30px;
+                background: var(--bg-secondary);
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            .chart-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chart-container h4 {
+                margin: 0 0 15px 0;
+                font-size: 14px;
+                color: var(--text-primary);
+            }
+
+            .reportes-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+
+            .reporte-card {
+                background: white;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 20px;
+                text-align: center;
+                transition: var(--transition);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .reporte-card:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: translateY(-3px);
+            }
+
+            .reporte-titulo {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .reporte-chart {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 15px;
+                height: 120px;
+            }
+
+            .progress-circle {
+                width: 100%;
+                height: 100%;
+            }
+
+            .reporte-stat {
+                font-size: 12px;
+                color: var(--text-secondary);
+                margin: 8px 0;
+                line-height: 1.6;
+            }
+
+            .reporte-stat strong {
+                color: var(--primary-color);
+                font-weight: 700;
             }
 
             @keyframes fadeIn {
