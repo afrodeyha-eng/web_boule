@@ -126,7 +126,7 @@ const MODULES = {
     },
     biblioteca: {
         title: 'Biblioteca',
-        component: loadPlaceholder
+        component: loadBiblioteca
     },
     'tablero-comercial': {
         title: 'Tablero Comercial',
@@ -4152,6 +4152,483 @@ function addDesempenioStyles() {
 
             .desempenio-nav-item.active .nav-label {
                 display: inline;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function loadBiblioteca(container) {
+    const categories = [
+        { id: 'identidad', name: 'Identidad Corporativa', icon: '🎨' },
+        { id: 'politicas', name: 'Políticas y Reglamentos', icon: '📋' },
+        { id: 'procesos', name: 'Procesos', icon: '⚙️' },
+        { id: 'reflexion', name: 'Espacio de reflexión', icon: '💭' },
+        { id: 'tecnica', name: 'Formación Técnica', icon: '💻' },
+        { id: 'blandas', name: 'Formación en Habilidades Blandas', icon: '🎯' },
+        { id: 'beneficios', name: 'Beneficios Corporativos', icon: '🎁' },
+        { id: 'peopleforce', name: 'Cómo uso People Force', icon: '👥' },
+        { id: 'explica', name: 'GS Explica', icon: '📢' },
+        { id: 'innova', name: 'GS Innova', icon: '💡' },
+        { id: 'mundial', name: 'Copa Mundial 2026', icon: '⚽' },
+        { id: 'raiz', name: 'Programa Raiz', icon: '🌱' }
+    ];
+
+    const documents = {
+        identidad: [
+            { title: 'Logo Global Solutions', description: 'Guía de uso del logo corporativo', docs: 3 },
+            { title: 'Colores Corporativos', description: 'Paleta de colores oficial', docs: 2 },
+            { title: 'Tipografía', description: 'Fuentes permitidas y estilos', docs: 2 }
+        ],
+        politicas: [
+            { title: 'Código de Conducta', description: 'Normas de comportamiento laboral', docs: 5 },
+            { title: 'Política de Privacidad', description: 'Protección de datos personales', docs: 3 },
+            { title: 'Reglamento Interno', description: 'Normas de trabajo', docs: 4 }
+        ],
+        procesos: [
+            { title: 'Proceso de Selección', description: 'Cómo se realiza la selección de personal', docs: 6 },
+            { title: 'Onboarding', description: 'Inducción de nuevos empleados', docs: 4 },
+            { title: 'Evaluación de Desempeño', description: 'Proceso de evaluación anual', docs: 5 }
+        ],
+        reflexion: [
+            { title: 'Mindfulness', description: 'Técnicas de meditación y relajación', docs: 3 },
+            { title: 'Trabajo en Equipo', description: 'Dinámicas de integración', docs: 4 },
+            { title: 'Balance Vida-Trabajo', description: 'Consejos para la conciliación', docs: 3 }
+        ],
+        tecnica: [
+            { title: 'Java Avanzado', description: 'Cursos de programación Java', docs: 8 },
+            { title: 'Bases de Datos', description: 'SQL y NoSQL', docs: 6 },
+            { title: 'Cloud Computing', description: 'AWS y Azure', docs: 7 }
+        ],
+        blandas: [
+            { title: 'Liderazgo', description: 'Desarrollo de habilidades de liderazgo', docs: 5 },
+            { title: 'Comunicación Efectiva', description: 'Mejora de la comunicación', docs: 4 },
+            { title: 'Inteligencia Emocional', description: 'Gestión emocional', docs: 4 }
+        ],
+        beneficios: [
+            { title: 'Plan de Salud', description: 'Cobertura médica y dental', docs: 3 },
+            { title: 'Jubilación', description: 'Planes de retiro', docs: 4 },
+            { title: 'Vacaciones', description: 'Políticas de licencias', docs: 2 }
+        ],
+        peopleforce: [
+            { title: 'Login y Acceso', description: 'Cómo acceder a la plataforma', docs: 2 },
+            { title: 'Gestión de Perfil', description: 'Actualizar información personal', docs: 3 },
+            { title: 'Consultas Frecuentes', description: 'Preguntas comunes', docs: 4 }
+        ],
+        explica: [
+            { title: 'Historia Global Solutions', description: 'Nuestra trayectoria', docs: 3 },
+            { title: 'Misión y Visión', description: 'Nuestros objetivos', docs: 2 },
+            { title: 'Valores Corporativos', description: 'Qué nos define', docs: 2 }
+        ],
+        innova: [
+            { title: 'Proyectos en Desarrollo', description: 'Nuevas iniciativas', docs: 5 },
+            { title: 'Innovación Digital', description: 'Transformación digital', docs: 4 },
+            { title: 'Casos de Éxito', description: 'Proyectos completados', docs: 6 }
+        ],
+        mundial: [
+            { title: 'Horarios de Transmisión', description: 'Cuándo ver los partidos', docs: 2 },
+            { title: 'Equipos Participantes', description: 'Selecciones clasificadas', docs: 1 },
+            { title: 'Normas para Seguir', description: 'Reglas del campeonato', docs: 3 }
+        ],
+        raiz: [
+            { title: 'Programa de Sustentabilidad', description: 'Iniciativas ambientales', docs: 5 },
+            { title: 'Responsabilidad Social', description: 'Acciones comunitarias', docs: 4 },
+            { title: 'Voluntariado', description: 'Oportunidades de contribuir', docs: 3 }
+        ]
+    };
+
+    let currentCategory = 'identidad';
+
+    container.innerHTML = `
+        <div class="biblioteca-module">
+            <div class="biblioteca-header">
+                <h2>Biblioteca Digital</h2>
+                <div class="biblioteca-search">
+                    <input type="text" id="bibliotecaSearch" placeholder="Buscar documentos..." class="search-input">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+
+            <div class="biblioteca-layout">
+                <aside class="biblioteca-sidebar">
+                    <div class="biblioteca-categories">
+                        ${categories.map(cat => `
+                            <button class="category-item ${cat.id === currentCategory ? 'active' : ''}"
+                                    data-category="${cat.id}">
+                                <span class="category-icon">${cat.icon}</span>
+                                <span class="category-name">${cat.name}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </aside>
+
+                <div class="biblioteca-content">
+                    <div class="documents-grid" id="documentsGrid">
+                        ${renderDocuments('identidad')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    function renderDocuments(categoryId) {
+        const docs = documents[categoryId] || [];
+        if (docs.length === 0) {
+            return '<div class="no-documents">No hay documentos en esta categoría</div>';
+        }
+        return docs.map(doc => `
+            <div class="document-card">
+                <div class="document-icon">📄</div>
+                <h3>${doc.title}</h3>
+                <p>${doc.description}</p>
+                <div class="document-footer">
+                    <span class="doc-count">${doc.docs} documento${doc.docs !== 1 ? 's' : ''}</span>
+                    <button class="btn-view">Ver</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Category selection handler
+    const categoryButtons = container.querySelectorAll('.category-item');
+    categoryButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            categoryButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.dataset.category;
+            const grid = container.querySelector('#documentsGrid');
+            grid.innerHTML = renderDocuments(currentCategory);
+        });
+    });
+
+    // Search handler
+    const searchInput = container.querySelector('#bibliotecaSearch');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const grid = container.querySelector('#documentsGrid');
+
+        if (!searchTerm) {
+            grid.innerHTML = renderDocuments(currentCategory);
+            return;
+        }
+
+        let filteredDocs = [];
+        for (const categoryId in documents) {
+            documents[categoryId].forEach(doc => {
+                if (doc.title.toLowerCase().includes(searchTerm) ||
+                    doc.description.toLowerCase().includes(searchTerm)) {
+                    filteredDocs.push({ ...doc, categoryId });
+                }
+            });
+        }
+
+        if (filteredDocs.length === 0) {
+            grid.innerHTML = '<div class="no-documents">No se encontraron documentos</div>';
+        } else {
+            grid.innerHTML = filteredDocs.map(doc => `
+                <div class="document-card">
+                    <div class="document-icon">📄</div>
+                    <h3>${doc.title}</h3>
+                    <p>${doc.description}</p>
+                    <div class="document-footer">
+                        <span class="doc-count">${doc.docs} documento${doc.docs !== 1 ? 's' : ''}</span>
+                        <button class="btn-view">Ver</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    });
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .biblioteca-module {
+            padding: 30px;
+            background-color: var(--bg-secondary);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .biblioteca-header {
+            margin-bottom: 30px;
+        }
+
+        .biblioteca-header h2 {
+            margin: 0 0 20px 0;
+            font-size: 32px;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .biblioteca-search {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 90, 122, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .biblioteca-layout {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .biblioteca-sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+        }
+
+        .biblioteca-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: none;
+            background-color: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .category-item:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .category-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+        }
+
+        .category-name {
+            flex: 1;
+            text-align: left;
+        }
+
+        .biblioteca-content {
+            flex: 1;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .document-card {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .document-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .document-card p {
+            margin: 0 0 16px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .document-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .doc-count {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary-light);
+        }
+
+        .no-documents {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .biblioteca-layout {
+                gap: 20px;
+            }
+
+            .biblioteca-sidebar {
+                width: 200px;
+            }
+
+            .documents-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .biblioteca-module {
+                padding: 20px;
+            }
+
+            .biblioteca-header h2 {
+                font-size: 24px;
+            }
+
+            .biblioteca-search {
+                max-width: 100%;
+            }
+
+            .biblioteca-layout {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .biblioteca-sidebar {
+                width: 100%;
+            }
+
+            .biblioteca-categories {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .category-item {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .category-name {
+                display: none;
+            }
+
+            .category-item.active .category-name {
+                display: inline;
+            }
+
+            .documents-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .document-card {
+                padding: 15px;
+            }
+
+            .document-card h3 {
+                font-size: 14px;
+            }
+
+            .document-card p {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .biblioteca-module {
+                padding: 15px;
+            }
+
+            .biblioteca-header h2 {
+                font-size: 20px;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .document-card {
+                padding: 12px;
             }
         }
     `;
