@@ -29,7 +29,7 @@ const MODULES = {
     },
     desempenio: {
         title: 'Desempeño',
-        component: loadPlaceholder
+        component: loadDesempenio
     },
     novedades: {
         title: 'Novedades',
@@ -122,7 +122,7 @@ const MODULES = {
     },
     casos: {
         title: 'Casos',
-        component: loadPlaceholder
+        component: loadCasos
     },
     biblioteca: {
         title: 'Biblioteca',
@@ -3482,4 +3482,678 @@ function addLegajosStyles() {
         `;
         document.head.appendChild(style);
     }
+}
+
+function loadCasos(container) {
+    const casosData = {
+        asignado: [
+            {
+                id: 1,
+                title: 'Caso de urgente atención',
+                days: 2,
+                status: 'pending',
+                createdDate: 'Creado hace 2 días'
+            }
+        ],
+        creado: [
+            {
+                id: 2,
+                title: 'Incidente de sistema crítico',
+                days: 2,
+                status: 'pending',
+                createdDate: 'Creado hace 2 días'
+            },
+            {
+                id: 3,
+                title: 'Solicitud de información',
+                days: 60,
+                status: 'resolved',
+                createdDate: 'Creado hace 2 meses'
+            },
+            {
+                id: 4,
+                title: 'Reporte de irregularidades',
+                days: 120,
+                status: 'critical',
+                createdDate: 'Creado hace 4 meses'
+            }
+        ]
+    };
+
+    const html = `
+        <div class="casos-module">
+            <div class="casos-header">
+                <h2>Casos</h2>
+                <div class="casos-actions">
+                    <a href="#" class="link-irregularidades">Denuncia de irregularidades</a>
+                    <button class="btn-crear-caso">+ Crear un caso</button>
+                </div>
+            </div>
+
+            <div class="casos-tabs">
+                <button class="tab-btn active" onclick="switchCasosTab(this, 'asignado')">
+                    Asignado a mi
+                    <span class="tab-count">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchCasosTab(this, 'creado')">
+                    Creado por mi
+                    <span class="tab-count">3</span>
+                </button>
+            </div>
+
+            <div class="casos-content">
+                <div id="asignado-content" class="casos-list active">
+                    ${casosData.asignado.map(caso => `
+                        <div class="caso-item">
+                            <div class="caso-status">
+                                ${caso.status === 'resolved' ? '✓' : '○'}
+                            </div>
+                            <div class="caso-info">
+                                <h3 class="caso-title">${caso.title}</h3>
+                                <p class="caso-date">${caso.createdDate}</p>
+                            </div>
+                            <div class="caso-action">
+                                <button class="btn-star">⭐</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div id="creado-content" class="casos-list">
+                    ${casosData.creado.map(caso => `
+                        <div class="caso-item ${caso.status}">
+                            <div class="caso-status ${caso.status}">
+                                ${caso.status === 'resolved' ? '✓' : caso.status === 'critical' ? '⚠️' : '⭐'}
+                            </div>
+                            <div class="caso-info">
+                                <h3 class="caso-title">${caso.title}</h3>
+                                <p class="caso-date">${caso.createdDate}</p>
+                            </div>
+                            <div class="caso-action">
+                                <button class="btn-star">⭐</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="casos-footer">
+                Mostrando 1 - ${Math.max(casosData.asignado.length, casosData.creado.length)} de ${casosData.creado.length} en total
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+    addCasosStyles();
+}
+
+function switchCasosTab(button, tabName) {
+    const tabsContainer = button.parentElement;
+    const tabButtons = tabsContainer.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+
+    const allLists = document.querySelectorAll('.casos-list');
+    allLists.forEach(list => list.classList.remove('active'));
+
+    const activeList = document.getElementById(`${tabName}-content`);
+    if (activeList) {
+        activeList.classList.add('active');
+    }
+}
+
+function addCasosStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .casos-module {
+            padding: 30px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .casos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .casos-header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--text-primary);
+        }
+
+        .casos-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .link-irregularidades {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .link-irregularidades:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .btn-crear-caso {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-crear-caso:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .casos-tabs {
+            display: flex;
+            gap: 20px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-count {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .casos-content {
+            margin-bottom: 20px;
+            min-height: 300px;
+        }
+
+        .casos-list {
+            display: none;
+        }
+
+        .casos-list.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .caso-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--border-color);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .caso-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .caso-item.pending {
+            border-left-color: var(--accent-color);
+        }
+
+        .caso-item.resolved {
+            border-left-color: var(--success-color);
+        }
+
+        .caso-item.critical {
+            border-left-color: var(--danger-color);
+        }
+
+        .caso-status {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background-color: var(--bg-secondary);
+        }
+
+        .caso-status.pending {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .caso-status.resolved {
+            border-color: var(--success-color);
+            color: var(--success-color);
+            background-color: rgba(6, 168, 125, 0.1);
+        }
+
+        .caso-status.critical {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+            background-color: rgba(214, 40, 40, 0.1);
+        }
+
+        .caso-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .caso-title {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .caso-date {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .caso-action {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-star {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-star:hover {
+            transform: scale(1.1);
+        }
+
+        .casos-footer {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 20px;
+            background-color: var(--bg-primary);
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .casos-module {
+                padding: 20px;
+            }
+
+            .casos-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .casos-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-crear-caso {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .caso-item {
+                flex-wrap: wrap;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function loadDesempenio(container) {
+    const html = `
+        <div class="desempenio-module">
+            <div class="desempenio-header">
+                <h2>Desempeño</h2>
+            </div>
+
+            <div class="desempenio-layout">
+                <div class="desempenio-sidebar">
+                    <nav class="desempenio-nav">
+                        <button class="desempenio-nav-item active" onclick="switchDesempenioSection(this, '1:1s')">
+                            <span class="nav-icon">👤</span>
+                            <span class="nav-label">1:1s</span>
+                        </button>
+                        <button class="desempenio-nav-item" onclick="switchDesempenioSection(this, 'objetivos')">
+                            <span class="nav-icon">🎯</span>
+                            <span class="nav-label">Objetivos</span>
+                        </button>
+                        <button class="desempenio-nav-item" onclick="switchDesempenioSection(this, 'feedback')">
+                            <span class="nav-icon">💬</span>
+                            <span class="nav-label">Feedback</span>
+                        </button>
+                        <button class="desempenio-nav-item" onclick="switchDesempenioSection(this, 'kpi')">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-label">KPI</span>
+                        </button>
+                        <button class="desempenio-nav-item" onclick="switchDesempenioSection(this, 'evaluaciones')">
+                            <span class="nav-icon">⭐</span>
+                            <span class="nav-label">Evaluaciones</span>
+                        </button>
+                        <button class="desempenio-nav-item" onclick="switchDesempenioSection(this, 'planes')">
+                            <span class="nav-icon">📋</span>
+                            <span class="nav-label">Planes de desarrollo</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="desempenio-content">
+                    <div id="1:1s-section" class="section-content active">
+                        <div class="section-header">
+                            <h3>1:1s</h3>
+                            <p class="section-description">Reuniones uno a uno programadas y completadas</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">👤</div>
+                            <p>No hay 1:1s programadas</p>
+                            <button class="btn-primary">Programar 1:1</button>
+                        </div>
+                    </div>
+
+                    <div id="objetivos-section" class="section-content">
+                        <div class="section-header">
+                            <h3>Objetivos</h3>
+                            <p class="section-description">Objetivos personales y de equipo</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">🎯</div>
+                            <p>No hay objetivos definidos</p>
+                            <button class="btn-primary">Crear objetivo</button>
+                        </div>
+                    </div>
+
+                    <div id="feedback-section" class="section-content">
+                        <div class="section-header">
+                            <h3>Feedback</h3>
+                            <p class="section-description">Retroalimentación recibida y enviada</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">💬</div>
+                            <p>No hay feedback pendiente</p>
+                            <button class="btn-primary">Solicitar feedback</button>
+                        </div>
+                    </div>
+
+                    <div id="kpi-section" class="section-content">
+                        <div class="section-header">
+                            <h3>KPI</h3>
+                            <p class="section-description">Indicadores clave de desempeño</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">📊</div>
+                            <p>No hay KPIs definidos</p>
+                            <button class="btn-primary">Establecer KPI</button>
+                        </div>
+                    </div>
+
+                    <div id="evaluaciones-section" class="section-content">
+                        <div class="section-header">
+                            <h3>Evaluaciones</h3>
+                            <p class="section-description">Evaluaciones de desempeño periódicas</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">⭐</div>
+                            <p>No hay evaluaciones pendientes</p>
+                            <button class="btn-primary">Ver historial</button>
+                        </div>
+                    </div>
+
+                    <div id="planes-section" class="section-content">
+                        <div class="section-header">
+                            <h3>Planes de Desarrollo</h3>
+                            <p class="section-description">Planes personalizados de crecimiento profesional</p>
+                        </div>
+                        <div class="content-placeholder">
+                            <div class="placeholder-icon">📋</div>
+                            <p>No hay planes de desarrollo</p>
+                            <button class="btn-primary">Crear plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+    addDesempenioStyles();
+}
+
+function switchDesempenioSection(button, sectionId) {
+    const navItems = button.parentElement.querySelectorAll('.desempenio-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+
+    const allSections = document.querySelectorAll('.section-content');
+    allSections.forEach(section => section.classList.remove('active'));
+
+    const activeSection = document.getElementById(`${sectionId}-section`);
+    if (activeSection) {
+        activeSection.classList.add('active');
+    }
+}
+
+function addDesempenioStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .desempenio-module {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            background-color: var(--bg-secondary);
+        }
+
+        .desempenio-header {
+            margin-bottom: 30px;
+        }
+
+        .desempenio-header h2 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--text-primary);
+        }
+
+        .desempenio-layout {
+            display: flex;
+            gap: 30px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .desempenio-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .desempenio-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .desempenio-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .desempenio-nav-item:hover {
+            background-color: var(--bg-secondary);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .desempenio-nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        .nav-label {
+            white-space: nowrap;
+        }
+
+        .desempenio-content {
+            flex: 1;
+            min-width: 0;
+            overflow-y: auto;
+        }
+
+        .section-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+        }
+
+        .section-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .content-placeholder {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 60px 40px;
+            text-align: center;
+            border: 2px dashed var(--border-color);
+        }
+
+        .placeholder-icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .content-placeholder p {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .desempenio-module {
+                padding: 20px;
+            }
+
+            .desempenio-layout {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .desempenio-sidebar {
+                width: 100%;
+            }
+
+            .desempenio-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .desempenio-nav-item {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .nav-label {
+                display: none;
+            }
+
+            .desempenio-nav-item.active .nav-label {
+                display: inline;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }
