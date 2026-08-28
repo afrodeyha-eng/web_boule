@@ -54,7 +54,7 @@ const MODULES = {
     },
     calendario: {
         title: 'Calendario',
-        component: loadPlaceholder
+        component: loadCalendario
     },
     feriados: {
         title: 'Feriados',
@@ -913,6 +913,378 @@ function addReportesStyles() {
         }
     `;
     document.head.appendChild(style);
+}
+
+function loadCalendario(container) {
+    const nombres = ['AARON', 'ABIGAIL', 'ADA', 'ADRIAN', 'ADRIANA', 'AGOSTINA', 'AGUSTIN', 'AILEN', 'ALEJANDRA', 'ALEJANDRO', 'ALFONSINA', 'ALICIA', 'ALMA', 'ALMENDRA', 'ALONSO', 'ALVARO', 'AMALIA', 'AMANDA', 'AMELIA'];
+    const apellidos = ['MANSILLA', 'OLIVAREZ', 'PEREZ', 'MORNACCO', 'VAZQUEZ', 'VALITUTTI', 'ANTEQUE', 'SCHIAVO', 'CASALE', 'CRUZ', 'ARANO', 'ESTRELLA', 'RUBIO', 'CORIA', 'CALZADA'];
+    const roles = ['PROGRAMADOR', 'ASESOR', 'DIRECTOR', 'GERENTE', 'AUXILIAR', 'SUPERVISOR', 'CONTADOR', 'ADMINISTRATIVO'];
+    const emojis = ['👨‍💼', '👩‍💼', '👨‍🔧', '👩‍🔧', '👨‍💻', '👩‍💻', '👨‍🎓', '👩‍🎓'];
+
+    const getRandomName = () => {
+        const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+        const apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
+        return `${nombre} ${apellido}`;
+    };
+
+    const generatePeople = (count) => {
+        const people = [];
+        const usedNames = new Set();
+        for (let i = 0; i < count; i++) {
+            let name;
+            do {
+                name = getRandomName();
+            } while (usedNames.has(name));
+            usedNames.add(name);
+            const statusArray = ['✅', '🏥', '❌', '📅'];
+            people.push({
+                name: name,
+                role: roles[Math.floor(Math.random() * roles.length)],
+                emoji: emojis[Math.floor(Math.random() * emojis.length)],
+                status: statusArray[Math.floor(Math.random() * 4)]
+            });
+        }
+        return people;
+    };
+
+    const year = 2026, month = 7;
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+    let calendarHtml = '';
+    const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sab', 'Dom'];
+    days.forEach(day => {
+        calendarHtml += `<div class="day-header">${day}</div>`;
+    });
+
+    for (let i = 0; i < startingDayOfWeek; i++) {
+        calendarHtml += '<div class="day-cell other-month"></div>';
+    }
+
+    const statusArray = ['✅', '🏥', '❌', '📅'];
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === 28;
+        const status = statusArray[Math.floor(Math.random() * 4)];
+        calendarHtml += `<div class="day-cell ${isToday ? 'today' : ''}">
+            <div class="day-number">${day}</div>
+            <div class="day-indicator">${status}</div>
+        </div>`;
+    }
+
+    const people = generatePeople(15);
+    let peopleHtml = '';
+    people.forEach(person => {
+        peopleHtml += `
+            <div class="person-item">
+                <div class="person-avatar">${person.emoji}</div>
+                <div class="person-info">
+                    <div class="person-name">${person.name}</div>
+                    <div class="person-role">${person.role}</div>
+                </div>
+                <div class="person-status">${person.status}</div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div class="calendario-module">
+            <div class="calendario-content">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h2>Agosto 2026</h2>
+                        <div class="calendar-nav">
+                            <button class="nav-btn">← Anterior</button>
+                            <button class="nav-btn">Siguiente →</button>
+                            <button class="nav-btn">Hoy</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid">
+                        ${calendarHtml}
+                    </div>
+
+                    <div style="padding: 15px; background: var(--bg-secondary); border-radius: 6px; font-size: 12px; color: var(--text-secondary);">
+                        Mostrando 1 - 50 de 342 en total
+                    </div>
+                </div>
+
+                <div class="people-sidebar">
+                    <div class="people-header">Personal</div>
+                    <div class="tabs-group">
+                        <button class="tab-item active">Compañía</button>
+                        <button class="tab-item">Mi</button>
+                    </div>
+                    <div class="people-list">
+                        ${peopleHtml}
+                    </div>
+                    <div class="legend">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Leyenda</div>
+                        <div class="legend-item">
+                            <span class="legend-icon">✅</span>
+                            <span>Presente</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon">🏥</span>
+                            <span>Licencia</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon">❌</span>
+                            <span>Ausencia</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon">📅</span>
+                            <span>Vacaciones</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    addCalendarioStyles();
+}
+
+function addCalendarioStyles() {
+    if (!document.getElementById('calendario-styles')) {
+        const style = document.createElement('style');
+        style.id = 'calendario-styles';
+        style.textContent = `
+            .calendario-module {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .calendario-content {
+                display: flex;
+                gap: 20px;
+                height: calc(100vh - 200px);
+            }
+
+            .calendar-container {
+                flex: 1;
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                overflow-y: auto;
+            }
+
+            .calendar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .calendar-header h2 {
+                margin: 0;
+                font-size: 20px;
+                color: var(--text-primary);
+            }
+
+            .calendar-nav {
+                display: flex;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                transition: all 0.3s;
+            }
+
+            .nav-btn:hover {
+                background: var(--border-color);
+            }
+
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+                background: var(--border-color);
+                padding: 2px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+            }
+
+            .day-header {
+                background: var(--primary-color);
+                color: white;
+                padding: 12px;
+                text-align: center;
+                font-weight: 600;
+                font-size: 12px;
+            }
+
+            .day-cell {
+                background: white;
+                padding: 8px;
+                min-height: 80px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .day-number {
+                font-weight: 700;
+                font-size: 14px;
+                color: var(--text-primary);
+                margin-bottom: 5px;
+            }
+
+            .day-indicator {
+                font-size: 20px;
+            }
+
+            .day-cell.other-month {
+                background: var(--bg-secondary);
+            }
+
+            .day-cell.today {
+                background: #E3F2FD;
+                border: 2px solid var(--primary-color);
+            }
+
+            .people-sidebar {
+                width: 280px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .people-header {
+                padding: 15px;
+                border-bottom: 2px solid var(--border-color);
+                font-weight: 600;
+                font-size: 14px;
+                color: var(--text-primary);
+            }
+
+            .tabs-group {
+                display: flex;
+                gap: 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .tab-item {
+                flex: 1;
+                padding: 10px;
+                background: white;
+                border: none;
+                cursor: pointer;
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-secondary);
+                border-bottom: 2px solid transparent;
+                transition: all 0.3s;
+            }
+
+            .tab-item.active {
+                color: var(--primary-color);
+                border-bottom-color: var(--primary-color);
+            }
+
+            .tab-item:hover {
+                background: var(--bg-secondary);
+            }
+
+            .people-list {
+                flex: 1;
+                overflow-y: auto;
+                padding: 10px;
+            }
+
+            .person-item {
+                display: flex;
+                gap: 10px;
+                padding: 10px;
+                margin-bottom: 8px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.3s;
+                background: white;
+                border: 1px solid var(--border-color);
+            }
+
+            .person-item:hover {
+                background: var(--bg-secondary);
+                transform: translateX(3px);
+            }
+
+            .person-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .person-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .person-name {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-primary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .person-role {
+                font-size: 11px;
+                color: var(--text-secondary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .person-status {
+                font-size: 18px;
+                margin-right: 5px;
+            }
+
+            .legend {
+                padding: 15px;
+                border-top: 1px solid var(--border-color);
+                font-size: 11px;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+
+            .legend-icon {
+                font-size: 16px;
+                width: 20px;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
 function loadReservas(container) {
