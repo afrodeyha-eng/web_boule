@@ -349,6 +349,24 @@
         const COLORS = ['#6366f1', '#0891b2', '#dc2626', '#16a34a', '#ea580c', '#9333ea', '#d946ef', '#ec4899'];
         const EMOJIS = ['👨‍💼', '👩‍💼', '👨‍🔧', '👩‍🔧', '👨‍💻', '👩‍💻', '👨‍🎓', '👩‍🎓', '👨‍🏫', '👩‍🏫'];
 
+        const NOMBRES = ['Carlos', 'María', 'Juan', 'Ana', 'Pedro', 'Rosa', 'Luis', 'Laura', 'Diego', 'Martina', 'Francisco', 'Isabel', 'Andrés', 'Beatriz', 'Roberto', 'Valentina', 'Miguel', 'Alejandra', 'Javier', 'Sofía', 'Ricardo', 'Gabriela', 'Fernando', 'Claudia', 'Sergio', 'Patricia', 'Enrique', 'Susana'];
+        const APELLIDOS = ['García', 'López', 'Martínez', 'Rodríguez', 'Pérez', 'Fernández', 'González', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Ruiz', 'Castro', 'Morales', 'Vargas', 'Córdoba', 'Jiménez', 'Reyes', 'Díaz', 'Herrera', 'Ortiz', 'Vega', 'Campos', 'Silva', 'Fuentes', 'Medina'];
+
+        function getNombreRandom() {
+            const nombre = NOMBRES[Math.floor(Math.random() * NOMBRES.length)];
+            const apellido = APELLIDOS[Math.floor(Math.random() * APELLIDOS.length)];
+            return `${nombre} ${apellido}`;
+        }
+
+        function generarEmpleados(cantidad = 15) {
+            return Array.from({length: cantidad}, () => ({
+                nombre: getNombreRandom().toUpperCase(),
+                puesto: ['Gerente', 'Analista', 'Coordinador', 'Especialista', 'Supervisor', 'Jefe de Proyecto'][Math.floor(Math.random() * 6)],
+                emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+                color: COLORS[Math.floor(Math.random() * COLORS.length)]
+            }));
+        }
+
         const NAV = [
             { title: 'INICIO', items: [{ id: 'dashboard', label: 'Ir al inicio', icon: '🏠' }] },
             { title: 'RECURSOS HUMANOS', items: [
@@ -519,19 +537,13 @@
         }
 
         function loadLegajos(c) {
-            const nombres = ['Carlos', 'María', 'Juan', 'Ana', 'Pedro', 'Rosa', 'Luis', 'Laura', 'Diego', 'Martina'];
-            const apellidos = ['García', 'López', 'Martínez', 'Rodríguez', 'Pérez', 'Fernández', 'González', 'Sánchez'];
-            const puestos = ['Gerente', 'Analista', 'Coordinador', 'Especialista', 'Supervisor'];
-            const dpttos = ['RRHH', 'IT', 'Contabilidad', 'Operaciones'];
-            const ubicaciones = ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza'];
+            const dpttos = ['RRHH', 'IT', 'Contabilidad', 'Operaciones', 'Ventas', 'Marketing'];
+            const ubicaciones = ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza', 'La Plata'];
 
-            const empleados = Array.from({length: 15}, () => ({
-                nombre: `${nombres[Math.floor(Math.random()*nombres.length)]} ${apellidos[Math.floor(Math.random()*apellidos.length)]}`,
-                puesto: puestos[Math.floor(Math.random()*puestos.length)],
+            const empleados = generarEmpleados(15).map(emp => ({
+                ...emp,
                 dpto: dpttos[Math.floor(Math.random()*dpttos.length)],
-                ubicacion: ubicaciones[Math.floor(Math.random()*ubicaciones.length)],
-                emoji: EMOJIS[Math.floor(Math.random()*EMOJIS.length)],
-                color: COLORS[Math.floor(Math.random()*COLORS.length)]
+                ubicacion: ubicaciones[Math.floor(Math.random()*ubicaciones.length)]
             }));
 
             c.innerHTML = `
@@ -561,22 +573,35 @@
         }
 
         function loadAsistencia(c) {
-            const empleadosHoy = [
-                { nombre: 'ALEJANDRA RUBIO', hora: '07:51:30', horario: '07:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
-                { nombre: 'BUGARIN MARIANELA IVANA', hora: '07:32:57', horario: 'Horario rotativo', estado: 'Salida', color: '#ff6b6b' },
-                { nombre: 'KISLUK ELIDA NANCY', hora: '08:05:00', horario: 'Horario rotativo', estado: 'OK', color: '#51cf66' },
-                { nombre: 'MARTINEZ G LUCIA ANABEL', hora: '08:05:05', horario: '08:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
-                { nombre: 'MORALES LAURA', hora: '07:23:44', horario: 'Horario rotativo', estado: 'Entrada', color: '#fff44f' },
-                { nombre: 'PERREIRA PEREYRA PEDRO HECTOR LUCIANO', hora: '07:24:07', horario: '07:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
-                { nombre: 'SOLA MIGUEL ANGEL', hora: '08:00:00', horario: 'Horario rotativo', estado: 'OK', color: '#51cf66' }
-            ];
+            const horariosBase = ['07:00 - 13:00', '08:00 - 14:00', '08:30 - 15:00', 'Horario rotativo'];
+            const estadosHoy = ['Entrada', 'Salida', 'OK'];
+            const coloresEstado = { 'Entrada': '#fff44f', 'Salida': '#ff6b6b', 'OK': '#51cf66' };
 
-            const empleadosMensual = [
-                { nombre: 'ALEJANDRA RUBIO', previsto: '180h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-180h' },
-                { nombre: 'ALFONSINA CORIA', previsto: '180h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-180h' },
-                { nombre: 'MARIA CALZADA', previsto: '80h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '80h' },
-                { nombre: 'PABLO CANTERA', previsto: '80h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-80h' }
-            ];
+            const empleadosHoy = generarEmpleados(7).map(emp => {
+                const estado = estadosHoy[Math.floor(Math.random() * estadosHoy.length)];
+                const horas = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+                const minutos = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                const segundos = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                return {
+                    nombre: emp.nombre,
+                    hora: `${horas}:${minutos}:${segundos}`,
+                    horario: horariosBase[Math.floor(Math.random() * horariosBase.length)],
+                    estado: estado,
+                    color: coloresEstado[estado]
+                };
+            });
+
+            const empleadosMensual = generarEmpleados(8).map(emp => ({
+                nombre: emp.nombre,
+                previsto: Math.floor(Math.random() * 200) + 80 + 'h',
+                trabajado: '0h',
+                horasExtra: '0h',
+                descanso: '0h',
+                licPaga: '0h',
+                licNoPaga: '0h',
+                total: '0h',
+                diferencia: (Math.random() > 0.5 ? '-' : '') + Math.floor(Math.random() * 200) + 'h'
+            }));
 
             c.innerHTML = `
                 <div class="module-header">
@@ -710,21 +735,21 @@
 
         function loadReservas(c) {
             const salas = ['Innovación (SL50)', 'Conferencias (SL51)', 'Capacitación (SL52)', 'Ejecutiva (SL53)', 'Desarrollo (SL54)'];
+            const tiposReunion = ['Reunión Semanal', 'Capacitación', 'Innovación', 'Reunión Ejecutiva', 'Seguimiento', 'Reunión', 'Estrategia', 'Evaluación', 'Planificación'];
+            const dias = ['Lun 24', 'Mar 25', 'Mié 26', 'Jue 27', 'Vie 28'];
+            const horas = ['08:30 - 09:30', '10:00 - 11:00', '11:00 - 13:00', '12:00 - 13:30', '14:00 - 15:00', '15:00 - 16:00', '09:00 - 10:00'];
+            const coloresReserva = ['#51cf66', '#9ca3af', '#f97316', '#a78bfa'];
+
+            const generarReservas = () => Array.from({length: 12}, () => ({
+                dia: dias[Math.floor(Math.random() * dias.length)],
+                hora: horas[Math.floor(Math.random() * horas.length)],
+                titulo: tiposReunion[Math.floor(Math.random() * tiposReunion.length)],
+                reserva: Math.random() > 0.3 ? getNombreRandom() : '',
+                color: coloresReserva[Math.floor(Math.random() * coloresReserva.length)]
+            }));
+
             const reservas = {
-                'Innovación (SL50)': [
-                    { dia: 'Lun 24', hora: '10:00 - 11:00', titulo: 'Reunión Semanal', reserva: 'Ormeño, Claudio Magali', color: '#51cf66' },
-                    { dia: 'Lun 24', hora: '14:00 - 15:00', titulo: 'Capacitación', reserva: '', color: '#51cf66' },
-                    { dia: 'Mar 25', hora: '08:30 - 09:30', titulo: 'Innovación', reserva: 'Flores, Anchas', color: '#51cf66' },
-                    { dia: 'Mar 25', hora: '11:00 - 13:00', titulo: 'Reunión Ejecutiva', reserva: '', color: '#51cf66' },
-                    { dia: 'Mar 25', hora: '15:00 - 16:00', titulo: 'Seguimiento', reserva: 'Pérez Tuyama, Valentina Alejandra', color: '#a78bfa' },
-                    { dia: 'Mié 26', hora: '09:00 - 10:00', titulo: 'Reunión', reserva: '', color: '#51cf66' },
-                    { dia: 'Mié 26', hora: '12:00 - 13:30', titulo: 'Estrategia', reserva: '', color: '#51cf66' },
-                    { dia: 'Jue 27', hora: '08:30 - 09:30', titulo: 'Reunión', reserva: 'Díaz, Desáre-Chiara Félix Victora', color: '#51cf66' },
-                    { dia: 'Jue 27', hora: '10:30 - 11:30', titulo: 'Reunión Otra', reserva: 'Compagnucci, María Florencia', color: '#9ca3af' },
-                    { dia: 'Jue 27', hora: '12:00 - 13:00', titulo: 'Estrategia', reserva: '', color: '#51cf66' },
-                    { dia: 'Jue 27', hora: '13:00 - 14:00', titulo: 'Memoria T', reserva: 'Masías, Rosa Magias', color: '#f97316' },
-                    { dia: 'Vie 28', hora: '12:00 - 13:00', titulo: 'Estrategias', reserva: 'Martínez, María Celeste', color: '#9ca3af' }
-                ]
+                'Innovación (SL50)': generarReservas()
             };
 
             c.innerHTML = `
@@ -791,12 +816,15 @@
         }
 
         function loadReportes(c) {
-            const reportes = [
-                { nombre: 'Requerimientos de Personal', dpto: 'RRHH', estado: 'Activo' },
-                { nombre: 'Análisis de Asistencia', dpto: 'Operaciones', estado: 'Activo' },
-                { nombre: 'Desempeño Departamental', dpto: 'IT', estado: 'Completado' },
-                { nombre: 'Presupuesto Q3', dpto: 'Finanzas', estado: 'En Revisión' }
-            ];
+            const tiposReporte = ['Requerimientos de Personal', 'Análisis de Asistencia', 'Desempeño Departamental', 'Presupuesto Trimestral', 'Evaluación de Proyectos', 'Control de Gastos'];
+            const dpttos = ['RRHH', 'Operaciones', 'IT', 'Finanzas', 'Ventas', 'Marketing'];
+            const estados = ['Activo', 'Completado', 'En Revisión', 'Pendiente'];
+
+            const reportes = Array.from({length: 4}, () => ({
+                nombre: tiposReporte[Math.floor(Math.random() * tiposReporte.length)],
+                dpto: dpttos[Math.floor(Math.random() * dpttos.length)],
+                estado: estados[Math.floor(Math.random() * estados.length)]
+            }));
             c.innerHTML = `
                 <div class="module-header">
                     <div class="header-title"><span class="header-icon">📊</span><h2>Reportes</h2></div>
