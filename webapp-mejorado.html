@@ -1372,6 +1372,30 @@ En conclusión, el desempeño de ${empleado.nombre} durante el período evaluado
                             <p style="margin: 0; line-height: 1.6; color: var(--text-primary); font-size: 14px;">
                                 ${descripciones[kpiId]}
                             </p>
+
+                            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                <h4 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 600; color: var(--primary);">Detalles Complementarios del Período</h4>
+
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                                    <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: var(--primary);">Resumen de Asistencia:</p>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5;">Se registraron ${presentes} días de asistencia perfecta, ${tardanzas} registros de tardanza y ${ausencias} ausencias durante el período evaluado ${fechaInicio} al ${fechaFin}. El porcentaje de asistencia alcanzó ${porcentajeAsistencia}%, reflejando el compromiso del empleado con sus responsabilidades horarias.</p>
+                                </div>
+
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                                    <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: var(--primary);">Cumplimiento de Tareas:</p>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5;">Se asignaron ${tareas.length} tareas durante el período. El empleado completó exitosamente ${tareasCompletadas} tareas (${cumplimientoTareas}%), con ${tareas.filter(t => t.estado === 'En Progreso').length} tareas en progreso y ${tareas.filter(t => t.estado === 'Iniciada').length} pendientes de inicio. El cumplimiento de plazos y la calidad en la ejecución demuestran responsabilidad y organización.</p>
+                                </div>
+
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                                    <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: var(--primary);">Historial Disciplinario:</p>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5;">${sanciones.length > 0 ? `Se registraron ${sanciones.length} evento(s) que requirieron atención disciplinaria. ${sanciones.map(s => `Tipo: ${s.tipo} (${s.motivo}, ${s.fecha})`).join('; ')}. Estos registros han sido considerados en la evaluación integral del desempeño.` : 'El empleado mantiene un historial disciplinario limpio, sin registros de sanciones o advertencias. Esta situación refleja su adhesión a las normas organizacionales y profesionalismo en el cumplimiento de deberes.'}</p>
+                                </div>
+
+                                <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                                    <p style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600; color: var(--primary);">Desarrollo Profesional:</p>
+                                    <p style="margin: 0; font-size: 13px; line-height: 1.5;">El empleado ha completado ${certificados.length} actividades de capacitación y certificación durante el período, demostrando compromiso con su desarrollo profesional. ${certificados.length > 0 ? `Entre estas se incluyen: ${certificados.slice(0,2).map(c => `${c.nombre} (${c.institucion})`).join(', ')}${certificados.length > 2 ? ' y más.' : '.'}` : ''} Este esfuerzo en aprendizaje continuo contribuye a mejorar sus competencias y valor para la organización.</p>
+                                </div>
+                            </div>
                         </div>
 
                         <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
