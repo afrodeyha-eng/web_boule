@@ -62,7 +62,7 @@ const MODULES = {
     },
     reservas: {
         title: 'Reservas de Salas',
-        component: loadPlaceholder
+        component: loadReservas
     },
     // ATENCIÓN AL CIUDADANO
     'audit-llamadas': {
@@ -249,6 +249,80 @@ function loadModule(moduleId) {
 }
 
 // MODULE COMPONENTS
+function loadReservas(container) {
+    const days = ['Lun 31', 'Mar 1', 'Mié 2', 'Jue 3', 'Vie 4'];
+    const hours = [];
+
+    for (let h = 8; h < 17; h++) {
+        hours.push(`${String(h).padStart(2, '0')}:00`);
+        hours.push(`${String(h).padStart(2, '0')}:30`);
+    }
+
+    let hoursGrid = ``;
+    hours.forEach(hour => {
+        hoursGrid += `
+            <div class="time-row">
+                <div class="time-label">${hour}</div>
+                ${days.map(day => `<div class="time-cell" onclick="reservarSlot(this)"></div>`).join('')}
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div class="reservas-module">
+            <div class="reservas-header">
+                <h2>Reservas de Salas</h2>
+                <div class="header-buttons">
+                    <button class="info-btn" title="Información">ℹ️ Info</button>
+                    <button class="export-btn" title="Exportar">📥 Exportar</button>
+                </div>
+            </div>
+
+            <div class="sala-selector">
+                <label>Sala:</label>
+                <select class="sala-dropdown">
+                    <option>Innovación (Sala actual de reuniones SL50)</option>
+                    <option>Conferencias (Sala SL51)</option>
+                    <option>Capacitación (Sala SL52)</option>
+                    <option>Reuniones Pequeñas (Sala SL53)</option>
+                </select>
+            </div>
+
+            <div class="week-info">
+                <span class="week-text">Semana del 31/08 al 04/09</span>
+                <div class="week-navigation">
+                    <button class="nav-week-btn" onclick="previousWeek()">← Semana anterior</button>
+                    <button class="nav-week-btn" onclick="nextWeek()">Semana siguiente →</button>
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="time-label-header"></div>
+                    ${days.map(day => `<div class="day-header">${day}</div>`).join('')}
+                </div>
+                <div class="calendar-grid">
+                    ${hoursGrid}
+                </div>
+            </div>
+        </div>
+    `;
+
+    addReservasStyles();
+}
+
+function reservarSlot(element) {
+    element.classList.toggle('reserved');
+}
+
+function previousWeek() {
+    alert('Navegar a semana anterior');
+}
+
+function nextWeek() {
+    alert('Navegar a semana siguiente');
+}
+
 function loadAsistencia(container) {
     const startDate = '1 ago 2026';
     const endDate = '31 ago 2026';
@@ -901,6 +975,276 @@ function addModuleStyles() {
                 margin: 8px 0;
                 font-size: 14px;
                 color: var(--text-primary);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function addReservasStyles() {
+    if (!document.getElementById('reservas-styles')) {
+        const style = document.createElement('style');
+        style.id = 'reservas-styles';
+        style.textContent = `
+            .reservas-module {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .reservas-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .reservas-header h2 {
+                font-size: 28px;
+                margin: 0;
+                color: var(--text-primary);
+            }
+
+            .header-buttons {
+                display: flex;
+                gap: 10px;
+            }
+
+            .info-btn,
+            .export-btn {
+                padding: 10px 16px;
+                background-color: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-primary);
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .info-btn:hover,
+            .export-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+            .sala-selector {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+            .sala-selector label {
+                font-weight: 600;
+                color: var(--text-primary);
+                white-space: nowrap;
+            }
+
+            .sala-dropdown {
+                flex: 1;
+                max-width: 400px;
+                padding: 12px 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-family: inherit;
+                font-size: 14px;
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+            .sala-dropdown:hover {
+                border-color: var(--primary-color);
+            }
+
+            .sala-dropdown:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.1);
+            }
+
+            .week-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding: 15px;
+                background-color: var(--bg-secondary);
+                border-radius: 6px;
+            }
+
+            .week-text {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+
+            .week-navigation {
+                display: flex;
+                gap: 10px;
+            }
+
+            .nav-week-btn {
+                padding: 8px 16px;
+                background-color: var(--bg-primary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-primary);
+                transition: var(--transition);
+            }
+
+            .nav-week-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+            .calendar-container {
+                background-color: var(--bg-primary);
+                border-radius: 8px;
+                overflow-x: auto;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .calendar-header {
+                display: grid;
+                grid-template-columns: 50px repeat(5, 1fr);
+                background-color: var(--bg-secondary);
+                border-bottom: 2px solid var(--border-color);
+                position: sticky;
+                top: 0;
+            }
+
+            .time-label-header {
+                padding: 12px;
+            }
+
+            .day-header {
+                padding: 12px;
+                font-weight: 600;
+                color: var(--primary-color);
+                text-align: center;
+                border-right: 1px solid var(--border-color);
+                font-size: 14px;
+            }
+
+            .day-header:last-child {
+                border-right: none;
+            }
+
+            .calendar-grid {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .time-row {
+                display: grid;
+                grid-template-columns: 50px repeat(5, 1fr);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .time-row:last-child {
+                border-bottom: none;
+            }
+
+            .time-label {
+                padding: 12px;
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--text-secondary);
+                border-right: 1px solid var(--border-color);
+                text-align: center;
+            }
+
+            .time-cell {
+                padding: 12px;
+                border-right: 1px solid var(--border-color);
+                cursor: pointer;
+                transition: var(--transition);
+                background-color: var(--bg-primary);
+                min-height: 30px;
+                position: relative;
+            }
+
+            .time-cell:last-child {
+                border-right: none;
+            }
+
+            .time-cell:hover {
+                background-color: #E8F5F7;
+            }
+
+            .time-cell.reserved {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .time-cell.reserved:hover {
+                background-color: var(--secondary-color);
+            }
+
+            @media (max-width: 768px) {
+                .reservas-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .header-buttons {
+                    width: 100%;
+                }
+
+                .info-btn,
+                .export-btn {
+                    flex: 1;
+                    justify-content: center;
+                }
+
+                .week-info {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .week-navigation {
+                    width: 100%;
+                }
+
+                .nav-week-btn {
+                    flex: 1;
+                }
+
+                .sala-selector {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .sala-dropdown {
+                    width: 100%;
+                    max-width: 100%;
+                }
+
+                .calendar-container {
+                    overflow-x: auto;
+                }
             }
 
             @keyframes fadeIn {
