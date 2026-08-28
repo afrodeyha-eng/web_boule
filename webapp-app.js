@@ -110,7 +110,7 @@ const MODULES = {
     // INFORMACIÓN Y REPORTES
     reportes: {
         title: 'Reportes',
-        component: loadPlaceholder
+        component: loadReportes
     },
     documentos: {
         title: 'Documentos',
@@ -384,6 +384,535 @@ function loadTableroPersonal(container) {
     `;
 
     addTableroStyles();
+}
+
+function loadReportes(container) {
+    container.innerHTML = `
+        <div class="reportes-module">
+            <div class="reportes-header">
+                <div class="header-title">
+                    <span class="reportes-icon">📊</span>
+                    <h2>Reportes</h2>
+                </div>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="personal">Requerimientos de Personal</button>
+                <button class="tab-btn" data-tab="administrativo">Objetivos Administrativos</button>
+            </div>
+
+            <!-- TAB: REQUERIMIENTOS DE PERSONAL -->
+            <div class="tab-content active" id="personal-tab">
+                <div class="report-controls">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="realtime-toggle"> Monitoreo en tiempo real
+                        </label>
+                    </div>
+                </div>
+
+                <div class="date-range-section">
+                    <div class="date-group">
+                        <label>Desde</label>
+                        <input type="date" class="date-input" value="2026-08-25">
+                    </div>
+                    <div class="date-group">
+                        <label>Hasta</label>
+                        <input type="date" class="date-input" value="2026-09-24">
+                    </div>
+                </div>
+
+                <div class="filters-section">
+                    <div class="filter-label">Departamentos</div>
+                    <div class="filter-options">
+                        <label class="filter-radio">
+                            <input type="radio" name="dept" value="all" checked> Todos los Departamentos
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="dept" value="adminstrativo"> Dirección General
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="dept" value="operaciones"> Operaciones
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="dept" value="cliente"> Atención al Cliente
+                        </label>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-number">156</div>
+                        <div class="metric-label">Total Requerido</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">89</div>
+                        <div class="metric-label">Cubierto</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">57%</div>
+                        <div class="metric-label">Porcentaje Cubierto</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">67</div>
+                        <div class="metric-label">Pendiente</div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <div class="chart-title">Cobertura por Departamento</div>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 100 100" style="width: 200px; height: 200px;">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#4CAF50" stroke-width="8" stroke-dasharray="75.4 251.2" transform="rotate(-90 50 50)"/>
+                                <circle cx="50" cy="50" r="30" fill="white"/>
+                                <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="20" font-weight="bold">57%</text>
+                            </svg>
+                            <div class="chart-label">Promedio de Cobertura: 57%</div>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Distribución de Vacantes</div>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 100 100" style="width: 200px; height: 200px;">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#FF6B6B" stroke-width="8" stroke-dasharray="62.7 251.2" transform="rotate(-90 50 50)"/>
+                                <circle cx="50" cy="50" r="25" fill="white"/>
+                                <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="16" font-weight="bold">67</text>
+                                <text x="50" y="65" text-anchor="middle" dy=".3em" font-size="12" fill="#666">Vacantes</text>
+                            </svg>
+                            <div class="chart-label">Posiciones por cubrir: 67</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-period-buttons">
+                    <button class="period-btn active">Por Días</button>
+                    <button class="period-btn">Por Horas</button>
+                </div>
+            </div>
+
+            <!-- TAB: OBJETIVOS ADMINISTRATIVOS -->
+            <div class="tab-content" id="administrativo-tab">
+                <div class="report-controls">
+                    <div class="control-group">
+                        <label class="control-label">
+                            <input type="checkbox" id="realtime-toggle-2"> Monitoreo en tiempo real
+                        </label>
+                    </div>
+                </div>
+
+                <div class="date-range-section">
+                    <div class="date-group">
+                        <label>Desde</label>
+                        <input type="date" class="date-input" value="2026-08-25">
+                    </div>
+                    <div class="date-group">
+                        <label>Hasta</label>
+                        <input type="date" class="date-input" value="2026-09-24">
+                    </div>
+                </div>
+
+                <div class="filters-section">
+                    <div class="filter-label">Áreas</div>
+                    <div class="filter-options">
+                        <label class="filter-radio">
+                            <input type="radio" name="area" value="all" checked> Todas las Áreas
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="area" value="produccion"> Producción
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="area" value="calidad"> Calidad
+                        </label>
+                        <label class="filter-radio">
+                            <input type="radio" name="area" value="eficiencia"> Eficiencia
+                        </label>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-number">12</div>
+                        <div class="metric-label">Objetivos Totales</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">8</div>
+                        <div class="metric-label">En Progreso</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">67%</div>
+                        <div class="metric-label">Cumplimiento</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-number">4</div>
+                        <div class="metric-label">Pendiente</div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <div class="chart-title">Cumplimiento de Objetivos</div>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 100 100" style="width: 200px; height: 200px;">
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#4CAF50" stroke-width="8" stroke-dasharray="84.5 251.2" transform="rotate(-90 50 50)"/>
+                                <circle cx="50" cy="50" r="30" fill="white"/>
+                                <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="20" font-weight="bold">67%</text>
+                            </svg>
+                            <div class="chart-label">Promedio de Cumplimiento: 67%</div>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Estado de Objetivos</div>
+                        <div class="chart-placeholder">
+                            <div style="display: flex; gap: 20px; justify-content: center; padding: 40px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 32px; font-weight: bold; color: #4CAF50;">8</div>
+                                    <div style="font-size: 12px; color: #666;">En Progreso</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 32px; font-weight: bold; color: #FFC107;">2</div>
+                                    <div style="font-size: 12px; color: #666;">Atrasados</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 32px; font-weight: bold; color: #4CAF50;">2</div>
+                                    <div style="font-size: 12px; color: #666;">Completados</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="time-period-buttons">
+                    <button class="period-btn active">Por Días</button>
+                    <button class="period-btn">Por Horas</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    addReportesStyles();
+    addReportesEventListeners(container);
+}
+
+function addReportesEventListeners(container) {
+    const tabBtns = container.querySelectorAll('.tab-btn');
+    const tabContents = container.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            this.classList.add('active');
+            const tabElement = container.querySelector(`#${tabName}-tab`);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+        });
+    });
+}
+
+function addReportesStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .reportes-module {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .reportes-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reportes-icon {
+            font-size: 32px;
+        }
+
+        .reportes-header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .report-controls {
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .control-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .control-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .date-range-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .date-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .date-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+
+        .filters-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .filter-radio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .filter-radio input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .metric-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .chart-box {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .chart-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            min-height: 250px;
+            justify-content: center;
+        }
+
+        .chart-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .time-period-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .period-btn {
+            padding: 12px 30px;
+            background-color: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .period-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .period-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+                gap: 0;
+                border-bottom: none;
+            }
+
+            .tab-btn {
+                border-bottom: none;
+                border-top: 2px solid var(--border-color);
+            }
+
+            .tab-btn.active {
+                border-top-color: var(--primary-color);
+                border-bottom: none;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 function loadReservas(container) {
