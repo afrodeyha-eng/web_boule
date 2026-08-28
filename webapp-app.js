@@ -13,7 +13,7 @@ const MODULES = {
     // RECURSOS HUMANOS
     legajos: {
         title: 'Legajos',
-        component: loadPlaceholder
+        component: loadLegajos
     },
     'rrhh-agenda': {
         title: 'RRHH Agenda',
@@ -249,6 +249,88 @@ function loadModule(moduleId) {
 }
 
 // MODULE COMPONENTS
+function loadLegajos(container) {
+    container.innerHTML = `
+        <div class="legajos-module">
+            <div class="module-header">
+                <div class="header-title">
+                    <span class="header-icon">📋</span>
+                    <h2>Legajos</h2>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Crear nuevo empleado')">
+                    <span class="btn-icon">➕</span>
+                    Alta de empleado
+                </button>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <input type="text" placeholder="Apellido o Nombre..." class="filter-input">
+                    <button class="filter-btn">🔍</button>
+                </div>
+
+                <div class="filter-group">
+                    <input type="text" placeholder="CUIT o CUIL..." class="filter-input">
+                    <button class="filter-btn">🔍</button>
+                </div>
+
+                <div class="filter-group">
+                    <input type="text" placeholder="DNI..." class="filter-input">
+                    <button class="filter-btn">🔍</button>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <select class="filter-select">
+                            <option>Secretaría...</option>
+                            <option>Secretaría de Hacienda</option>
+                            <option>Secretaría de Obras</option>
+                            <option>Secretaría de Desarrollo Social</option>
+                        </select>
+                        <button class="filter-btn">🔍</button>
+                    </div>
+
+                    <div class="filter-group">
+                        <select class="filter-select">
+                            <option>Dirección...</option>
+                            <option>Dirección General</option>
+                            <option>Dirección Administrativa</option>
+                            <option>Dirección de RRHH</option>
+                        </select>
+                        <button class="filter-btn">🔍</button>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Fecha de ingreso. Desde</label>
+                        <input type="date" class="filter-input date-input">
+                    </div>
+                    <div class="filter-group">
+                        <label>hasta</label>
+                        <input type="date" class="filter-input date-input">
+                    </div>
+                    <button class="filter-btn" style="align-self: flex-end;">🔍</button>
+                </div>
+
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="contratosVencidos">
+                    <label for="contratosVencidos">mostrar contratos vencidos</label>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="results-placeholder">
+                    <span class="placeholder-icon">📂</span>
+                    <p>Ingresa los filtros de búsqueda para ver los legajos</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    addLegajosStyles();
+}
+
 function loadDashboard(container) {
     container.innerHTML = `
         <div class="dashboard">
@@ -654,6 +736,231 @@ function addModuleStyles() {
                 margin: 8px 0;
                 font-size: 14px;
                 color: var(--text-primary);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function addLegajosStyles() {
+    if (!document.getElementById('legajos-styles')) {
+        const style = document.createElement('style');
+        style.id = 'legajos-styles';
+        style.textContent = `
+            .legajos-module {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .module-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .header-title {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .header-icon {
+                font-size: 32px;
+            }
+
+            .module-header h2 {
+                font-size: 28px;
+                margin: 0;
+                color: var(--text-primary);
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(13, 115, 119, 0.2);
+            }
+
+            .btn-icon {
+                font-size: 16px;
+            }
+
+            .filters-section {
+                background-color: var(--bg-primary);
+                border-radius: 8px;
+                padding: 25px;
+                margin-bottom: 30px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .filter-group {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .filter-input,
+            .filter-select {
+                flex: 1;
+                padding: 10px 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-family: inherit;
+                font-size: 14px;
+                transition: var(--transition);
+            }
+
+            .filter-input:focus,
+            .filter-select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.1);
+            }
+
+            .filter-input::placeholder {
+                color: var(--text-tertiary);
+            }
+
+            .filter-btn {
+                padding: 10px 15px;
+                background-color: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: var(--transition);
+                flex-shrink: 0;
+            }
+
+            .filter-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+            .filter-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 15px;
+            }
+
+            .filter-group label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-secondary);
+                margin-bottom: 5px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .date-input {
+                padding: 10px 15px;
+            }
+
+            .filter-checkbox {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .filter-checkbox input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+                accent-color: var(--primary-color);
+            }
+
+            .filter-checkbox label {
+                cursor: pointer;
+                font-size: 14px;
+                color: var(--text-primary);
+                margin: 0;
+                text-transform: none;
+                letter-spacing: normal;
+            }
+
+            .results-section {
+                background-color: var(--bg-primary);
+                border-radius: 8px;
+                min-height: 400px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .results-placeholder {
+                text-align: center;
+                color: var(--text-secondary);
+            }
+
+            .placeholder-icon {
+                font-size: 64px;
+                display: block;
+                margin-bottom: 15px;
+            }
+
+            .results-placeholder p {
+                font-size: 16px;
+                margin: 0;
+            }
+
+            @media (max-width: 768px) {
+                .module-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+
+                .btn-primary {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .filter-row {
+                    grid-template-columns: 1fr;
+                }
+
+                .filter-group {
+                    flex-direction: column;
+                }
+
+                .filter-btn {
+                    width: 100%;
+                }
             }
 
             @keyframes fadeIn {
