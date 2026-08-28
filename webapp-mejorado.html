@@ -561,29 +561,137 @@
         }
 
         function loadAsistencia(c) {
+            const empleadosHoy = [
+                { nombre: 'ALEJANDRA RUBIO', hora: '07:51:30', horario: '07:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
+                { nombre: 'BUGARIN MARIANELA IVANA', hora: '07:32:57', horario: 'Horario rotativo', estado: 'Salida', color: '#ff6b6b' },
+                { nombre: 'KISLUK ELIDA NANCY', hora: '08:05:00', horario: 'Horario rotativo', estado: 'OK', color: '#51cf66' },
+                { nombre: 'MARTINEZ G LUCIA ANABEL', hora: '08:05:05', horario: '08:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
+                { nombre: 'MORALES LAURA', hora: '07:23:44', horario: 'Horario rotativo', estado: 'Entrada', color: '#fff44f' },
+                { nombre: 'PERREIRA PEREYRA PEDRO HECTOR LUCIANO', hora: '07:24:07', horario: '07:00 - 13:00', estado: 'Entrada', color: '#fff44f' },
+                { nombre: 'SOLA MIGUEL ANGEL', hora: '08:00:00', horario: 'Horario rotativo', estado: 'OK', color: '#51cf66' }
+            ];
+
+            const empleadosMensual = [
+                { nombre: 'ALEJANDRA RUBIO', previsto: '180h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-180h' },
+                { nombre: 'ALFONSINA CORIA', previsto: '180h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-180h' },
+                { nombre: 'MARIA CALZADA', previsto: '80h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '80h' },
+                { nombre: 'PABLO CANTERA', previsto: '80h', trabajado: '0h', horasExtra: '0h', descanso: '0h', licPaga: '0h', licNoPaga: '0h', total: '0h', diferencia: '-80h' }
+            ];
+
             c.innerHTML = `
                 <div class="module-header">
                     <div class="header-title"><span class="header-icon">👥</span><h2>Asistencia</h2></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" style="background: none; color: var(--primary); border: 1px solid var(--primary);">📊 Exportar</button>
+                        <button class="btn">📧 Enviar reporte</button>
+                    </div>
                 </div>
-                <div class="stats">
-                    <div class="stat-card"><div class="stat-value">150</div><div class="stat-label">Presentes</div></div>
-                    <div class="stat-card"><div class="stat-value">8</div><div class="stat-label">Ausentes</div></div>
-                    <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Tardanzas</div></div>
-                    <div class="stat-card"><div class="stat-value">95%</div><div class="stat-label">Porcentaje</div></div>
+
+                <div class="tabs" style="margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); document.getElementById('tabMensual').style.display='block'; document.getElementById('tabDiario').style.display='none';">Compañía</button>
+                    <button class="tab-btn" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); document.getElementById('tabDiario').style.display='block'; document.getElementById('tabMensual').style.display='none';">Hoy</button>
                 </div>
-                <div class="filters-section">
-                    <input type="date" value="2026-08-28" class="filter-input">
-                    <select class="filter-select"><option>Todos</option><option>RRHH</option><option>IT</option><option>Operaciones</option></select>
+
+                <div id="tabMensual">
+                    <div class="tabs" style="border: none; margin-bottom: 20px;">
+                        <button class="tab-btn active" style="border: none;">Vista general</button>
+                        <button class="tab-btn" style="border: none;">Horas extra</button>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">Mostrando 1 - 8 de 8 en total</div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr style="background-color: var(--bg-secondary);">
+                                    <th style="width: 30px;"></th>
+                                    <th>Nombre completo</th>
+                                    <th>Previsto</th>
+                                    <th>Trabajado</th>
+                                    <th>Horas extra</th>
+                                    <th>Descanso</th>
+                                    <th>Licencia paga</th>
+                                    <th>Licencia no paga</th>
+                                    <th>Total licencia</th>
+                                    <th>Diferencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${empleadosMensual.map(e => `<tr>
+                                    <td style="text-align: center;">◯</td>
+                                    <td style="color: var(--primary); font-weight: 500;">${e.nombre}</td>
+                                    <td style="color: var(--primary);">${e.previsto}</td>
+                                    <td>${e.trabajado}</td>
+                                    <td>${e.horasExtra}</td>
+                                    <td>${e.descanso}</td>
+                                    <td>${e.licPaga}</td>
+                                    <td>${e.licNoPaga}</td>
+                                    <td>${e.total}</td>
+                                    <td style="color: ${e.diferencia.startsWith('-') ? '#dc2626' : 'var(--primary)'};">${e.diferencia}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="table-container" style="margin-top: 20px;">
-                    <table>
-                        <thead><tr><th>Empleado</th><th>Entrada</th><th>Salida</th><th>Estado</th></tr></thead>
-                        <tbody>
-                            <tr><td>Carlos García</td><td>08:15</td><td>17:45</td><td><span class="badge badge-success">✓ Presente</span></td></tr>
-                            <tr><td>María López</td><td>09:30</td><td>18:00</td><td><span class="badge badge-warning">⚠ Tardanza</span></td></tr>
-                            <tr><td>Juan Pérez</td><td>--</td><td>--</td><td><span class="badge badge-danger">✗ Ausente</span></td></tr>
-                        </tbody>
-                    </table>
+
+                <div id="tabDiario" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <span style="font-weight: 600; font-size: 16px;">Asistencia del día 28/08/2026</span>
+                        </div>
+                        <button class="btn" style="background: var(--primary);">📅 Marcar</button>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <button style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: #f0f0f0; cursor: pointer;">sin</button>
+                        <button style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: #51cf66; color: white; cursor: pointer;">OK</button>
+                        <button style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: #ff6b6b; color: white; cursor: pointer;">NOK</button>
+                        <button style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: #a78bfa; color: white; cursor: pointer;">Con novedad</button>
+                        <button style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer;">Quitar filtros</button>
+                    </div>
+
+                    <div class="filters-section">
+                        <input type="text" placeholder="Filtrar por Apellido, Nombre, reloj o novedad..." style="grid-column: 1/-1;" class="filter-input">
+                        <select class="filter-select"><option>Todas las secretarías</option></select>
+                        <select class="filter-select"><option>Todas las direcciones</option></select>
+                        <select class="filter-select"><option>Todas las áreas</option></select>
+                    </div>
+
+                    <div style="background: #1e5a7a; color: white; padding: 12px 15px; font-weight: 600; margin-top: 20px; border-radius: 4px 4px 0 0;">ADSCRIPTO</div>
+                    <div class="table-container" style="border-radius: 0;">
+                        <table>
+                            <thead>
+                                <tr style="background: none; border: none;">
+                                    <th style="background-color: #f0f0f0; color: var(--text-secondary);">Horario</th>
+                                    <th style="background-color: #f0f0f0; color: var(--text-secondary);"></th>
+                                    <th style="background-color: #f0f0f0; color: var(--text-secondary);"></th>
+                                    <th style="background-color: #f0f0f0; color: var(--text-secondary);"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${empleadosHoy.map(e => `<tr style="background-color: ${e.color};">
+                                    <td style="color: black; font-weight: 500;">${e.nombre}</td>
+                                    <td style="text-align: center;">${e.horario}</td>
+                                    <td style="text-align: center; font-weight: 600;">${e.hora}</td>
+                                    <td style="text-align: center; font-weight: 600; color: black;">${e.estado}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background: #1e5a7a; color: white; padding: 12px 15px; font-weight: 600; margin-top: 20px; border-radius: 4px 4px 0 0;">GOBIERNO SEGURIDAD</div>
+                    <div class="table-container" style="border-radius: 0;">
+                        <table>
+                            <thead>
+                                <tr style="background: none; border: none;">
+                                    <th style="background-color: #f0f0f0; color: var(--text-secondary);">Horario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color: #f0f0f0;">
+                                    <td style="color: var(--text-secondary); padding: 15px;">ABEIRO NERINA EVELYN</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             `;
         }
