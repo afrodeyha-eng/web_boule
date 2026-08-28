@@ -301,6 +301,11 @@
             color: #721c24;
         }
 
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -1108,12 +1113,31 @@
                 const porcentajeAsistencia = Math.round((presentes / asistenciaData.length) * 100);
 
                 // Generar tareas
-                const tareas = Array.from({length: Math.floor(Math.random() * 5) + 3}, () => ({
-                    titulo: ['Implementación de módulo', 'Documentación técnica', 'Revisión de código', 'Testing', 'Capacitación', 'Análisis de requisitos'][Math.floor(Math.random() * 6)],
-                    estado: Math.random() > 0.4 ? 'Completada' : 'En Progreso',
-                    avance: Math.floor(Math.random() * 30) + 70,
-                    fechaEntrega: new Date(2026, 7, Math.floor(Math.random() * 28) + 1).toLocaleDateString('es-AR')
-                }));
+                const tareasEjemplos = [
+                    'Implementación de módulo de reportes',
+                    'Documentación técnica del API REST',
+                    'Revisión de código - Sprint 8',
+                    'Testing de funcionalidades nuevas',
+                    'Capacitación en React',
+                    'Análisis de requisitos del cliente',
+                    'Migración de base de datos',
+                    'Optimización de performance',
+                    'Corrección de bugs críticos',
+                    'Setup del ambiente de producción'
+                ];
+                const tareas = Array.from({length: Math.floor(Math.random() * 5) + 3}, () => {
+                    const random = Math.random();
+                    let estado;
+                    if (random > 0.6) estado = 'Completada';
+                    else if (random > 0.3) estado = 'En Progreso';
+                    else estado = 'Iniciada';
+                    return {
+                        titulo: tareasEjemplos[Math.floor(Math.random() * tareasEjemplos.length)],
+                        estado: estado,
+                        avance: estado === 'Completada' ? 100 : (estado === 'En Progreso' ? Math.floor(Math.random() * 50) + 50 : Math.floor(Math.random() * 30) + 10),
+                        fechaEntrega: new Date(2026, 7, Math.floor(Math.random() * 28) + 1).toLocaleDateString('es-AR')
+                    };
+                });
                 const tareasCompletadas = tareas.filter(t => t.estado === 'Completada').length;
                 const cumplimientoTareas = Math.round((tareasCompletadas / tareas.length) * 100);
 
@@ -1269,21 +1293,23 @@
                                     <thead>
                                         <tr>
                                             <th>Tarea</th>
-                                            <th>Estado</th>
+                                            <th>Estado (Click para cambiar)</th>
                                             <th>Avance</th>
                                             <th>Fecha Entrega</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        ${tareas.map(t => {
-                                            const badgeState = t.estado === 'Completada' ? 'badge-success' : 'badge-warning';
+                                    <tbody id="tareas-tbody-${Math.random().toString(36).substr(2, 9)}">
+                                        ${tareas.map((t, idx) => {
+                                            const stateMap = {'Iniciada': 'iniciada', 'En Progreso': 'en-progreso', 'Completada': 'completada'};
+                                            const estadoKey = stateMap[t.estado] || 'en-progreso';
+                                            const badgeState = t.estado === 'Completada' ? 'badge-success' : (t.estado === 'En Progreso' ? 'badge-warning' : 'badge-info');
                                             return `
                                                 <tr>
                                                     <td style="font-weight: 500;">${t.titulo}</td>
-                                                    <td><span class="badge ${badgeState}">${t.estado}</span></td>
+                                                    <td><span class="badge ${badgeState}" style="cursor: pointer; transition: all 0.3s;" onclick="window.cambiarEstadoTarea(this)">${t.estado}</span></td>
                                                     <td>
                                                         <div style="background: var(--bg-secondary); border-radius: 4px; height: 20px; overflow: hidden; text-align: center; font-size: 11px; color: var(--text-secondary);">
-                                                            <div style="background: ${t.estado === 'Completada' ? '#16a34a' : '#ea580c'}; height: 100%; width: ${t.avance}%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">${t.avance}%</div>
+                                                            <div style="background: ${t.estado === 'Completada' ? '#16a34a' : (t.estado === 'En Progreso' ? '#ea580c' : '#3b82f6')}; height: 100%; width: ${t.estado === 'Completada' ? 100 : (t.estado === 'En Progreso' ? t.avance : 30)}%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">${t.estado === 'Completada' ? 100 : (t.estado === 'En Progreso' ? t.avance : 30)}%</div>
                                                         </div>
                                                     </td>
                                                     <td>${t.fechaEntrega}</td>
@@ -1591,6 +1617,42 @@ Se recomienda ${puntuacionArea >= 85 ? 'mantener el nivel actual de desempeño y
                 document.getElementById('informe-contenido').innerHTML = html;
             }
 
+            window.cambiarEstadoTarea = function(elemento) {
+                const estadoActual = elemento.textContent.trim();
+                const estados = ['Iniciada', 'En Progreso', 'Completada'];
+                const indexActual = estados.indexOf(estadoActual);
+                const estadoNuevo = estados[(indexActual + 1) % estados.length];
+
+                const badgeClasses = {
+                    'Iniciada': 'badge-info',
+                    'En Progreso': 'badge-warning',
+                    'Completada': 'badge-success'
+                };
+
+                elemento.textContent = estadoNuevo;
+                elemento.className = `badge ${badgeClasses[estadoNuevo]}`;
+
+                // Actualizar el progreso en la misma fila
+                const fila = elemento.closest('tr');
+                if (fila) {
+                    const progressDiv = fila.querySelector('[style*="background: var(--bg-secondary)"]');
+                    if (progressDiv) {
+                        const progressBar = progressDiv.querySelector('[style*="height: 100%"]');
+                        if (progressBar) {
+                            const porcentaje = estadoNuevo === 'Completada' ? 100 : (estadoNuevo === 'En Progreso' ? 75 : 30);
+                            const colorMap = {
+                                'Iniciada': '#3b82f6',
+                                'En Progreso': '#ea580c',
+                                'Completada': '#16a34a'
+                            };
+                            progressBar.style.width = porcentaje + '%';
+                            progressBar.style.background = colorMap[estadoNuevo];
+                            progressBar.textContent = porcentaje + '%';
+                        }
+                    }
+                }
+            };
+
             window.descargarInforme = function() {
                 const reportContent = document.querySelector('.card').innerHTML;
                 const empleadoName = document.querySelector('[style*="font-size: 22px"][style*="font-weight: 700"]')?.textContent || 'Informe';
@@ -1640,6 +1702,7 @@ Se recomienda ${puntuacionArea >= 85 ? 'mantener el nivel actual de desempeño y
         .badge-success { background: #d1fae5; color: #065f46; }
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
         h3 { margin: 20px 0 15px 0; font-size: 16px; font-weight: 600; }
         .stats-grid {
             display: grid;
