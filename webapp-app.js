@@ -42,7 +42,7 @@ const MODULES = {
     // GESTIÓN OPERATIVA
     asistencia: {
         title: 'Asistencia',
-        component: loadPlaceholder
+        component: loadAsistencia
     },
     turnos: {
         title: 'Turnos',
@@ -249,6 +249,171 @@ function loadModule(moduleId) {
 }
 
 // MODULE COMPONENTS
+function loadAsistencia(container) {
+    const startDate = '1 ago 2026';
+    const endDate = '31 ago 2026';
+
+    container.innerHTML = `
+        <div class="asistencia-module">
+            <div class="asistencia-header">
+                <div class="header-left">
+                    <h2>Asistencia</h2>
+                    <div class="tabs-group">
+                        <button class="tab-btn active" onclick="switchAsistenciaTab(this, 'compania')">Compañía</button>
+                        <button class="tab-btn" onclick="switchAsistenciaTab(this, 'mi')">Mi</button>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="action-btn" title="Exportar">
+                        <span>📥</span> Exportar
+                    </button>
+                    <button class="action-btn" title="Enviar recordatorio">
+                        <span>📧</span> Enviar recordatorio
+                    </button>
+                </div>
+            </div>
+
+            <div class="subtabs">
+                <button class="subtab-btn active" onclick="switchSubtab(this, 'vista-general')">Vista general</button>
+                <button class="subtab-btn" onclick="switchSubtab(this, 'horas-extra')">Horas extra</button>
+            </div>
+
+            <div class="controls-bar">
+                <div class="date-control">
+                    <button class="date-nav-btn">◀</button>
+                    <input type="text" class="date-range-input" value="${startDate} - ${endDate}" readonly>
+                    <button class="date-nav-btn">▶</button>
+                    <button class="refresh-btn" title="Refrescar">🔄</button>
+                </div>
+
+                <div class="filter-controls">
+                    <button class="filter-add-btn">⚙️ Añadir filtro</button>
+                    <div class="search-box">
+                        <input type="text" placeholder="Buscar..." class="search-input">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-info">
+                Mostrando 1 - 6 de 6 en total
+            </div>
+
+            <div class="table-container">
+                <table class="asistencia-table">
+                    <thead>
+                        <tr>
+                            <th class="col-icon"></th>
+                            <th class="col-nombre">Nombre completo</th>
+                            <th class="col-numero">Previsto</th>
+                            <th class="col-numero">Trabajado</th>
+                            <th class="col-numero">Horas extra</th>
+                            <th class="col-numero">Descanso</th>
+                            <th class="col-numero">Licencia paga</th>
+                            <th class="col-numero">Licencia no paga</th>
+                            <th class="col-numero">Total licencia</th>
+                            <th class="col-numero">Diferencia</th>
+                            <th class="col-acciones"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">ALEJANDRA RUBIO</td>
+                            <td class="col-numero">180h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-180h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">ALFONSINA CORIA</td>
+                            <td class="col-numero">180h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-180h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">MARIA CALZADA</td>
+                            <td class="col-numero">80h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-80h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">PABLO CANTERA</td>
+                            <td class="col-numero">80h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-80h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">ROCIO GONZALEZ</td>
+                            <td class="col-numero">80h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-80h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                        <tr>
+                            <td class="col-icon">⭐</td>
+                            <td class="col-nombre">TANIA PAJON CORREA</td>
+                            <td class="col-numero">80h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero">0h</td>
+                            <td class="col-numero negative">-80h</td>
+                            <td class="col-acciones"><button class="action-icon">→</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+    addAsistenciaStyles();
+}
+
+function switchAsistenciaTab(btn, tab) {
+    document.querySelectorAll('.tabs-group .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function switchSubtab(btn, tab) {
+    document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
 function loadLegajos(container) {
     container.innerHTML = `
         <div class="legajos-module">
@@ -736,6 +901,338 @@ function addModuleStyles() {
                 margin: 8px 0;
                 font-size: 14px;
                 color: var(--text-primary);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function addAsistenciaStyles() {
+    if (!document.getElementById('asistencia-styles')) {
+        const style = document.createElement('style');
+        style.id = 'asistencia-styles';
+        style.textContent = `
+            .asistencia-module {
+                animation: fadeIn 0.3s ease;
+            }
+
+            .asistencia-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .header-left {
+                display: flex;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .asistencia-header h2 {
+                font-size: 28px;
+                margin: 0;
+                color: var(--text-primary);
+            }
+
+            .tabs-group {
+                display: flex;
+                gap: 10px;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                background-color: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-secondary);
+                transition: var(--transition);
+            }
+
+            .tab-btn:hover {
+                background-color: var(--bg-tertiary);
+            }
+
+            .tab-btn.active {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+            .header-right {
+                display: flex;
+                gap: 10px;
+            }
+
+            .action-btn {
+                padding: 10px 16px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                transition: var(--transition);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .action-btn:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+            }
+
+            .subtabs {
+                display: flex;
+                gap: 0;
+                margin-bottom: 20px;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .subtab-btn {
+                padding: 12px 20px;
+                background: none;
+                border: none;
+                border-bottom: 3px solid transparent;
+                cursor: pointer;
+                font-size: 14px;
+                color: var(--text-secondary);
+                font-weight: 500;
+                transition: var(--transition);
+            }
+
+            .subtab-btn:hover {
+                color: var(--text-primary);
+            }
+
+            .subtab-btn.active {
+                color: var(--primary-color);
+                border-bottom-color: var(--primary-color);
+            }
+
+            .controls-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                gap: 20px;
+            }
+
+            .date-control {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background-color: var(--bg-primary);
+                padding: 10px 15px;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+            }
+
+            .date-nav-btn {
+                background: none;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+                padding: 5px 8px;
+                transition: var(--transition);
+            }
+
+            .date-nav-btn:hover {
+                color: var(--primary-color);
+            }
+
+            .date-range-input {
+                padding: 0;
+                border: none;
+                background: none;
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-primary);
+                cursor: pointer;
+                min-width: 150px;
+                text-align: center;
+            }
+
+            .refresh-btn {
+                background: none;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+                padding: 5px 8px;
+                transition: var(--transition);
+            }
+
+            .refresh-btn:hover {
+                color: var(--primary-color);
+                transform: rotate(180deg);
+            }
+
+            .filter-controls {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .filter-add-btn {
+                padding: 10px 16px;
+                background-color: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-primary);
+                transition: var(--transition);
+            }
+
+            .filter-add-btn:hover {
+                background-color: var(--bg-tertiary);
+            }
+
+            .search-box {
+                display: flex;
+                align-items: center;
+                background-color: var(--bg-primary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 0 12px;
+            }
+
+            .search-input {
+                flex: 1;
+                border: none;
+                background: none;
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+
+            .search-input:focus {
+                outline: none;
+            }
+
+            .search-icon {
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .results-info {
+                font-size: 13px;
+                color: var(--text-secondary);
+                margin-bottom: 15px;
+            }
+
+            .table-container {
+                background-color: var(--bg-primary);
+                border-radius: 8px;
+                overflow-x: auto;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .asistencia-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13px;
+            }
+
+            .asistencia-table thead {
+                background-color: var(--bg-secondary);
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .asistencia-table th {
+                padding: 12px 15px;
+                text-align: left;
+                font-weight: 600;
+                color: var(--text-primary);
+                white-space: nowrap;
+            }
+
+            .asistencia-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .asistencia-table tbody tr:hover {
+                background-color: var(--bg-secondary);
+            }
+
+            .col-icon {
+                width: 40px;
+                text-align: center;
+            }
+
+            .col-nombre {
+                font-weight: 500;
+                color: var(--primary-color);
+            }
+
+            .col-numero {
+                text-align: right;
+                color: var(--text-secondary);
+                font-family: 'Courier New', monospace;
+            }
+
+            .col-numero.negative {
+                color: var(--danger-color);
+            }
+
+            .col-acciones {
+                width: 40px;
+                text-align: center;
+            }
+
+            .action-icon {
+                background: none;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+                padding: 5px;
+                transition: var(--transition);
+            }
+
+            .action-icon:hover {
+                color: var(--primary-color);
+            }
+
+            @media (max-width: 768px) {
+                .asistencia-header {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+
+                .controls-bar {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .date-control,
+                .search-box {
+                    width: 100%;
+                }
+
+                .table-container {
+                    overflow-x: auto;
+                }
+
+                .col-numero {
+                    font-size: 12px;
+                }
             }
 
             @keyframes fadeIn {
