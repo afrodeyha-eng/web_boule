@@ -1750,6 +1750,40 @@ function switchSubtab(btn, tab) {
 }
 
 function loadLegajos(container) {
+    const nombres = ['Carlos', 'María', 'Juan', 'Ana', 'Pedro', 'Rosa', 'Luis', 'Laura', 'Diego', 'Martina', 'Francisco', 'Isabel', 'Andrés', 'Beatriz', 'Roberto'];
+    const apellidos = ['García', 'López', 'Martínez', 'Rodríguez', 'Pérez', 'Fernández', 'González', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Ruiz', 'Castro', 'Morales', 'Vargas'];
+    const puestos = ['Gerente', 'Analista', 'Coordinador', 'Especialista', 'Asistente', 'Supervisor', 'Jefe de Proyecto', 'Consultor', 'Técnico', 'Administrador'];
+    const departamentos = ['RRHH', 'IT', 'Contabilidad', 'Operaciones', 'Ventas', 'Marketing', 'Legal', 'Logística'];
+    const ubicaciones = ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza'];
+    const colores = ['6366f1', '0891b2', 'dc2626', '16a34a', 'ea580c', '9333ea', 'd946ef', 'ec4899'];
+
+    const generateEmployee = (index) => {
+        const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+        const apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
+        const puesto = puestos[Math.floor(Math.random() * puestos.length)];
+        const dpto = departamentos[Math.floor(Math.random() * departamentos.length)];
+        const ubicacion = ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
+        const iniciales = nombre[0] + apellido[0];
+        const color = colores[Math.floor(Math.random() * colores.length)];
+        const fechaIngreso = new Date(2020 + Math.floor(Math.random() * 5), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+        const manager = nombres[Math.floor(Math.random() * nombres.length)] + ' ' + apellidos[Math.floor(Math.random() * apellidos.length)];
+
+        return {
+            nombre: `${nombre} ${apellido}`,
+            iniciales,
+            puesto,
+            dpto,
+            ubicacion,
+            manager,
+            fecha: fechaIngreso.toLocaleDateString('es-AR'),
+            color
+        };
+    };
+
+    const empleados = Array.from({length: 18}, (_, i) => generateEmployee(i));
+
+    let filteredEmpleados = empleados;
+
     container.innerHTML = `
         <div class="legajos-module">
             <div class="module-header">
@@ -1765,70 +1799,85 @@ function loadLegajos(container) {
 
             <div class="filters-section">
                 <div class="filter-group">
-                    <input type="text" placeholder="Apellido o Nombre..." class="filter-input">
-                    <button class="filter-btn">🔍</button>
+                    <input type="text" id="nombreFilter" placeholder="Buscar por nombre..." class="filter-input">
                 </div>
 
                 <div class="filter-group">
-                    <input type="text" placeholder="CUIT o CUIL..." class="filter-input">
-                    <button class="filter-btn">🔍</button>
+                    <select id="deptoFilter" class="filter-select">
+                        <option value="">Todos los Departamentos</option>
+                        ${departamentos.map(d => `<option value="${d}">${d}</option>`).join('')}
+                    </select>
                 </div>
 
                 <div class="filter-group">
-                    <input type="text" placeholder="DNI..." class="filter-input">
-                    <button class="filter-btn">🔍</button>
-                </div>
-
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <select class="filter-select">
-                            <option>Secretaría...</option>
-                            <option>Secretaría de Hacienda</option>
-                            <option>Secretaría de Obras</option>
-                            <option>Secretaría de Desarrollo Social</option>
-                        </select>
-                        <button class="filter-btn">🔍</button>
-                    </div>
-
-                    <div class="filter-group">
-                        <select class="filter-select">
-                            <option>Dirección...</option>
-                            <option>Dirección General</option>
-                            <option>Dirección Administrativa</option>
-                            <option>Dirección de RRHH</option>
-                        </select>
-                        <button class="filter-btn">🔍</button>
-                    </div>
-                </div>
-
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label>Fecha de ingreso. Desde</label>
-                        <input type="date" class="filter-input date-input">
-                    </div>
-                    <div class="filter-group">
-                        <label>hasta</label>
-                        <input type="date" class="filter-input date-input">
-                    </div>
-                    <button class="filter-btn" style="align-self: flex-end;">🔍</button>
-                </div>
-
-                <div class="filter-checkbox">
-                    <input type="checkbox" id="contratosVencidos">
-                    <label for="contratosVencidos">mostrar contratos vencidos</label>
+                    <select id="ubicacionFilter" class="filter-select">
+                        <option value="">Todas las Ubicaciones</option>
+                        ${ubicaciones.map(u => `<option value="${u}">${u}</option>`).join('')}
+                    </select>
                 </div>
             </div>
 
-            <div class="results-section">
-                <div class="results-placeholder">
-                    <span class="placeholder-icon">📂</span>
-                    <p>Ingresa los filtros de búsqueda para ver los legajos</p>
-                </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Puesto</th>
+                            <th>Departamento</th>
+                            <th>Ubicación</th>
+                            <th>Manager</th>
+                            <th>Comenzó en</th>
+                        </tr>
+                    </thead>
+                    <tbody id="legajosTable">
+                        ${empleados.map(emp => `
+                            <tr class="empleado-row" data-nombre="${emp.nombre.toLowerCase()}" data-dpto="${emp.dpto}" data-ubicacion="${emp.ubicacion}">
+                                <td class="nombre-cell">
+                                    <div class="employee-info">
+                                        <img src="https://ui-avatars.com/api/?name=${emp.iniciales}&background=${emp.color}&color=fff&bold=true" alt="${emp.nombre}" class="avatar">
+                                        <span>${emp.nombre}</span>
+                                    </div>
+                                </td>
+                                <td>${emp.puesto}</td>
+                                <td>${emp.dpto}</td>
+                                <td>${emp.ubicacion}</td>
+                                <td>${emp.manager}</td>
+                                <td>${emp.fecha}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </div>
         </div>
     `;
 
     addLegajosStyles();
+
+    const nombreInput = container.querySelector('#nombreFilter');
+    const deptoSelect = container.querySelector('#deptoFilter');
+    const ubicacionSelect = container.querySelector('#ubicacionFilter');
+
+    const filterTable = () => {
+        const nombreValue = nombreInput.value.toLowerCase();
+        const deptoValue = deptoSelect.value;
+        const ubicacionValue = ubicacionSelect.value;
+
+        document.querySelectorAll('.empleado-row').forEach(row => {
+            const nombre = row.dataset.nombre;
+            const dpto = row.dataset.dpto;
+            const ubicacion = row.dataset.ubicacion;
+
+            const matchNombre = nombre.includes(nombreValue);
+            const matchDpto = !deptoValue || dpto === deptoValue;
+            const matchUbicacion = !ubicacionValue || ubicacion === ubicacionValue;
+
+            row.style.display = matchNombre && matchDpto && matchUbicacion ? '' : 'none';
+        });
+    };
+
+    nombreInput.addEventListener('keyup', filterTable);
+    deptoSelect.addEventListener('change', filterTable);
+    ubicacionSelect.addEventListener('change', filterTable);
 }
 
 function loadDashboard(container) {
@@ -3420,30 +3469,64 @@ function addLegajosStyles() {
                 letter-spacing: normal;
             }
 
-            .results-section {
+            .table-container {
                 background-color: var(--bg-primary);
                 border-radius: 8px;
-                min-height: 400px;
+                overflow: hidden;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 14px;
+            }
+
+            .data-table thead {
+                background-color: var(--bg-secondary);
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .data-table th {
+                padding: 15px;
+                text-align: left;
+                font-weight: 600;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+            }
+
+            .data-table td {
+                padding: 15px;
+                border-bottom: 1px solid var(--border-color);
+                color: var(--text-primary);
+            }
+
+            .data-table tbody tr {
+                transition: var(--transition);
+            }
+
+            .data-table tbody tr:hover {
+                background-color: var(--bg-secondary);
+            }
+
+            .employee-info {
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                gap: 12px;
             }
 
-            .results-placeholder {
-                text-align: center;
-                color: var(--text-secondary);
+            .avatar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid var(--border-color);
             }
 
-            .placeholder-icon {
-                font-size: 64px;
-                display: block;
-                margin-bottom: 15px;
-            }
-
-            .results-placeholder p {
-                font-size: 16px;
-                margin: 0;
+            .nombre-cell {
+                font-weight: 500;
             }
 
             @media (max-width: 768px) {
