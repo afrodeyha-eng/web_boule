@@ -971,225 +971,155 @@
 
         function loadInforme(c) {
             const dpttos = ['RRHH', 'IT', 'Operaciones', 'Ventas', 'Marketing', 'Finanzas'];
-            const metricas = [
-                { id: 'asistencia', label: 'Asistencia (%)', checked: true },
-                { id: 'productividad', label: 'Productividad', checked: true },
-                { id: 'objetivos', label: 'Cumplimiento de Objetivos', checked: true },
-                { id: 'evaluacion', label: 'Evaluación 360', checked: false },
-                { id: 'habilidades', label: 'Desarrollo de Habilidades', checked: false },
-                { id: 'satisfaccion', label: 'Satisfacción', checked: true }
+            const kpis = [
+                { id: 'asistencia', label: 'Asistencia' },
+                { id: 'productividad', label: 'Productividad' },
+                { id: 'objetivos', label: 'Cumplimiento de Objetivos' },
+                { id: 'evaluacion', label: 'Evaluación 360' },
+                { id: 'habilidades', label: 'Desarrollo de Habilidades' }
             ];
+            const empleados = generarEmpleados(10);
 
             c.innerHTML = `
                 <div class="module-header">
-                    <div class="header-title"><span class="header-icon">📈</span><h2>Informe de Desempeño</h2></div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn" style="background: none; color: var(--primary); border: 1px solid var(--primary);" onclick="document.getElementById('informe-preview').style.display = 'block';">👁️ Vista Previa</button>
-                        <button class="btn" onclick="descargarInforme();">📥 Descargar PDF</button>
+                    <div class="header-title"><span class="header-icon">📈</span><h2>Informe Individual de Desempeño</h2></div>
+                </div>
+
+                <div class="card" style="margin-bottom: 30px;">
+                    <div class="card-title" style="margin: 0 0 20px 0;">🔧 Seleccionar Parámetros</div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Empleado:</label>
+                            <select id="select-empleado" class="filter-select" style="width: 100%;">
+                                <option value="">-- Seleccionar empleado --</option>
+                                ${empleados.map((emp, idx) => `<option value="${idx}">${emp.nombre}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">KPI:</label>
+                            <select id="select-kpi" class="filter-select" style="width: 100%;">
+                                <option value="">-- Seleccionar KPI --</option>
+                                ${kpis.map(kpi => `<option value="${kpi.id}">${kpi.label}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Período:</label>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <input type="date" id="fecha-inicio" value="2026-08-01" class="filter-input" style="flex: 1;">
+                                <span style="color: var(--text-secondary);">→</span>
+                                <input type="date" id="fecha-fin" value="2026-08-28" class="filter-input" style="flex: 1;">
+                            </div>
+                        </div>
                     </div>
+
+                    <button class="btn" style="margin-top: 20px; width: 100%;" onclick="generarInformePersona();">✓ Generar Informe</button>
                 </div>
 
-                <div class="tabs" style="margin-bottom: 20px;">
-                    <button class="tab-btn active" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); document.getElementById('tab-config').style.display='block'; document.getElementById('tab-resultado').style.display='none';">Configurar</button>
-                    <button class="tab-btn" onclick="this.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); document.getElementById('tab-resultado').style.display='block'; document.getElementById('tab-config').style.display='none';">Resultado</button>
-                </div>
-
-                <div id="tab-config">
-                    <div class="card" style="margin-bottom: 20px;">
-                        <div class="card-title">🔧 Configuración del Informe</div>
-
-                        <div style="margin-top: 20px;">
-                            <label style="display: block; font-weight: 600; margin-bottom: 10px;">Período:</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <input type="date" id="fecha-inicio" value="2026-08-01" class="filter-input">
-                                <input type="date" id="fecha-fin" value="2026-08-28" class="filter-input">
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 20px;">
-                            <label style="display: block; font-weight: 600; margin-bottom: 10px;">Departamentos:</label>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                ${dpttos.map(dpto => `
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" value="${dpto}" class="dpto-check" checked style="width: 16px; height: 16px;">
-                                        <span>${dpto}</span>
-                                    </label>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 20px;">
-                            <label style="display: block; font-weight: 600; margin-bottom: 10px;">Métricas a Incluir:</label>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                                ${metricas.map(metrica => `
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" value="${metrica.id}" class="metrica-check" ${metrica.checked ? 'checked' : ''} style="width: 16px; height: 16px;">
-                                        <span>${metrica.label}</span>
-                                    </label>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 20px;">
-                            <label style="display: block; font-weight: 600; margin-bottom: 10px;">Opciones de Visualización:</label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px;">
-                                <input type="checkbox" id="mostrar-graficos" checked style="width: 16px; height: 16px;">
-                                <span>Incluir Gráficos</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" id="mostrar-empleados" checked style="width: 16px; height: 16px;">
-                                <span>Detalle por Empleado</span>
-                            </label>
-                        </div>
-
-                        <button class="btn" style="margin-top: 30px; width: 100%;" onclick="generarInforme();">✓ Generar Informe</button>
-                    </div>
-                </div>
-
-                <div id="tab-resultado" style="display: none;">
-                    <div id="informe-contenido"></div>
-                </div>
+                <div id="informe-contenido"></div>
             `;
 
-            window.generarInforme = function() {
-                const dpttosSeleccionados = Array.from(document.querySelectorAll('.dpto-check:checked')).map(e => e.value);
-                const metricasSeleccionadas = Array.from(document.querySelectorAll('.metrica-check:checked')).map(e => e.value);
-                const mostrarGraficos = document.getElementById('mostrar-graficos').checked;
-                const mostrarEmpleados = document.getElementById('mostrar-empleados').checked;
+            window.generarInformePersona = function() {
+                const empleadoIdx = document.getElementById('select-empleado').value;
+                const kpiId = document.getElementById('select-kpi').value;
                 const fechaInicio = document.getElementById('fecha-inicio').value;
                 const fechaFin = document.getElementById('fecha-fin').value;
 
-                let html = `
-                    <div class="card" style="margin-bottom: 20px;">
-                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px;">
-                            <div class="card-title" style="margin: 0;">📊 Informe de Desempeño Ejecutivo</div>
-                            <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">Período: ${fechaInicio} al ${fechaFin}</div>
-                        </div>
-
-                        <div class="stats" style="margin-bottom: 30px;">
-                            <div class="stat-card">
-                                <div class="stat-value">${Math.floor(Math.random() * 30) + 85}%</div>
-                                <div class="stat-label">Desempeño Promedio</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value">${Math.floor(Math.random() * 20) + 80}%</div>
-                                <div class="stat-label">Cumplimiento Objetivos</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value">${Math.floor(Math.random() * 30) + 70}%</div>
-                                <div class="stat-label">Productividad</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value">${dpttosSeleccionados.length}</div>
-                                <div class="stat-label">Áreas Evaluadas</div>
-                            </div>
-                        </div>
-                `;
-
-                if (mostrarGraficos) {
-                    html += `
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                            <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-                                <h3 style="margin: 0 0 15px 0; font-size: 14px; color: var(--text-secondary); font-weight: 600;">Desempeño por Área</h3>
-                                <canvas id="chart-areas" style="height: 250px;"></canvas>
-                            </div>
-                            <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-                                <h3 style="margin: 0 0 15px 0; font-size: 14px; color: var(--text-secondary); font-weight: 600;">Distribución de Métricas</h3>
-                                <canvas id="chart-metricas" style="height: 250px;"></canvas>
-                            </div>
-                        </div>
-                    `;
+                if (!empleadoIdx || !kpiId) {
+                    alert('Por favor selecciona empleado y KPI');
+                    return;
                 }
 
-                html += `
-                    <div style="background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                        <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 600;">Áreas Evaluadas:</h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                            ${dpttosSeleccionados.map(dpto => `
-                                <div style="background: white; padding: 10px; border-radius: 6px; text-align: center;">
-                                    <div style="font-weight: 600;">${dpto}</div>
-                                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">${Math.floor(Math.random() * 30) + 70}%</div>
+                const empleado = empleados[empleadoIdx];
+                const kpi = kpis.find(k => k.id === kpiId);
+                const puntuacion = Math.floor(Math.random() * 25) + 75;
+                const estado = puntuacion >= 85 ? 'Excelente' : puntuacion >= 75 ? 'Bueno' : 'Necesita mejora';
+                const badgeClass = puntuacion >= 85 ? 'badge-success' : puntuacion >= 75 ? 'badge-warning' : 'badge-danger';
+
+                const descripciones = {
+                    asistencia: `Durante el período evaluado del ${fechaInicio} al ${fechaFin}, ${empleado.nombre} ha demostrado un comportamiento consistente en relación a la asistencia. Se registraron un total de ${Math.floor(Math.random() * 5)} ausencias y ${Math.floor(Math.random() * 3)} tardanzas. El desempeño en este KPI refleja responsabilidad y compromiso con los horarios establecidos por la organización.`,
+                    productividad: `En cuanto a productividad, ${empleado.nombre} ha completado el ${puntuacion}% de las tareas asignadas dentro de los plazos establecidos durante el período ${fechaInicio} al ${fechaFin}. Se evidencia capacidad para gestionar la carga de trabajo y mantener una velocidad de entrega consistente.`,
+                    objetivos: `Respecto al cumplimiento de objetivos, ${empleado.nombre} ha alcanzado el ${puntuacion}% de las metas establecidas para el período evaluado. Ha mostrado iniciativa en ${Math.random() > 0.5 ? 'proyectos clave' : 'tareas estratégicas'} y ha contribuido significativamente a los resultados del equipo.`,
+                    evaluacion: `La evaluación 360 grados realizada entre el ${fechaInicio} y ${fechaFin} arroja un resultado de ${puntuacion}%. Sus colegas destacan su ${Math.random() > 0.5 ? 'capacidad colaborativa' : 'habilidades de comunicación'} y su disposición al trabajo en equipo.`,
+                    habilidades: `En lo que respecta al desarrollo de habilidades, ${empleado.nombre} ha participado en ${Math.floor(Math.random() * 3) + 1} capacitaciones durante el período. Ha demostrado interés en mejorar sus competencias y ha alcanzado un ${puntuacion}% en evaluaciones de desarrollo.`
+                };
+
+                const recomendaciones = {
+                    asistencia: puntuacion >= 85 ? 'Mantener la excelente asistencia y considerar como referente en el equipo.' : 'Se recomienda trabajar en mejorar la puntualidad y justificar adecuadamente las ausencias.',
+                    productividad: puntuacion >= 85 ? 'Continuar con el excelente ritmo de trabajo y considerar delegar tareas de mayor responsabilidad.' : 'Mejorar la gestión del tiempo y establecer prioridades claras en las tareas.',
+                    objetivos: puntuacion >= 85 ? 'Establecer objetivos más desafiantes para mantener el crecimiento y desarrollo profesional.' : 'Trabajar junto con el supervisor en un plan de mejora para alcanzar los objetivos planteados.',
+                    evaluacion: puntuacion >= 85 ? 'Fortalecer el liderazgo y considerarlo como mentor de nuevos equipos.' : 'Buscar feedback continuo de colegas para mejorar la comunicación y las relaciones interpersonales.',
+                    habilidades: puntuacion >= 85 ? 'Continuar capacitándose en temas especializados y considerar una certificación profesional.' : 'Aumentar la participación en programas de desarrollo y buscar mentoría.'
+                };
+
+                const html = `
+                    <div class="card">
+                        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Empleado</div>
+                                    <div style="font-size: 18px; font-weight: 600;">${empleado.nombre}</div>
                                 </div>
-                            `).join('')}
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">KPI Evaluado</div>
+                                    <div style="font-size: 18px; font-weight: 600;">${kpi.label}</div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Período</div>
+                                    <div style="font-size: 14px; font-weight: 500;">${fechaInicio} al ${fechaFin}</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Puntuación</div>
+                                    <div style="font-size: 28px; font-weight: bold; color: var(--primary);">${puntuacion}%</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Estado</div>
+                                    <div><span class="badge ${badgeClass}">${estado}</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: white; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 600; color: var(--text-secondary);">Desempeño Gráfico</h3>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <div style="background: var(--bg-secondary); border-radius: 8px; height: 30px; overflow: hidden;">
+                                        <div style="background: ${puntuacion >= 85 ? '#16a34a' : puntuacion >= 75 ? '#ea580c' : '#dc2626'}; height: 100%; width: ${puntuacion}%; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 600; font-size: 12px;">
+                                            ${puntuacion}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Análisis Detallado</h3>
+                            <p style="margin: 0; line-height: 1.6; color: var(--text-primary); font-size: 14px;">
+                                ${descripciones[kpiId]}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Recomendaciones</h3>
+                            <div style="background: var(--bg-secondary); padding: 15px; border-radius: 6px; border-left: 4px solid var(--primary);">
+                                <p style="margin: 0; color: var(--text-primary); font-size: 14px; line-height: 1.6;">
+                                    ${recomendaciones[kpiId]}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 25px; display: flex; gap: 10px;">
+                            <button class="btn" onclick="window.print();" style="background: none; color: var(--primary); border: 1px solid var(--primary);">🖨️ Imprimir</button>
+                            <button class="btn" onclick="descargarInforme();">📥 Descargar</button>
                         </div>
                     </div>
                 `;
 
-                if (mostrarEmpleados) {
-                    const empleados = generarEmpleados(5);
-                    html += `
-                        <div style="border-top: 2px solid var(--border); padding-top: 20px;">
-                            <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 600;">Desempeño por Empleado</h3>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Empleado</th>
-                                            <th>Departamento</th>
-                                            <th>Desempeño</th>
-                                            <th>Estado</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${empleados.map(emp => {
-                                            const desempeño = Math.floor(Math.random() * 30) + 70;
-                                            const estado = desempeño >= 85 ? 'Excelente' : desempeño >= 75 ? 'Bueno' : 'En desarrollo';
-                                            const badge = desempeño >= 85 ? 'badge-success' : desempeño >= 75 ? 'badge-warning' : 'badge-danger';
-                                            return `
-                                                <tr>
-                                                    <td><strong>${emp.nombre}</strong></td>
-                                                    <td>${dpttosSeleccionados[Math.floor(Math.random() * dpttosSeleccionados.length)]}</td>
-                                                    <td><strong>${desempeño}%</strong></td>
-                                                    <td><span class="badge ${badge}">${estado}</span></td>
-                                                </tr>
-                                            `;
-                                        }).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                html += `</div>`;
                 document.getElementById('informe-contenido').innerHTML = html;
-
-                if (mostrarGraficos) {
-                    setTimeout(() => {
-                        const ctxAreas = document.getElementById('chart-areas');
-                        if (ctxAreas) {
-                            new Chart(ctxAreas.getContext('2d'), {
-                                type: 'bar',
-                                data: {
-                                    labels: dpttosSeleccionados,
-                                    datasets: [{
-                                        label: 'Desempeño (%)',
-                                        data: dpttosSeleccionados.map(() => Math.floor(Math.random() * 30) + 70),
-                                        backgroundColor: '#1e5a7a'
-                                    }]
-                                },
-                                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
-                            });
-                        }
-
-                        const ctxMetricas = document.getElementById('chart-metricas');
-                        if (ctxMetricas) {
-                            new Chart(ctxMetricas.getContext('2d'), {
-                                type: 'doughnut',
-                                data: {
-                                    labels: metricasSeleccionadas.map(m => m.charAt(0).toUpperCase() + m.slice(1)),
-                                    datasets: [{
-                                        data: metricasSeleccionadas.map(() => Math.floor(Math.random() * 30) + 60),
-                                        backgroundColor: ['#1e5a7a', '#0d7377', '#16a34a', '#ea580c', '#9333ea', '#ec4899']
-                                    }]
-                                },
-                                options: { responsive: true, maintainAspectRatio: false }
-                            });
-                        }
-                    }, 0);
-                }
-
-                document.querySelectorAll('.tab-btn')[1].click();
             };
 
             window.descargarInforme = function() {
